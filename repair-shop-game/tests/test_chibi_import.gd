@@ -23,5 +23,6 @@ func run() -> void:
 
 	var aabb := mesh.get_aabb()
 	check_near(aabb.size.x, 1.12, 0.01, "aabb.x")
+	check_near(aabb.size.y, 1.012, 0.01, "aabb.y")
 	check_near(aabb.size.z, 2.012, 0.01, "aabb.z (Z-up height)")
 	check_near(aabb.position.y, -0.512, 0.01, "aabb.position.y")
