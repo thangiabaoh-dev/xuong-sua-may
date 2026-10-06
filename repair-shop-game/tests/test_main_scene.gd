@@ -1,6 +1,12 @@
 extends "res://tests/test_case.gd"
 
 func run() -> void:
+	# Ruling R11: InputMap coverage cho các action mà player.gd đọc trong _physics_process
+	check(InputMap.has_action("move_left"), "InputMap has move_left")
+	check(InputMap.has_action("move_right"), "InputMap has move_right")
+	check(InputMap.has_action("move_forward"), "InputMap has move_forward")
+	check(InputMap.has_action("move_back"), "InputMap has move_back")
+
 	var packed := load("res://scenes/main.tscn") as PackedScene
 	check(packed != null, "main.tscn must load")
 	if packed == null:
