@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MachineDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/machine_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+era = 1
+brand = "Apple"
+model = "MacBook Air 2010"
+year = 2010
+parts = PackedStringArray("SSD Apple", "MagSafe 1")
+faults = PackedStringArray("no_power", "battery_swollen", "no_wifi", "loose_port")
+difficulty = 3
+base_price = 150000
+customer_types = PackedStringArray("hoai_niem")
+min_knowledge = 1

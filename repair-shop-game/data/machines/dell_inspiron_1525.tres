@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MachineDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/machine_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+era = 1
+brand = "Dell"
+model = "Dell Inspiron 1525"
+year = 2008
+parts = PackedStringArray("CCFL", "SATA")
+faults = PackedStringArray("dim_screen", "overheat", "keyboard_dead", "loose_port")
+difficulty = 2
+base_price = 130000
+customer_types = PackedStringArray("ban_hoc")
+min_knowledge = 1

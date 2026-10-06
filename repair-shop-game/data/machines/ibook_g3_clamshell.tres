@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MachineDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/machine_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+era = 1
+brand = "Apple"
+model = "iBook G3 Clamshell"
+year = 1999
+parts = PackedStringArray("CCFL", "PATA", "cáp ribbon", "AirPort")
+faults = PackedStringArray("dim_screen", "no_power", "board_short", "slow_hdd", "loose_port")
+difficulty = 4
+base_price = 300000
+customer_types = PackedStringArray("hoai_niem")
+min_knowledge = 2

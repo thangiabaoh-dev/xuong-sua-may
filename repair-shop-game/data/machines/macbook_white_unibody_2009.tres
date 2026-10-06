@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MachineDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/machine_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+era = 1
+brand = "Apple"
+model = "MacBook trắng Unibody 2009"
+year = 2009
+parts = PackedStringArray("SATA", "MagSafe 1", "pin dính")
+faults = PackedStringArray("no_power", "battery_swollen", "keyboard_dead", "no_wifi")
+difficulty = 3
+base_price = 160000
+customer_types = PackedStringArray("hoai_niem")
+min_knowledge = 1

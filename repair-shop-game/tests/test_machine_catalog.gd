@@ -12,9 +12,12 @@ func run() -> void:
 	if catalog.is_empty():
 		return
 	var modern := 0
+	var vintage := 0
 	for m in catalog:
 		if m.era == MachineDef.Era.HIEN_DAI:
 			modern += 1
+		if m.era == MachineDef.Era.CO:
+			vintage += 1
 		check(m.era == MachineDef.Era.HIEN_DAI or m.era == MachineDef.Era.CO, "era valid: " + m.model)
 		check(m.brand != "" and m.model != "", "brand/model non-empty: " + m.model)
 		check(m.year >= 1990 and m.year <= 2026, "year in 1990-2026: " + m.model)
@@ -28,7 +31,11 @@ func run() -> void:
 		check(m.customer_types.size() > 0, "customers non-empty: " + m.model)
 		for ck in m.customer_types:
 			check(CUSTOMER_KEYS.has(ck), "known customer '" + ck + "' on " + m.model)
+		if m.era != MachineDef.Era.CO:
+			check(not m.faults.has("dim_screen"), "dim_screen only on vintage: " + m.model)
 	check(modern >= 10, "at least 10 modern machines")
+	check(catalog.size() >= 32, "catalog has at least 32 machines")
+	check(vintage >= 22, "at least 22 vintage machines")
 
 	var fx := MachineGenerator.scan_dir("res://tests/fixtures/machines")
 	check_eq(fx.size(), 1, "broken .tres skipped by scan_dir")
