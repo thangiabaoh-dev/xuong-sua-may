@@ -55,7 +55,37 @@ func run() -> void:
 			var partial: Vector3 = cam_script.follow_step(Vector3(10, 0, 10), Vector3(0, 0.1, 0), 8.0, 0.05)
 			check(partial.x > 0.0 and partial.x < 10.0, "follow_step partial step interpolates")
 
+		# Ruling R15 (b): target mà camera_follow.gd sẽ resolve phải tồn tại —
+		# cùng thứ tự với script: group "player" trước, fallback sibling "../Player".
+		check(_resolve_camera_target(root, rig) != null, "camera follow target resolves")
+		# Ruling R15: production script phải thật sự đọc group "player" (Ruling R1 sống).
+		# Lookup theo tree không chạy được trong harness (Engine.get_main_loop() == null trong _init),
+		# nên check tại nguồn script — đây là chỗ duy nhất guard được group wiring.
+		check(_camera_script_reads_player_group(),
+			"camera_follow.gd resolves target via group 'player'")
+
 	root.free()
+
+func _resolve_camera_target(main: Node, rig: Node) -> Node3D:
+	var group_target := _first_in_group(main, "player")
+	if group_target != null:
+		return group_target
+	return rig.get_node_or_null("../Player") as Node3D
+
+func _first_in_group(node: Node, group: String) -> Node3D:
+	if node.is_in_group(group):
+		return node as Node3D
+	for child in node.get_children():
+		var found := _first_in_group(child, group)
+		if found != null:
+			return found
+	return null
+
+func _camera_script_reads_player_group() -> bool:
+	var file := FileAccess.open("res://scripts/camera_follow.gd", FileAccess.READ)
+	if file == null:
+		return false
+	return file.get_as_text().contains("get_first_node_in_group(\"player\")")
 
 func _world_origin(node: Node3D) -> Vector3:
 	var v := Vector3.ZERO
