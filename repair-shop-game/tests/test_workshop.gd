@@ -27,13 +27,15 @@ func run() -> void:
 	if floor_node != null:
 		var solid: Node = floor_node.find_child("StaticBody3D", true, false)
 		var cs: Node = solid.find_child("CollisionShape3D") if solid != null else null
-		var box: BoxShape3D = cs.shape as BoxShape3D if cs != null else null
+		var box: BoxShape3D = null
+		if cs is CollisionShape3D:
+			box = (cs as CollisionShape3D).shape as BoxShape3D
+		check(box != null, "floor shape is BoxShape3D")
 		if box != null:
 			check_near(box.size.x, 8.0, 0.01, "floor width X")
 			check_near(box.size.z, 8.0, 0.01, "floor depth Z")
-			if cs is CollisionShape3D:
-				var top_y := _world_origin(cs as CollisionShape3D).y + box.size.y / 2.0
-				check_near(top_y, 0.0, 0.01, "floor top at y=0")
+			var top_y := _world_origin(cs as CollisionShape3D).y + box.size.y / 2.0
+			check_near(top_y, 0.0, 0.01, "floor top at y=0")
 
 	root.free()
 
