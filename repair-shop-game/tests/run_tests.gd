@@ -4,6 +4,7 @@ const TEST_SCRIPTS: PackedStringArray = [
 	"res://tests/test_chibi_import.gd",
 	"res://tests/test_player_scene.gd",
 	"res://tests/test_player_move.gd",
+	"res://tests/test_workshop.gd",
 ]
 
 func _init() -> void:
