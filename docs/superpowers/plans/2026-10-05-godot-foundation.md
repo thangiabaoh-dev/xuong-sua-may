@@ -18,6 +18,7 @@
 - Ngôn ngữ **GDScript**. Kiểu trả về bắt buộc khai báo (`-> Vector3`, `-> void`).
 - Repo root = `/Users/hoangthangiabao/Documents/file nhảy cảm`, nhánh `main` **chưa có commit nào**, mọi thứ untracked. → **Luôn `git add` đúng đường dẫn** dưới `repair-shop-game/` và `docs/`. **Tuyệt đối không `git add -A` / `git add .`** (sẽ kéo cả các dự án khác vào commit).
 - Thư mục cache Godot `.godot/` phải nằm trong `.gitignore`. File `*.import` của asset **phải được commit**.
+- Godot 4.4+ sinh file sidecar **`<tên>.gd.uid`** cạnh mỗi script `.gd`. **Phải commit** các file `.uid` cùng script của mình (chúng ghim UID như `.import` ghim asset). Bỏ qua chúng → cây làm việc bẩn vĩnh viễn sau mỗi lần `--import`.
 - Model: `repair-shop-game` import từ `chibi-model/chibi.obj` + `chibi.mtl` (nguồn ở `../chibi-model/`). Không sửa file nguồn.
 - Nhân vật **Z-up** trong file OBJ (AABB size `(1.12, 1.012, 2.012)`), Godot **Y-up** → **bắt buộc xoay** để đứng thẳng; mặt phải hướng **−Z**.
 - Mọi lệnh chạy từ **repo root** unless nói khác.
@@ -131,6 +132,7 @@ func run() -> void:
 
 	var aabb := mesh.get_aabb()
 	check_near(aabb.size.x, 1.12, 0.01, "aabb.x")
+	check_near(aabb.size.y, 1.012, 0.01, "aabb.y")
 	check_near(aabb.size.z, 2.012, 0.01, "aabb.z (Z-up height)")
 	check_near(aabb.position.y, -0.512, 0.01, "aabb.position.y")
 ```
@@ -164,15 +166,7 @@ func _init() -> void:
 	quit(0 if total == 0 else 1)
 ```
 
-- [ ] **Step 4: Chạy test — mong đợi FAIL** (chưa có project.godot, chưa có asset)
-
-```bash
-godot --headless --path repair-shop-game --import >/dev/null 2>&1; godot --headless --path repair-shop-game -s res://tests/run_tests.gd
-```
-
-Expected: `FAIL res://tests/test_chibi_import.gd: chibi.obj must load`, `TOTAL_FAILURES=1`, exit `1`. Nếu **PASS** → có artefact thừa từ lần chạy trước, dọn thư mục rồi chạy lại từ đầu.
-
-- [ ] **Step 5: Tạo `project.godot`, `.gitignore`, copy asset, import**
+- [ ] **Step 4: Tạo `project.godot` + `.gitignore` — CHƯA copy asset**
 
 `repair-shop-game/project.godot`:
 
@@ -196,6 +190,18 @@ renderer/rendering_method="forward_plus"
 .godot/
 ```
 
+(Lý do tách bước này khỏi copy asset: `godot --headless --path <dir>` trên thư mục chưa có `project.godot` chưa từng được kiểm chứng — cần project file để lần chạy FAIL ở Step 5 reproducible.)
+
+- [ ] **Step 5: Chạy test — mong đợi FAIL** (asset chưa tồn tại)
+
+```bash
+godot --headless --path repair-shop-game --import >/dev/null 2>&1; godot --headless --path repair-shop-game -s res://tests/run_tests.gd
+```
+
+Expected: `FAIL res://tests/test_chibi_import.gd: chibi.obj must load`, `TOTAL_FAILURES=1`, exit `1`. Nếu **PASS** → có artefact thừa từ lần chạy trước, dọn thư mục rồi chạy lại từ đầu.
+
+- [ ] **Step 6: Copy asset + import**
+
 ```bash
 mkdir -p repair-shop-game/assets/models
 cp chibi-model/chibi.obj chibi-model/chibi.mtl repair-shop-game/assets/models/
@@ -204,7 +210,7 @@ godot --headless --path repair-shop-game --import
 
 Verify sau import (đã kiểm chứng thực tế với 4.7.2): `repair-shop-game/assets/models/chibi.obj.import` **có**, `chibi.mtl.import` **không có** (`.mtl` được OBJ importer đọc trực tiếp, không tạo file import).
 
-- [ ] **Step 6: Chạy lại — mong đợi PASS**
+- [ ] **Step 7: Chạy lại — mong đợi PASS**
 
 ```bash
 godot --headless --path repair-shop-game --import >/dev/null 2>&1; godot --headless --path repair-shop-game -s res://tests/run_tests.gd
@@ -212,14 +218,16 @@ godot --headless --path repair-shop-game --import >/dev/null 2>&1; godot --headl
 
 Expected: `PASS res://tests/test_chibi_import.gd`, `TOTAL_FAILURES=0`, exit `0`.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add repair-shop-game/project.godot repair-shop-game/.gitignore \
   repair-shop-game/assets/models/chibi.obj repair-shop-game/assets/models/chibi.mtl \
   repair-shop-game/assets/models/chibi.obj.import \
   repair-shop-game/tests/test_case.gd repair-shop-game/tests/run_tests.gd \
-  repair-shop-game/tests/test_chibi_import.gd
+  repair-shop-game/tests/test_chibi_import.gd \
+  repair-shop-game/tests/test_case.gd.uid repair-shop-game/tests/run_tests.gd.uid \
+  repair-shop-game/tests/test_chibi_import.gd.uid
 git commit -m "feat: godot project skeleton with chibi asset contract test"
 ```
 
@@ -272,6 +280,7 @@ func run() -> void:
 			check_near(ext.y, 2.012, 0.02, "upright height along Y")
 			check_near(ext.x, 1.12, 0.02, "width along X")
 			check_near(_min_component(corners, 1), 0.0, 0.02, "feet on y=0")
+	p.free()
 
 func _transformed_corners(node: Node3D, aabb: AABB) -> Array:
 	var out: Array = []
@@ -335,6 +344,7 @@ git commit -m "feat: player scene with upright chibi and capsule collision"
 **Files:**
 - Create: `repair-shop-game/scripts/player.gd`
 - Modify: `repair-shop-game/scenes/player.tscn` (gắn script vào root)
+- Modify: `repair-shop-game/project.godot` (thêm `[input]` map — Ruling R9)
 
 **Interfaces:**
 - Consumes: scene `player.tscn` (Task 2), node `Body`.
@@ -343,6 +353,7 @@ git commit -m "feat: player scene with upright chibi and capsule collision"
   - `const WALK_SPEED: float = 3.0`
   - `static func move_direction(input: Vector2, cam_basis: Basis) -> Vector3` — chuẩn hoá hướng đi trên mặt phẳng XZ theo basis camera; trả `Vector3.ZERO` khi `input == Vector2.ZERO`; luôn có `result.y == 0.0` và `result.length() ≈ 1.0` khi khác không.
   - `func _physics_process(delta: float) -> void` — đọc `Input.get_vector("move_left","move_right","move_forward","move_back")`, gọi `move_direction(...)` với `camera` basis (bằng `get_viewport().get_camera_3d().global_transform.basis` nếu có camera, ngược lại `Basis.IDENTITY`), nhân `WALK_SPEED`, cộng gravity, `move_and_slide()`.
+  - Produces — `project.godot` phải có section `[input]` khai báo **đúng 4 action** `"move_left"`, `"move_right"`, `"move_forward"`, `"move_back"` (keys: A/Left, D/Right, W/Up, S/Down). Không có section này thì `Input.get_vector` runtime-error ở Task 5.
 
 - [ ] **Step 1: Viết `tests/test_player_move.gd` (fail trước)**
 
@@ -435,7 +446,9 @@ Expected: `TOTAL_FAILURES=0`, exit `0`.
 
 ```bash
 git add repair-shop-game/scripts/player.gd repair-shop-game/scenes/player.tscn \
-  repair-shop-game/tests/test_player_move.gd repair-shop-game/tests/run_tests.gd
+  repair-shop-game/project.godot \
+  repair-shop-game/tests/test_player_move.gd repair-shop-game/tests/run_tests.gd \
+  repair-shop-game/scripts/player.gd.uid repair-shop-game/tests/test_player_move.gd.uid
 git commit -m "feat: pure camera-relative movement logic with player controller"
 ```
 
@@ -531,6 +544,7 @@ git commit -m "feat: low-poly workshop room with collision bounds"
 **Files:**
 - Create: `repair-shop-game/scenes/main.tscn`
 - Create: `repair-shop-game/scripts/camera_follow.gd`
+- Modify: `repair-shop-game/scenes/player.tscn` (thêm nhóm `player` vào root — Ruling R1)
 
 **Interfaces:**
 - Consumes: `workshop.tscn` (Task 4), `player.tscn` (Tasks 2–3), `WALK_SPEED`/`move_direction` (Task 3).
@@ -626,6 +640,7 @@ Expected: `EXIT=0`, không có dòng `SCRIPT ERROR` / `ERROR: Failed loading res
 
 ```bash
 git add repair-shop-game/scenes/main.tscn repair-shop-game/scripts/camera_follow.gd \
+  repair-shop-game/scenes/player.tscn \
   repair-shop-game/tests/test_main_scene.gd repair-shop-game/tests/run_tests.gd \
   repair-shop-game/project.godot
 git commit -m "feat: main scene with workshop, player spawn and follow camera"
