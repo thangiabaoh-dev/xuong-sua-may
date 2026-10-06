@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MachineDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/machine_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+era = 0
+brand = "Acer"
+model = "Acer Nitro 5"
+year = 2019
+parts = PackedStringArray("GPU rời", "quạt kép")
+faults = PackedStringArray("overheat", "no_power", "no_wifi")
+difficulty = 2
+base_price = 95000
+customer_types = PackedStringArray("ban_hoc")
+min_knowledge = 0

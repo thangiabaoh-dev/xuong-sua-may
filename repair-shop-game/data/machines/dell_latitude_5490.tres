@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MachineDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/machine_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+era = 0
+brand = "Dell"
+model = "Dell Latitude 5490"
+year = 2018
+parts = PackedStringArray("RAM DDR4", "pin Li-ion")
+faults = PackedStringArray("no_power", "keyboard_dead", "battery_swollen")
+difficulty = 2
+base_price = 95000
+customer_types = PackedStringArray("giao_vien")
+min_knowledge = 0
