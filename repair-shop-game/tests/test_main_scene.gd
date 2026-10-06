@@ -36,6 +36,25 @@ func run() -> void:
 			check_near((arm as SpringArm3D).spring_length, 5.0, 0.001, "spring arm length")
 			check(arm.get_node_or_null("Camera3D") is Camera3D, "SpringArm3D has Camera3D")
 
+		# Review Important #1: mất script = mất follow im lặng, suite vẫn xanh
+		check(rig.get_script() == load("res://scripts/camera_follow.gd"), "CameraRig has camera_follow.gd")
+
+		# Pure-logic follow (mẫu move_direction): clamp weight ≤ 1, Y không đổi — test headless không cần frame.
+		# Bắt buộc qua get_script_method_list: has_method trên GDScript resource trả false cho method của script.
+		var cam_script := load("res://scripts/camera_follow.gd") as GDScript
+		var method_names := PackedStringArray()
+		if cam_script != null:
+			for m in cam_script.get_script_method_list():
+				method_names.append(String(m.name))
+		check("follow_step" in method_names, "camera_follow has follow_step")
+		if "follow_step" in method_names:
+			var out: Vector3 = cam_script.follow_step(Vector3(10, 0, 10), Vector3(0, 0.1, 0), 8.0, 1.0)
+			check_near(out.x, 0.0, 0.01, "follow_step clamps to target X")
+			check_near(out.z, 0.0, 0.01, "follow_step clamps to target Z")
+			check_near(out.y, 0.0, 0.01, "follow_step never changes Y")
+			var partial: Vector3 = cam_script.follow_step(Vector3(10, 0, 10), Vector3(0, 0.1, 0), 8.0, 0.05)
+			check(partial.x > 0.0 and partial.x < 10.0, "follow_step partial step interpolates")
+
 	root.free()
 
 func _world_origin(node: Node3D) -> Vector3:
