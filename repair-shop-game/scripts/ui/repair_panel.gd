@@ -8,6 +8,7 @@ var game_state
 var rng: RandomNumberGenerator
 var _built := false
 var _last_log := ""
+var bought_this_visit := false
 
 func _ready() -> void:
 	if session != null:
@@ -142,8 +143,12 @@ func _build_ui() -> void:
 	parts.add_child(lbl_money2)
 	var btn_buy := Button.new()
 	btn_buy.name = "BtnBuy"
-	btn_buy.text = "Mua linh kiện"
+	btn_buy.text = "Mua ngay (+10')"
 	parts.add_child(btn_buy)
+	var btn_take := Button.new()
+	btn_take.name = "BtnTake"
+	btn_take.text = "Lấy từ kho (0đ)"
+	parts.add_child(btn_take)
 	var btn_give := Button.new()
 	btn_give.name = "BtnGiveUp"
 	btn_give.text = "Từ bỏ"
@@ -182,6 +187,28 @@ func _build_ui() -> void:
 	btn_cont.text = "Tiếp tục"
 	res.add_child(btn_cont)
 
+	# SHOP
+	var shop := Control.new()
+	shop.name = "ScreenShop"
+	screens.add_child(shop)
+	var lbl_info := Label.new()
+	lbl_info.name = "LblShopInfo"
+	shop.add_child(lbl_info)
+	var shop_box := VBoxContainer.new()
+	shop_box.name = "ShopBox"
+	shop.add_child(shop_box)
+	for part in PartCatalog.load_all():
+		var sb := Button.new()
+		sb.text = "%s — %dđ" % [String(part.name), int(part.price)]
+		sb.set_meta("part_id", String(part.id))
+		sb.set_meta("price", int(part.price))
+		sb.pressed.connect(_on_shop_buy.bind(String(part.id)))
+		shop_box.add_child(sb)
+	var btn_skip := Button.new()
+	btn_skip.name = "BtnSkip"
+	btn_skip.text = "Ra tiệm →"
+	shop.add_child(btn_skip)
+
 	var btn_open := Button.new()
 	btn_open.name = "BtnOpen"
 	btn_open.text = "Đơn mới"
@@ -197,10 +224,12 @@ func _connect_signals() -> void:
 		b.pressed.connect(_on_check.bind(i))
 	get_node("Root/Screens/ScreenChecks/BtnConclusion").pressed.connect(_on_begin_conclusion)
 	get_node("Root/Screens/ScreenParts/BtnBuy").pressed.connect(_on_buy)
+	get_node("Root/Screens/ScreenParts/BtnTake").pressed.connect(_on_take)
 	get_node("Root/Screens/ScreenParts/BtnGiveUp").pressed.connect(_on_give_up)
 	get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").pressed.connect(_on_disassemble)
 	get_node("Root/Screens/ScreenTest/BtnRunTest").pressed.connect(_on_run_test)
 	get_node("Root/Screens/ScreenResult/BtnContinue").pressed.connect(_on_continue)
+	get_node("Root/Screens/ScreenShop/BtnSkip").pressed.connect(_on_skip)
 	get_node("Root/Header/BtnClose").pressed.connect(_on_close)
 	get_node("BtnOpen").pressed.connect(_on_open)
 
@@ -249,6 +278,12 @@ func _on_buy() -> void:
 	session.buy_part()
 	_render()
 
+func _on_take() -> void:
+	if session == null:
+		return
+	session.take_part_from_stock()
+	_render()
+
 func _on_give_up() -> void:
 	if session == null:
 		return
@@ -268,7 +303,36 @@ func _on_run_test() -> void:
 	_render()
 
 func _on_continue() -> void:
+	open_shop()
+
+func _on_skip() -> void:
 	open_new_order()
+
+func _on_shop_buy(part_id: String) -> void:
+	if bought_this_visit:
+		return
+	var part := PartCatalog.get_part(part_id)
+	if part == null:
+		return
+	if int(game_state.money) < int(part.price):
+		(get_node("Root/Screens/ScreenShop/LblShopInfo") as Label).text = "Cần %dđ" % int(part.price)
+		return
+	game_state.money = int(game_state.money) - int(part.price)
+	game_state.inventory[part_id] = int(game_state.inventory.get(part_id, 0)) + 1
+	bought_this_visit = true
+	(get_node("Root/Screens/ScreenShop/LblShopInfo") as Label).text = "Đã mua: %s" % String(part.name)
+	for c in (get_node("Root/Screens/ScreenShop/ShopBox") as Container).get_children():
+		(c as Button).disabled = true
+
+func open_shop() -> void:
+	if not _built:
+		return
+	bought_this_visit = false
+	for c in (get_node("Root/Screens/ScreenShop/ShopBox") as Container).get_children():
+		(c as Button).disabled = false
+	(get_node("Root/Screens/ScreenShop/LblShopInfo") as Label).text = "Chọn linh kiện cho kho"
+	_hide_all()
+	get_node("Root/Screens/ScreenShop").visible = true
 
 func _on_close() -> void:
 	get_node("Root").visible = false
@@ -281,7 +345,7 @@ func _on_open() -> void:
 	get_node("BtnOpen").visible = false
 
 func _hide_all() -> void:
-	for n in ["ScreenOffer", "ScreenSymptom", "ScreenChecks", "ScreenConclusion", "ScreenParts", "ScreenDisassemble", "ScreenTest", "ScreenResult"]:
+	for n in ["ScreenOffer", "ScreenSymptom", "ScreenChecks", "ScreenConclusion", "ScreenParts", "ScreenDisassemble", "ScreenTest", "ScreenResult", "ScreenShop"]:
 		get_node("Root/Screens/" + n).visible = false
 
 func _render() -> void:
@@ -346,6 +410,9 @@ func _render() -> void:
 			if pp != null:
 				(get_node("Root/Screens/ScreenParts/LblPart") as Label).text = "%s — %dđ" % [String(pp.name), int(pp.price)]
 		(get_node("Root/Screens/ScreenParts/LblMoney2") as Label).text = "Số dư: %dđ" % int(game_state.money)
+		var has_stock := session.stock_available()
+		(get_node("Root/Screens/ScreenParts/BtnTake") as Button).visible = has_stock
+		(get_node("Root/Screens/ScreenParts/BtnBuy") as Button).visible = not has_stock
 	elif st == int(RepairSession.State.DISASSEMBLE):
 		get_node("Root/Screens/ScreenDisassemble").visible = true
 		var mg := String(fault.minigame) if fault != null else ""
