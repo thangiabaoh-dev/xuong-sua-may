@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3]
+[sub_resource type="StandardMaterial3D" id="mat_ground"]
+albedo_color = Color(0.55, 0.62, 0.45, 1)
+[sub_resource type="StandardMaterial3D" id="mat_gate"]
+albedo_color = Color(0.75, 0.7, 0.62, 1)
+[sub_resource type="BoxShape3D" id="shape_yard"]
+size = Vector3(16, 0.01, 12)
+[sub_resource type="BoxMesh" id="mesh_yard"]
+material = SubResource("mat_ground")
+size = Vector3(16, 0.4, 12)
+[sub_resource type="BoxMesh" id="mesh_pillar"]
+material = SubResource("mat_gate")
+size = Vector3(0.6, 3, 0.6)
+[sub_resource type="BoxMesh" id="mesh_lintel"]
+material = SubResource("mat_gate")
+size = Vector3(3.6, 0.5, 0.6)
+[sub_resource type="BoxMesh" id="mesh_fence"]
+material = SubResource("mat_gate")
+size = Vector3(4, 1.2, 0.2)
+[node name="Gate" type="Node3D"]
+[node name="Yard" type="Node3D" parent="."]
+[node name="StaticBody3D" type="StaticBody3D" parent="Yard"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Yard/StaticBody3D"]
+position = Vector3(0, -0.005, 0)
+shape = SubResource("shape_yard")
+[node name="Mesh" type="MeshInstance3D" parent="Yard"]
+position = Vector3(0, -0.2, 0)
+mesh = SubResource("mesh_yard")
+[node name="GateL" type="Node3D" parent="."]
+position = Vector3(-1.5, 0, 5)
+[node name="Mesh" type="MeshInstance3D" parent="GateL"]
+position = Vector3(0, 1.5, 0)
+mesh = SubResource("mesh_pillar")
+[node name="GateR" type="Node3D" parent="."]
+position = Vector3(1.5, 0, 5)
+[node name="Mesh" type="MeshInstance3D" parent="GateR"]
+position = Vector3(0, 1.5, 0)
+mesh = SubResource("mesh_pillar")
+[node name="GateLintel" type="Node3D" parent="."]
+position = Vector3(0, 3.2, 5)
+[node name="Mesh" type="MeshInstance3D" parent="GateLintel"]
+mesh = SubResource("mesh_lintel")
+[node name="FenceL" type="Node3D" parent="."]
+position = Vector3(-5, 0, 5)
+[node name="Mesh" type="MeshInstance3D" parent="FenceL"]
+position = Vector3(0, 0.6, 0)
+mesh = SubResource("mesh_fence")
+[node name="FenceR" type="Node3D" parent="."]
+position = Vector3(5, 0, 5)
+[node name="Mesh" type="MeshInstance3D" parent="FenceR"]
+position = Vector3(0, 0.6, 0)
+mesh = SubResource("mesh_fence")

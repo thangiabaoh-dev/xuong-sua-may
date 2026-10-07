@@ -5,6 +5,8 @@ const TEST_SCRIPTS: PackedStringArray = [
 	"res://tests/test_player_scene.gd",
 	"res://tests/test_player_move.gd",
 	"res://tests/test_workshop.gd",
+	"res://tests/test_gate.gd",
+	"res://tests/test_schoolyard.gd",
 	"res://tests/test_main_scene.gd",
 	"res://tests/test_machine_catalog.gd",
 	"res://tests/test_machine_generator.gd",
