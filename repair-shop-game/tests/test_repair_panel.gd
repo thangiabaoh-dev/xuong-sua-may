@@ -29,6 +29,19 @@ func run() -> void:
 	check(panel.get_node("Root/Screens/ScreenOffer").visible, "OFFER visible")
 	check(not panel.get_node("Root/Screens/ScreenChecks").visible, "CHECKS hidden")
 
+	# F1: OFFER warning phai bo qua khi da co stock trong kho
+	var offer_part: String = FaultCatalog.get_fault(String(panel.session.order.fault_key)).part_id
+	var offer_price: int = int(PartCatalog.get_part(offer_part).price)
+	panel.game_state.money = offer_price - 1
+	panel._render()
+	check(panel.get_node("Root/Screens/ScreenOffer/LblWarn").visible, "warn when poor + no stock")
+	panel.game_state.inventory[offer_part] = 1
+	panel._render()
+	check(not panel.get_node("Root/Screens/ScreenOffer/LblWarn").visible, "warn hidden with stock")
+	panel.game_state.inventory.erase(offer_part)
+	panel.game_state.money = 50000
+	panel._render()
+
 	panel.get_node("Root/Screens/ScreenOffer/BtnAccept").emit_signal("pressed")
 	check(panel.get_node("Root/Screens/ScreenSymptom").visible, "accept -> SYMPTOM screen")
 

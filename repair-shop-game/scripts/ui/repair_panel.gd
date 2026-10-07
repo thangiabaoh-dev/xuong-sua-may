@@ -374,7 +374,10 @@ func _render() -> void:
 		(get_node("Root/Screens/ScreenOffer/LblReward") as Label).text = "Tiền công: %dđ" % int(session.order.money_reward)
 		var warn: Label = get_node("Root/Screens/ScreenOffer/LblWarn")
 		var wp := PartCatalog.get_part(fault.part_id) if fault != null else null
-		if wp != null and int(game_state.money) < int(wp.price):
+		var stocked := false
+		if fault != null:
+			stocked = int(game_state.inventory.get(fault.part_id, 0)) > 0
+		if wp != null and not stocked and int(game_state.money) < int(wp.price):
 			warn.text = "Cần %dđ để mua %s" % [int(wp.price), String(wp.name)]
 			warn.visible = true
 		else:
