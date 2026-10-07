@@ -17,7 +17,7 @@ symptoms = {
 check_outcomes = {
 "do_nguon": {
 "clue": "Đo nguồn đủ áp, máy vẫn lên nhưng nóng nhanh",
-"excludes": ["no_power", "board_short"]
+"excludes": ["board_short", "slow_hdd"]
 },
 "nghe_quat": {
 "clue": "Quạt kêu rè rè, gió yếu, bụi đóng dày",
@@ -29,7 +29,7 @@ check_outcomes = {
 },
 "nhin_bo": {
 "clue": "Mở ra bụi đóng thành mảng, keo khô cứng",
-"excludes": ["dim_screen", "loose_port"]
+"excludes": ["dim_screen", "slow_hdd"]
 }
 }
 minigame = "lau_bui"

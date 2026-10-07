@@ -21,7 +21,7 @@ check_outcomes = {
 },
 "nghe_quat": {
 "clue": "Bấm nguồn im re, quạt không nhúc nhích",
-"excludes": ["overheat", "no_wifi"]
+"excludes": ["dim_screen", "slow_hdd"]
 },
 "kiem_tra_ram": {
 "clue": "Tháo RAM thử vẫn tối om, không beep",
