@@ -309,8 +309,9 @@ func _render() -> void:
 		(get_node("Root/Screens/ScreenOffer/LblDeadline") as Label).text = "Hạn: %d phút" % int(session.order.deadline_min)
 		(get_node("Root/Screens/ScreenOffer/LblReward") as Label).text = "Tiền công: %dđ" % int(session.order.money_reward)
 		var warn: Label = get_node("Root/Screens/ScreenOffer/LblWarn")
-		if fault != null and int(game_state.money) < int(fault.part_price):
-			warn.text = "Cần %dđ để mua %s" % [int(fault.part_price), String(fault.part_name)]
+		var wp := PartCatalog.get_part(fault.part_id) if fault != null else null
+		if wp != null and int(game_state.money) < int(wp.price):
+			warn.text = "Cần %dđ để mua %s" % [int(wp.price), String(wp.name)]
 			warn.visible = true
 		else:
 			warn.text = ""
@@ -341,7 +342,9 @@ func _render() -> void:
 	elif st == int(RepairSession.State.PARTS):
 		get_node("Root/Screens/ScreenParts").visible = true
 		if fault != null:
-			(get_node("Root/Screens/ScreenParts/LblPart") as Label).text = "%s — %dđ" % [String(fault.part_name), int(fault.part_price)]
+			var pp := PartCatalog.get_part(fault.part_id)
+			if pp != null:
+				(get_node("Root/Screens/ScreenParts/LblPart") as Label).text = "%s — %dđ" % [String(pp.name), int(pp.price)]
 		(get_node("Root/Screens/ScreenParts/LblMoney2") as Label).text = "Số dư: %dđ" % int(game_state.money)
 	elif st == int(RepairSession.State.DISASSEMBLE):
 		get_node("Root/Screens/ScreenDisassemble").visible = true

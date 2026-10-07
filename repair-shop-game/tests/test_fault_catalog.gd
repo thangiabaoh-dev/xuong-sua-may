@@ -17,8 +17,9 @@ func run() -> void:
 		check(keys.has(k), "covers " + k)
 
 	for f in all:
-		check(f.display_name != "" and f.part_id != "" and f.part_name != "", "names " + f.key)
-		check(f.part_price > 0, "part_price " + f.key)
+		check(f.display_name != "" and f.part_id != "", "names " + f.key)
+		check(PartCatalog.get_part(f.part_id) != null, "part resolves " + f.key)
+		check(PartCatalog.get_part(f.part_id).price > 0, "part price positive " + f.key)
 		check(MINIGAMES.has(f.minigame), "minigame valid " + f.key)
 		for c in CUSTOMERS:
 			check(String(f.symptoms.get(c, "")) != "", "symptom %s/%s" % [f.key, c])

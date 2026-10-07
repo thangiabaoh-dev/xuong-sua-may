@@ -7,8 +7,6 @@ script = ExtResource("1")
 key = "no_power"
 display_name = "Không lên nguồn"
 part_id = "nguon_adapter"
-part_name = "Nguồn adapter laptop"
-part_price = 45000
 symptoms = {
 "ban_hoc": "Máy em tự nhiên không lên nguồn, mai phải nộp bài rồi anh ơi.",
 "giao_vien": "Máy phòng tin học không bật được, cả lớp đang chờ.",

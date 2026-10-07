@@ -7,8 +7,6 @@ script = ExtResource("1")
 key = "no_wifi"
 display_name = "Mất WiFi"
 part_id = "card_wifi"
-part_name = "Card WiFi + antenna"
-part_price = 70000
 symptoms = {
 "ban_hoc": "Máy em không bắt được WiFi, không học online được.",
 "giao_vien": "Máy lớp không thấy mạng, không dạy trực tuyến được.",

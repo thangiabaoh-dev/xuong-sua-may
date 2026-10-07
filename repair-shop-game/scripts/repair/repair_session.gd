@@ -114,7 +114,10 @@ func buy_part() -> bool:
 	var fault := FaultCatalog.get_fault(String(order.fault_key))
 	if fault == null:
 		return false
-	var price: int = int(fault.part_price)
+	var part := PartCatalog.get_part(fault.part_id)
+	if part == null:
+		return false
+	var price: int = int(part.price)
 	if int(game_state.money) < price:
 		return false
 	game_state.money = int(game_state.money) - price

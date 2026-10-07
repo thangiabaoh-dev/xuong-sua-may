@@ -7,8 +7,6 @@ script = ExtResource("1")
 key = "slow_hdd"
 display_name = "Chậm do ổ cứng"
 part_id = "ssd_240"
-part_name = "SSD 240GB"
-part_price = 250000
 symptoms = {
 "ban_hoc": "Máy em mở lên 10 phút mới xong, làm bài không kịp.",
 "giao_vien": "Máy phòng tin khởi động quá chậm, cả tiết học bị trễ.",

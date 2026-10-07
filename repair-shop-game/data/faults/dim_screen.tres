@@ -7,8 +7,6 @@ script = ExtResource("1")
 key = "dim_screen"
 display_name = "Màn hình mờ/tối"
 part_id = "den_nen_inverter"
-part_name = "Đèn nền inverter CCFL"
-part_price = 90000
 symptoms = {
 "ban_hoc": "Màn hình máy em tối thui, soi đèn mới thấy chữ mờ mờ.",
 "giao_vien": "Màn hình máy giáo viên mở lên tối mờ, khó trình chiếu.",
