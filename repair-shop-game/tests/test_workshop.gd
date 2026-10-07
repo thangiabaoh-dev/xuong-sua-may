@@ -10,7 +10,7 @@ func run() -> void:
 		return
 	var root := packed.instantiate()
 	check_eq(root.name, "Workshop", "root name")
-	check_eq(root.get_child_count(), 7, "exactly 7 direct children")
+	check_eq(root.get_child_count(), 8, "exactly 8 direct children")
 
 	for n in REQUIRED:
 		check(root.has_node(NodePath(n)), "has child " + n)
@@ -36,6 +36,9 @@ func run() -> void:
 			check_near(box.size.z, 8.0, 0.01, "floor depth Z")
 			var top_y := _world_origin(cs as CollisionShape3D).y + box.size.y / 2.0
 			check_near(top_y, 0.0, 0.01, "floor top at y=0")
+
+	check(root.has_node("RepairPanel"), "has RepairPanel")
+	check(root.get_node("RepairPanel").get_script() == load("res://scripts/ui/repair_panel.gd"), "RepairPanel script")
 
 	root.free()
 
