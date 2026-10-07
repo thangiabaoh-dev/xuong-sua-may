@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="FaultDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fault_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "no_wifi"
+display_name = "Mất WiFi"
+part_id = "card_wifi"
+part_name = "Card WiFi + antenna"
+part_price = 70000
+symptoms = {
+"ban_hoc": "Máy em không bắt được WiFi, không học online được.",
+"giao_vien": "Máy lớp không thấy mạng, không dạy trực tuyến được.",
+"hoai_niem": "Máy cũ không thấy WiFi nữa, tôi muốn lên mạng xem tin."
+}
+check_outcomes = {
+"do_nguon": {
+"clue": "Nguồn đủ, máy chạy tốt chỉ mất mạng",
+"excludes": ["no_power", "board_short"]
+},
+"nghe_quat": {
+"clue": "Quạt êm, nhiệt độ bình thường",
+"excludes": ["overheat", "battery_swollen"]
+},
+"kiem_tra_ram": {
+"clue": "RAM tốt, Device Manager báo chấm than card mạng",
+"excludes": ["slow_hdd", "keyboard_dead"]
+},
+"nhin_bo": {
+"clue": "Dây antenna đứt, card WiFi rỉ chân",
+"excludes": ["loose_port", "dim_screen"]
+}
+}
+minigame = "van_oc"

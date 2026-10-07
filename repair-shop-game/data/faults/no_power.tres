@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="FaultDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fault_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "no_power"
+display_name = "Không lên nguồn"
+part_id = "nguon_adapter"
+part_name = "Nguồn adapter laptop"
+part_price = 45000
+symptoms = {
+"ban_hoc": "Máy em tự nhiên không lên nguồn, mai phải nộp bài rồi anh ơi.",
+"giao_vien": "Máy phòng tin học không bật được, cả lớp đang chờ.",
+"hoai_niem": "Chiếc máy này tôi giữ hơn hai mươi năm rồi, tự nhiên chết hẳn."
+}
+check_outcomes = {
+"do_nguon": {
+"clue": "Đo adapter: 0V — nguồn vào chết",
+"excludes": ["slow_hdd", "keyboard_dead"]
+},
+"nghe_quat": {
+"clue": "Bấm nguồn im re, quạt không nhúc nhích",
+"excludes": ["overheat", "no_wifi"]
+},
+"kiem_tra_ram": {
+"clue": "Tháo RAM thử vẫn tối om, không beep",
+"excludes": ["slow_hdd", "keyboard_dead"]
+},
+"nhin_bo": {
+"clue": "Nhìn adapter cháy khét, dây gập gãy",
+"excludes": ["dim_screen", "loose_port"]
+}
+}
+minigame = "van_oc"

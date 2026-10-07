@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="FaultDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fault_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "overheat"
+display_name = "Quá nhiệt do bụi"
+part_id = "quat_tan_re"
+part_name = "Quạt tản nhiệt + keo"
+part_price = 35000
+symptoms = {
+"ban_hoc": "Máy em nóng ran rồi tự tắt, đang học dở thì sập.",
+"giao_vien": "Máy phòng tin học chạy 10 phút là tắt, sờ nóng bỏng.",
+"hoai_niem": "Máy cũ chạy kêu to, nóng lắm, sợ nó chết mất."
+}
+check_outcomes = {
+"do_nguon": {
+"clue": "Đo nguồn đủ áp, máy vẫn lên nhưng nóng nhanh",
+"excludes": ["no_power", "board_short"]
+},
+"nghe_quat": {
+"clue": "Quạt kêu rè rè, gió yếu, bụi đóng dày",
+"excludes": ["no_wifi", "keyboard_dead"]
+},
+"kiem_tra_ram": {
+"clue": "RAM tốt, test nhiệt CPU vọt 95 độ",
+"excludes": ["slow_hdd", "no_power"]
+},
+"nhin_bo": {
+"clue": "Mở ra bụi đóng thành mảng, keo khô cứng",
+"excludes": ["dim_screen", "loose_port"]
+}
+}
+minigame = "lau_bui"

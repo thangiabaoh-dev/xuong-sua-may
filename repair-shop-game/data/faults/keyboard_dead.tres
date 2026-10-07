@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="FaultDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fault_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "keyboard_dead"
+display_name = "Liệt bàn phím"
+part_id = "ban_phim_laptop"
+part_name = "Bàn phím laptop"
+part_price = 100000
+symptoms = {
+"ban_hoc": "Bàn phím máy em liệt mấy phím, gõ bài không được.",
+"giao_vien": "Bàn phím máy giáo viên liệt hàng phím số, nhập điểm khó quá.",
+"hoai_niem": "Phím con máy này liệt vài nút, tôi gõ thư không được."
+}
+check_outcomes = {
+"do_nguon": {
+"clue": "Nguồn đủ, máy lên bình thường chỉ liệt phím",
+"excludes": ["no_power", "board_short"]
+},
+"nghe_quat": {
+"clue": "Quạt êm, máy mát, loại trừ quá nhiệt",
+"excludes": ["overheat", "battery_swollen"]
+},
+"kiem_tra_ram": {
+"clue": "RAM tốt, cắm phím ngoài gõ bình thường",
+"excludes": ["slow_hdd", "no_wifi"]
+},
+"nhin_bo": {
+"clue": "Cáp ribbon phím ố vàng, chân tiếp xúc hở",
+"excludes": ["loose_port", "dim_screen"]
+}
+}
+minigame = "cam_cap"

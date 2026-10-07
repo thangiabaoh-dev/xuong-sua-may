@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="FaultDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fault_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "battery_swollen"
+display_name = "Pin phồng"
+part_id = "pin_laptop"
+part_name = "Pin laptop"
+part_price = 150000
+symptoms = {
+"ban_hoc": "Pin máy em phồng đội cả nắp, sợ nổ quá anh ơi.",
+"giao_vien": "Pin máy phòng tin phồng, không dám cho học sinh dùng.",
+"hoai_niem": "Cục pin theo máy giờ phồng to, tôi không nỡ vứt."
+}
+check_outcomes = {
+"do_nguon": {
+"clue": "Adapter 19V tốt, tháo pin máy chạy bình thường",
+"excludes": ["no_power", "board_short"]
+},
+"nghe_quat": {
+"clue": "Quạt bình thường, máy không nóng lạ",
+"excludes": ["overheat", "slow_hdd"]
+},
+"kiem_tra_ram": {
+"clue": "RAM tốt, BIOS báo pin 0% chai hoàn toàn",
+"excludes": ["keyboard_dead", "no_wifi"]
+},
+"nhin_bo": {
+"clue": "Pin phồng rộp, vỏ cong vênh thấy rõ",
+"excludes": ["dim_screen", "loose_port"]
+}
+}
+minigame = "van_oc"

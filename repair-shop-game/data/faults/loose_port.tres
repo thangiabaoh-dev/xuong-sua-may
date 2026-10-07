@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="FaultDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fault_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "loose_port"
+display_name = "Lỏng cổng/cáp"
+part_id = "cong_sac"
+part_name = "Cổng sạc (hàn lại)"
+part_price = 40000
+symptoms = {
+"ban_hoc": "Sạc máy em lúc vào lúc không, phải giữ dây mới lên.",
+"giao_vien": "Cổng sạc máy phòng tin lỏng, học sinh đụng nhẹ là mất điện.",
+"hoai_niem": "Chân sạc con máy này lỏng lắm, cắm phải lựa thế."
+}
+check_outcomes = {
+"do_nguon": {
+"clue": "Lay nhẹ dây nguồn chập chờn 0V-19V",
+"excludes": ["board_short", "slow_hdd"]
+},
+"nghe_quat": {
+"clue": "Quạt lúc chạy lúc ngừng theo nguồn",
+"excludes": ["overheat", "no_wifi"]
+},
+"kiem_tra_ram": {
+"clue": "RAM tốt, gõ nhẹ máy là sập nguồn",
+"excludes": ["keyboard_dead", "battery_swollen"]
+},
+"nhin_bo": {
+"clue": "Chân cổng sạc lung lay, mối hàn nứt vòng",
+"excludes": ["dim_screen", "board_short"]
+}
+}
+minigame = "han_mach"

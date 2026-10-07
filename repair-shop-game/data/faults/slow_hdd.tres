@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="FaultDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fault_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "slow_hdd"
+display_name = "Chậm do ổ cứng"
+part_id = "ssd_240"
+part_name = "SSD 240GB"
+part_price = 250000
+symptoms = {
+"ban_hoc": "Máy em mở lên 10 phút mới xong, làm bài không kịp.",
+"giao_vien": "Máy phòng tin khởi động quá chậm, cả tiết học bị trễ.",
+"hoai_niem": "Máy kỷ niệm giờ ì ạch quá, mở tấm ảnh cũng chờ."
+}
+check_outcomes = {
+"do_nguon": {
+"clue": "Nguồn đủ, ổ vẫn quay nhưng load 100%",
+"excludes": ["no_power", "board_short"]
+},
+"nghe_quat": {
+"clue": "Quạt chạy bình thường, không nóng bất thường",
+"excludes": ["overheat", "battery_swollen"]
+},
+"kiem_tra_ram": {
+"clue": "RAM test tốt, ổ bad sector, sức khỏe 12%",
+"excludes": ["keyboard_dead", "no_wifi"]
+},
+"nhin_bo": {
+"clue": "Cáp SATA lỏng lẻo, ổ kêu lạch cạch",
+"excludes": ["loose_port", "dim_screen"]
+}
+}
+minigame = "cam_cap"

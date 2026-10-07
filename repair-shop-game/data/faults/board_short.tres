@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="FaultDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fault_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "board_short"
+display_name = "Bo mạch chập"
+part_id = "linh_kien_bo"
+part_name = "Linh kiện sửa bo"
+part_price = 120000
+symptoms = {
+"ban_hoc": "Máy em có mùi khét rồi tắt ngúm luôn.",
+"giao_vien": "Máy phòng tin đánh lửa nhẹ rồi không lên nữa.",
+"hoai_niem": "Con máy kỷ niệm của tôi bốc mùi khét, xót quá."
+}
+check_outcomes = {
+"do_nguon": {
+"clue": "Đo chập dòng lên cao rồi sụt áp bảo vệ",
+"excludes": ["slow_hdd", "keyboard_dead"]
+},
+"nghe_quat": {
+"clue": "Kích nguồn quạt nhích nhẹ rồi ngắt ngay",
+"excludes": ["overheat", "no_wifi"]
+},
+"kiem_tra_ram": {
+"clue": "Tháo hết RAM vẫn ăn dòng chập",
+"excludes": ["slow_hdd", "loose_port"]
+},
+"nhin_bo": {
+"clue": "Soi thấy mosfet cháy đen, tụ phù",
+"excludes": ["dim_screen", "battery_swollen"]
+}
+}
+minigame = "han_mach"

@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="FaultDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/fault_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "dim_screen"
+display_name = "Màn hình mờ/tối"
+part_id = "den_nen_inverter"
+part_name = "Đèn nền inverter CCFL"
+part_price = 90000
+symptoms = {
+"ban_hoc": "Màn hình máy em tối thui, soi đèn mới thấy chữ mờ mờ.",
+"giao_vien": "Màn hình máy giáo viên mở lên tối mờ, khó trình chiếu.",
+"hoai_niem": "Con máy cổ này màn mờ dần, tôi vẫn muốn giữ nguyên bản."
+}
+check_outcomes = {
+"do_nguon": {
+"clue": "Đo adapter đủ 19V — nguồn vào tốt",
+"excludes": ["no_power", "battery_swollen"]
+},
+"nghe_quat": {
+"clue": "Quạt vẫn chạy đều, máy vẫn vào win nghe tiếng",
+"excludes": ["overheat", "no_power"]
+},
+"kiem_tra_ram": {
+"clue": "RAM nhận đủ, máy boot bình thường chỉ tối màn",
+"excludes": ["slow_hdd", "no_wifi"]
+},
+"nhin_bo": {
+"clue": "Soi kỹ thấy cao áp inverter cháy sém",
+"excludes": ["keyboard_dead", "loose_port"]
+}
+}
+minigame = "han_mach"
