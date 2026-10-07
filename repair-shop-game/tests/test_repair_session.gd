@@ -137,3 +137,30 @@ func run() -> void:
 	check_eq(int(s8.state), int(RepairSession.State.PARTS), "stays PARTS")
 	s8.give_up()
 	check_eq(int(s8.result), int(RepairSession.Result.LOST_MONEY), "LOST_MONEY")
+
+	#9. Stock: lay tu kho 0dong/0 phut, tru count; het stock -> buy ngay
+	var st9 = _state(50000, 0)
+	var s9 := RepairSession.new(_make_order(), st9, _rng())
+	check(s9.has_method("stock_available"), "has stock_available")
+	check(s9.has_method("take_part_from_stock"), "has take_part_from_stock")
+	if not s9.has_method("stock_available") or not s9.has_method("take_part_from_stock"):
+		return
+	check(not s9.stock_available(), "stock check fails outside PARTS")
+	s9.accept(); s9.advance_symptom()
+	s9.do_check("do_nguon"); s9.do_check("nghe_quat")
+	s9.begin_conclusion(); s9.conclude("no_power")
+	var part9 = FaultCatalog.get_fault("no_power").part_id
+	st9.inventory[part9] = 1
+	check(s9.stock_available(), "stock available at PARTS")
+	check(s9.take_part_from_stock(), "take from stock ok")
+	check_eq(int(st9.inventory[part9]), 0, "stock decremented")
+	check_eq(st9.money, 50000, "stock costs 0 money")
+	check_eq(s9.elapsed, 10, "stock costs 0 minutes")
+	check_eq(int(s9.state), int(RepairSession.State.DISASSEMBLE), "stock -> DISASSEMBLE")
+	var s10 := RepairSession.new(_make_order(), _state(50000, 0), _rng())
+	s10.accept(); s10.advance_symptom()
+	s10.do_check("do_nguon"); s10.do_check("nghe_quat")
+	s10.begin_conclusion(); s10.conclude("no_power")
+	check(not s10.stock_available(), "no stock")
+	check(s10.buy_part(), "buy when no stock")
+	check_eq(s10.elapsed, 10 + 10, "buy +10 minutes")

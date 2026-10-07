@@ -127,6 +127,24 @@ func buy_part() -> bool:
 	state = State.DISASSEMBLE
 	return true
 
+func stock_available() -> bool:
+	if state != State.PARTS:
+		return false
+	var fault := FaultCatalog.get_fault(String(order.fault_key))
+	if fault == null:
+		return false
+	return int(game_state.inventory.get(fault.part_id, 0)) > 0
+
+func take_part_from_stock() -> bool:
+	if not stock_available():
+		return false
+	var fault := FaultCatalog.get_fault(String(order.fault_key))
+	if fault == null:
+		return false
+	game_state.inventory[fault.part_id] = int(game_state.inventory[fault.part_id]) - 1
+	state = State.DISASSEMBLE
+	return true
+
 func give_up() -> void:
 	if state != State.PARTS:
 		return
