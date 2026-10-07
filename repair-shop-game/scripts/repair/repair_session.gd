@@ -11,6 +11,7 @@ const WRONG_MONEY := 20000
 const BUY_MINUTES := 10
 const TEST_MINUTES := 5
 const DISASSEMBLE_MINUTES := 5
+const MINIGAME_FAIL_MINUTES := 2
 
 var order: RepairOrder
 var game_state
@@ -24,6 +25,7 @@ var wrong_count: int = 0
 var earned: int = 0
 var spent: int = 0
 var tone_reaction: String = ""
+var minigame: MinigameController = null
 
 func _init(order_: RepairOrder, state_, rng_: RandomNumberGenerator) -> void:
 	order = order_
@@ -152,12 +154,33 @@ func give_up() -> void:
 	result = Result.LOST_MONEY
 	state = State.RESULT
 
+func begin_minigame() -> MinigameController:
+	if state != State.DISASSEMBLE:
+		return null
+	if minigame != null:
+		return minigame
+	var fault := FaultCatalog.get_fault(String(order.fault_key))
+	if fault == null:
+		push_error("RepairSession: missing fault '%s'" % String(order.fault_key))
+		return null
+	minigame = MinigameController.create(String(fault.minigame), int(order.machine.def.difficulty), rng)
+	return minigame
+
+func minigame_fail() -> bool:
+	if state != State.DISASSEMBLE or minigame == null:
+		return false
+	if _add_minutes(MINIGAME_FAIL_MINUTES):
+		return true
+	minigame.reset()
+	return true
+
 func disassemble() -> void:
 	if state != State.DISASSEMBLE:
 		return
 	var cost: int = DISASSEMBLE_MINUTES * int(order.machine.def.difficulty)
 	if _add_minutes(cost):
 		return
+	minigame = null
 	state = State.TEST
 
 func run_test() -> void:

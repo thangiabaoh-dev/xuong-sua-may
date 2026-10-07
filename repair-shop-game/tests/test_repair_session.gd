@@ -26,11 +26,14 @@ func _rng(seed_v: int = 1) -> RandomNumberGenerator:
 	r.seed = seed_v
 	return r
 
-func _flow_to_test(s: RepairSession) -> void:
+func _flow_to_disassemble(s: RepairSession) -> void:
 	s.accept(); s.advance_symptom()
 	s.do_check("do_nguon"); s.do_check("nghe_quat")
 	s.begin_conclusion(); s.conclude("no_power")
 	s.buy_part()
+
+func _flow_to_test(s: RepairSession) -> void:
+	_flow_to_disassemble(s)
 	s.disassemble()
 
 func run() -> void:
@@ -218,6 +221,54 @@ func run() -> void:
 	check(s17.choose_tone("than"), "hoai_niem than ok")
 	check_eq(st17.uy_tin, 3, "uy_tin +3 applied")
 	check(s17.tone_reaction.contains("chợ Lớn"), "story appended")
+
+	# 18. begin_minigame: guard state + đúng kind/difficulty + idempotent
+	var s18 := RepairSession.new(_make_order(), _state(), _rng())
+	check(s18.begin_minigame() == null, "begin null sai state")
+	_flow_to_disassemble(s18)
+	check_eq(int(s18.state), int(RepairSession.State.DISASSEMBLE), "at DISASSEMBLE")
+	var c18 := s18.begin_minigame()
+	check(c18 != null, "begin ok")
+	check(c18 == s18.begin_minigame(), "idempotent")
+	check_eq(c18.kind, int(MinigameController.Kind.VAN_OC), "no_power -> van_oc")
+	check_eq(c18.difficulty, 2, "difficulty từ máy")
+
+	# 19. fail: +2 phút, reset, không trừ tiền, vẫn DISASSEMBLE
+	var st19 = _state()
+	var s19 := RepairSession.new(_make_order(), st19, _rng())
+	check(not s19.minigame_fail(), "fail guard null")
+	_flow_to_disassemble(s19)
+	var c19 := s19.begin_minigame()
+	c19.needle_pos = c19.zone_lo - 0.01
+	c19.press()
+	check(c19.failed, "attempt failed")
+	check(s19.minigame_fail(), "fail applied")
+	check_eq(int(s19.state), int(RepairSession.State.DISASSEMBLE), "stay DISASSEMBLE")
+	check_eq(s19.elapsed, 20 + 2, "elapsed 20 + fail2")
+	check_eq(int(st19.money), 5000, "fail không trừ tiền")
+	check(not c19.failed, "controller reset")
+	check_eq(c19.progress, 0, "progress reset")
+
+	# 20. fail qua hạn -> LOST_TIME (không kẹt DISASSEMBLE)
+	var st20 = _state()
+	var s20 := RepairSession.new(_make_order(), st20, _rng())
+	_flow_to_disassemble(s20)
+	s20.begin_minigame()
+	s20.elapsed = s20.order.deadline_min - 1
+	check(s20.minigame_fail(), "fail consumed")
+	check_eq(int(s20.state), int(RepairSession.State.RESULT), "->RESULT")
+	check_eq(int(s20.result), int(RepairSession.Result.LOST_TIME), "LOST_TIME")
+	check(not s20.minigame_fail(), "fail guard sau RESULT")
+
+	# 21. pass: phí giữ nguyên 5×difficulty, minigame clear
+	var st21 = _state()
+	var s21 := RepairSession.new(_make_order(), st21, _rng())
+	_flow_to_disassemble(s21)
+	s21.begin_minigame()
+	s21.disassemble()
+	check_eq(int(s21.state), int(RepairSession.State.TEST), "pass -> TEST")
+	check_eq(s21.elapsed, 20 + 5 * 2, "phí 5×difficulty")
+	check(s21.minigame == null, "minigame cleared")
 
 	#9. Stock: lay tu kho 0dong/0 phut, tru count; het stock -> buy ngay
 	var st9 = _state(50000, 0)
