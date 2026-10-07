@@ -12,6 +12,10 @@ const BUY_MINUTES := 10
 const TEST_MINUTES := 5
 const DISASSEMBLE_MINUTES := 5
 const MINIGAME_FAIL_MINUTES := 2
+const EVENT_CHANCE := 0.15
+const EVENT_QUIET_MINUTES := 5
+const EVENT_ARGUE_MINUTES := 10
+const EVENT_FIGHT_MINUTES := 15
 
 var order: RepairOrder
 var game_state
@@ -26,6 +30,7 @@ var earned: int = 0
 var spent: int = 0
 var tone_reaction: String = ""
 var minigame: MinigameController = null
+var event_active := false
 
 func _init(order_: RepairOrder, state_, rng_: RandomNumberGenerator) -> void:
 	order = order_
@@ -81,6 +86,7 @@ func conclude(fault_key: String) -> bool:
 	elapsed += WRONG_MINUTES
 	game_state.money = maxi(0, before - WRONG_MONEY)
 	spent += mini(WRONG_MONEY, before)
+	game_state.uy_tin = clampi(int(game_state.uy_tin) - 2, 0, 100)
 	wrong_count += 1
 	suspects.erase(fault_key)
 	if wrong_count >= 2:
@@ -154,6 +160,39 @@ func give_up() -> void:
 	result = Result.LOST_MONEY
 	state = State.RESULT
 
+func roll_event() -> bool:
+	if event_active:
+		return false
+	if state != State.CHECKS and state != State.PARTS:
+		return false
+	if rng.randf() < EVENT_CHANCE:
+		event_active = true
+		return true
+	return false
+
+func resolve_event(choice: String) -> bool:
+	if not event_active:
+		return false
+	if choice != "kiem_cheu" and choice != "cai_lai" and choice != "danh_nhau":
+		return false
+	var minutes := 0
+	match choice:
+		"kiem_cheu":
+			minutes = EVENT_QUIET_MINUTES
+		"cai_lai":
+			minutes = EVENT_ARGUE_MINUTES
+		"danh_nhau":
+			minutes = EVENT_FIGHT_MINUTES
+	event_active = false
+	if _add_minutes(minutes):
+		return true
+	if choice == "cai_lai":
+		game_state.uy_tin = clampi(int(game_state.uy_tin) - 2, 0, 100)
+	elif choice == "danh_nhau":
+		game_state.uy_tin = clampi(int(game_state.uy_tin) - 10, 0, 100)
+		game_state.ky_luat = clampi(int(game_state.ky_luat) - 20, 0, 100)
+	return true
+
 func begin_minigame() -> MinigameController:
 	if state != State.DISASSEMBLE:
 		return null
@@ -221,6 +260,8 @@ func choose_tone(tone_key: String) -> bool:
 	var story := String(fx.get("story", ""))
 	if story != "":
 		tone_reaction += "\n" + story
+	var done_bonus := 6 if String(order.customer_key) == "giao_vien" else 2
+	game_state.uy_tin = clampi(int(game_state.uy_tin) + done_bonus, 0, 100)
 	result = Result.DONE
 	state = State.RESULT
 	return true

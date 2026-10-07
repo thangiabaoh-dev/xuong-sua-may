@@ -26,6 +26,16 @@ func _rng(seed_v: int = 1) -> RandomNumberGenerator:
 	r.seed = seed_v
 	return r
 
+func _rng42() -> RandomNumberGenerator:
+	var r := RandomNumberGenerator.new()
+	r.seed = 42
+	return r
+
+func _rng_seed(v: int) -> RandomNumberGenerator:
+	var r := RandomNumberGenerator.new()
+	r.seed = v
+	return r
+
 func _flow_to_disassemble(s: RepairSession) -> void:
 	s.accept(); s.advance_symptom()
 	s.do_check("do_nguon"); s.do_check("nghe_quat")
@@ -86,11 +96,11 @@ func run() -> void:
 	check(not s3.suspects.has("overheat"), "wrong suspect removed")
 	check_eq(int(s3.state), int(RepairSession.State.CHECKS), "back to CHECKS")
 	check_eq(s3.wrong_count, 1, "wrong_count1")
-	check_eq(st3.uy_tin, 10, "uy_tin untouched at wrong1")
+	check_eq(st3.uy_tin, 8, "uy_tin -2 at wrong1")
 	s3.begin_conclusion()
 	s3.conclude("loose_port")
 	check_eq(s3.wrong_count, 2, "wrong_count2")
-	check_eq(st3.uy_tin, 5, "uy_tin -5 at wrong>=2")
+	check_eq(st3.uy_tin, 1, "uy_tin -7 at wrong>=2")
 
 	# 4. Timeout sau do_check -> LOST_TIME
 	var s4 := RepairSession.new(_make_order(), _state(), _rng())
@@ -192,7 +202,7 @@ func run() -> void:
 	s14.run_test()
 	check(s14.choose_tone("kho"), "giao_vien kho")
 	check_eq(int(s14.result), int(RepairSession.Result.DONE), "giao_vien kho still DONE")
-	check_eq(st14.uy_tin, 0, "uy_tin clamped at 0")
+	check_eq(st14.uy_tin, 6, "tone -3 clamp0 + gv done6")
 
 	# 15. Timeout trong run_test -> LOST_TIME bo qua TONE
 	var s15 := RepairSession.new(_make_order(), _state(), _rng())
@@ -219,7 +229,7 @@ func run() -> void:
 	_flow_to_test(s17)
 	s17.run_test()
 	check(s17.choose_tone("than"), "hoai_niem than ok")
-	check_eq(st17.uy_tin, 3, "uy_tin +3 applied")
+	check_eq(st17.uy_tin, 5, "tone3 + done2")
 	check(s17.tone_reaction.contains("chợ Lớn"), "story appended")
 
 	# 18. begin_minigame: guard state + đúng kind/difficulty + idempotent
@@ -269,6 +279,110 @@ func run() -> void:
 	check_eq(int(s21.state), int(RepairSession.State.TEST), "pass -> TEST")
 	check_eq(s21.elapsed, 20 + 5 * 2, "phí 5×difficulty")
 	check(s21.minigame == null, "minigame cleared")
+
+	# 22. DONE bonus: +2 thuong / +6 giao_vien / LOST_TONE khong bonus
+	var st22 = _state(50000, 0)
+	var s22 := RepairSession.new(_make_order(), st22, _rng())
+	_flow_to_test(s22)
+	s22.run_test()
+	check(s22.choose_tone("trung_tinh"), "neutral ok")
+	check_eq(int(st22.uy_tin), 2, "ban_hoc DONE +2")
+	var o23 := _make_order("no_power", "giao_vien")
+	var st23 = _state(50000, 0)
+	var s23 := RepairSession.new(o23, st23, _rng())
+	_flow_to_test(s23)
+	s23.run_test()
+	check(s23.choose_tone("trung_tinh"), "gv neutral")
+	check_eq(int(st23.uy_tin), 6, "giao_vien DONE +6")
+	var o24 := _make_order("no_power", "giao_vien")
+	var st24 = _state(50000, 0)
+	var s24 := RepairSession.new(o24, st24, _rng())
+	_flow_to_test(s24)
+	s24.run_test()
+	check(s24.choose_tone("than"), "gv than")
+	check_eq(int(st24.uy_tin), 9, "gv than = tone3 + done6")
+	var st25 = _state(50000, 10)
+	var s25 := RepairSession.new(_make_order(), st25, _rng())
+	_flow_to_test(s25)
+	s25.run_test()
+	check(s25.choose_tone("kho"), "ban_hoc kho -> LOST_TONE")
+	check_eq(int(st25.uy_tin), 10, "LOST_TONE khong bonus")
+
+	# 23. roll_event: guard state + guard event_active + chinh rng
+	var s26 := RepairSession.new(_make_order(), _state(), _rng())
+	s26.accept()
+	check(not s26.roll_event(), "roll bi chan khi SYMPTOM")
+	s26.advance_symptom()
+	check_eq(int(s26.state), int(RepairSession.State.CHECKS), "at CHECKS")
+	s26.event_active = true
+	check(not s26.roll_event(), "roll bi chan khi event dang mo")
+	s26.event_active = false
+	var probe := RandomNumberGenerator.new()
+	probe.seed = 42
+	var v42 := probe.randf()
+	var s27 := RepairSession.new(_make_order(), _state(), _rng42())
+	s27.accept()
+	s27.advance_symptom()
+	check_eq(s27.roll_event(), v42 < 0.15, "roll theo chinh rng")
+	check_eq(s27.event_active, v42 < 0.15, "event_active theo rng")
+	var fire_seed := -1
+	for si in 100:
+		var pr2 := RandomNumberGenerator.new()
+		pr2.seed = si
+		if pr2.randf() < 0.15:
+			fire_seed = si
+			break
+	check(fire_seed > 0, "tim duoc seed ban")
+	var s28 := RepairSession.new(_make_order(), _state(), _rng_seed(fire_seed))
+	s28.accept()
+	s28.advance_symptom()
+	check(s28.roll_event(), "event ban duoc voi seed tim duoc")
+	check(s28.event_active, "event_active true")
+
+	# 24. resolve 3 lua chon + invalid + guard
+	var st29 = _state(50000, 0)
+	st29.ky_luat = 100
+	var s29 := RepairSession.new(_make_order(), st29, _rng())
+	_flow_to_disassemble(s29)
+	check(not s29.resolve_event("kiem_cheu"), "resolve khi chua co event")
+	s29.event_active = true
+	check(not s29.resolve_event("xxx"), "invalid choice false")
+	check(s29.event_active, "invalid giu event")
+	var e0: int = s29.elapsed
+	check(s29.resolve_event("kiem_cheu"), "kiem che ok")
+	check(not s29.event_active, "event dong")
+	check_eq(s29.elapsed, e0 + 5, "kiem che +5")
+	check_eq(int(st29.uy_tin), 0, "kiem che khong uy_tin")
+	s29.event_active = true
+	var e1: int = s29.elapsed
+	st29.uy_tin = 10
+	check(s29.resolve_event("cai_lai"), "cai lai ok")
+	check_eq(s29.elapsed, e1 + 10, "cai lai +10")
+	check_eq(int(st29.uy_tin), 8, "cai lai uy_tin -2")
+	s29.event_active = true
+	var e2: int = s29.elapsed
+	st29.uy_tin = 50
+	check(s29.resolve_event("danh_nhau"), "danh nhau ok")
+	check_eq(s29.elapsed, e2 + 15, "danh nhau +15")
+	check_eq(int(st29.uy_tin), 40, "danh nhau uy_tin -10")
+	check_eq(int(st29.ky_luat), 80, "danh nhau ky_luat -20")
+	st29.ky_luat = 10
+	s29.elapsed = 0
+	s29.event_active = true
+	check(s29.resolve_event("danh_nhau"), "danh nhau lan 2")
+	check_eq(int(st29.ky_luat), 0, "ky_luat clamp 0")
+
+	# 25. resolve qua han -> LOST_TIME, event_active xoa
+	var st30 = _state(50000, 0)
+	var s30 := RepairSession.new(_make_order(), st30, _rng())
+	_flow_to_disassemble(s30)
+	s30.event_active = true
+	s30.elapsed = s30.order.deadline_min - 3
+	check(s30.resolve_event("danh_nhau"), "resolve consumed")
+	check_eq(int(s30.state), int(RepairSession.State.RESULT), "->RESULT")
+	check_eq(int(s30.result), int(RepairSession.Result.LOST_TIME), "LOST_TIME")
+	check(not s30.event_active, "event xoa sau timeout")
+	check(not s30.resolve_event("kiem_cheu"), "resolve guard sau RESULT")
 
 	#9. Stock: lay tu kho 0dong/0 phut, tru count; het stock -> buy ngay
 	var st9 = _state(50000, 0)

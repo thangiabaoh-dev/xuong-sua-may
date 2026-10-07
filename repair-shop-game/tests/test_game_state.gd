@@ -18,3 +18,7 @@ func run() -> void:
 		check_eq(state.inventory.size(), 0, "inventory start empty")
 		state.inventory["ssd_240"] = 1
 		check_eq(state.inventory.size(), 1, "inventory mutable")
+	state.ky_luat = 49
+	check(state.night_banned(), "ky_luat 49 -> banned")
+	state.ky_luat = 50
+	check(not state.night_banned(), "ky_luat 50 -> not banned")
