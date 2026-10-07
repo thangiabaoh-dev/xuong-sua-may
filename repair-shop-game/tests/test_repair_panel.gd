@@ -29,6 +29,10 @@ func run() -> void:
 		"Root/Screens/ScreenDisassemble/BtnOrient0",
 		"Root/Screens/ScreenDisassemble/BtnOrient1",
 		"Root/Screens/ScreenDisassemble/LblNeedle",
+		"Root/Screens/ScreenEvent/LblEvent",
+		"Root/Screens/ScreenEvent/BtnEvent0",
+		"Root/Screens/ScreenEvent/BtnEvent1",
+		"Root/Screens/ScreenEvent/BtnEvent2",
 		"Root/Screens/ScreenTest/BtnRunTest",
 		"Root/Screens/ScreenTone/BtnToneThan", "Root/Screens/ScreenTone/BtnToneNeutral",
 		"Root/Screens/ScreenTone/BtnToneKho", "Root/Screens/ScreenTone/LblRisk",
@@ -179,5 +183,16 @@ func run() -> void:
 		ctrlV.needle_pos = (ctrlV.zone_lo + ctrlV.zone_hi) * 0.5
 		panel.get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").emit_signal("pressed")
 	check(panel.get_node("Root/Screens/ScreenTest").visible, "van_oc pass -> TEST")
+
+	# Event overlay: force event -> ScreenEvent che pha -> resolve quay lai pha
+	var ev0: int = int(panel.session.elapsed)
+	panel.session.event_active = true
+	panel._render()
+	check(panel.get_node("Root/Screens/ScreenEvent").visible, "event overlay hien")
+	check(not panel.get_node("Root/Screens/ScreenTest").visible, "event che phase screen")
+	panel.get_node("Root/Screens/ScreenEvent/BtnEvent0").emit_signal("pressed")
+	check(not panel.session.event_active, "event dong sau resolve")
+	check_eq(int(panel.session.elapsed), ev0 + 5, "kiem che +5 phut")
+	check(panel.get_node("Root/Screens/ScreenTest").visible, "phase screen quay lai")
 
 	panel.free()

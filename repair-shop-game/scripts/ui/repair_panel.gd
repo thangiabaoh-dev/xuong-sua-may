@@ -226,6 +226,21 @@ func _build_ui() -> void:
 	lbl_risk.name = "LblRisk"
 	tone.add_child(lbl_risk)
 
+	# EVENT
+	var ev := Control.new()
+	ev.name = "ScreenEvent"
+	screens.add_child(ev)
+	var lbl_ev := Label.new()
+	lbl_ev.name = "LblEvent"
+	lbl_ev.text = "Bạn học tới trêu! Chọn cách xử lý:"
+	ev.add_child(lbl_ev)
+	var ev_names := ["Kiềm chế (+5')", "Cãi lại (+10', uy tín −2)", "Đánh nhau (+15', uy tín −10, kỷ luật −20)"]
+	for i in 3:
+		var btn_ev := Button.new()
+		btn_ev.name = "BtnEvent%d" % i
+		btn_ev.text = ev_names[i]
+		ev.add_child(btn_ev)
+
 	# RESULT
 	var res := Control.new()
 	res.name = "ScreenResult"
@@ -292,6 +307,9 @@ func _connect_signals() -> void:
 	get_node("Root/Screens/ScreenTone/BtnToneThan").pressed.connect(_on_tone.bind("than"))
 	get_node("Root/Screens/ScreenTone/BtnToneNeutral").pressed.connect(_on_tone.bind("trung_tinh"))
 	get_node("Root/Screens/ScreenTone/BtnToneKho").pressed.connect(_on_tone.bind("kho"))
+	get_node("Root/Screens/ScreenEvent/BtnEvent0").pressed.connect(_on_event.bind("kiem_cheu"))
+	get_node("Root/Screens/ScreenEvent/BtnEvent1").pressed.connect(_on_event.bind("cai_lai"))
+	get_node("Root/Screens/ScreenEvent/BtnEvent2").pressed.connect(_on_event.bind("danh_nhau"))
 	get_node("Root/Screens/ScreenResult/BtnContinue").pressed.connect(_on_continue)
 	get_node("Root/Screens/ScreenShop/BtnSkip").pressed.connect(_on_skip)
 	get_node("Root/Header/BtnClose").pressed.connect(_on_close)
@@ -309,10 +327,17 @@ func _on_reject() -> void:
 	session.reject()
 	_render()
 
+func _on_event(choice: String) -> void:
+	if session == null:
+		return
+	session.resolve_event(choice)
+	_render()
+
 func _on_symptom_next() -> void:
 	if session == null:
 		return
 	session.advance_symptom()
+	session.roll_event()
 	_render()
 
 func _on_check(idx: int) -> void:
@@ -333,7 +358,8 @@ func _on_begin_conclusion() -> void:
 func _on_conclude_key(key: String) -> void:
 	if session == null:
 		return
-	session.conclude(key)
+	if session.conclude(key):
+		session.roll_event()
 	_render()
 
 func _on_buy() -> void:
@@ -478,7 +504,7 @@ func _on_open() -> void:
 	get_node("BtnOpen").visible = false
 
 func _hide_all() -> void:
-	for n in ["ScreenOffer", "ScreenSymptom", "ScreenChecks", "ScreenConclusion", "ScreenParts", "ScreenDisassemble", "ScreenTest", "ScreenTone", "ScreenResult", "ScreenShop"]:
+	for n in ["ScreenOffer", "ScreenSymptom", "ScreenChecks", "ScreenConclusion", "ScreenParts", "ScreenDisassemble", "ScreenTest", "ScreenTone", "ScreenEvent", "ScreenResult", "ScreenShop"]:
 		get_node("Root/Screens/" + n).visible = false
 
 func _render() -> void:
@@ -497,6 +523,12 @@ func _render() -> void:
 	_hide_all()
 	var st: int = int(session.state)
 	var fault := FaultCatalog.get_fault(String(session.order.fault_key))
+	if session.event_active:
+		_hide_all()
+		get_node("Root/Screens/ScreenEvent").visible = true
+		(get_node("Root/Screens/ScreenEvent/LblEvent") as Label).text = "Bạn học tới trêu! Chọn cách xử lý:"
+		return
+
 	if st == int(RepairSession.State.OFFER):
 		var scr = get_node("Root/Screens/ScreenOffer")
 		scr.visible = true

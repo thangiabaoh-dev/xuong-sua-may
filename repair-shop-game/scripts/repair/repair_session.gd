@@ -20,6 +20,7 @@ const EVENT_FIGHT_MINUTES := 15
 var order: RepairOrder
 var game_state
 var rng: RandomNumberGenerator
+var event_rng: RandomNumberGenerator
 var state: int = State.OFFER
 var result: int = Result.NONE
 var elapsed: int = 0
@@ -36,6 +37,8 @@ func _init(order_: RepairOrder, state_, rng_: RandomNumberGenerator) -> void:
 	order = order_
 	game_state = state_
 	rng = rng_
+	event_rng = RandomNumberGenerator.new()
+	event_rng.seed = rng.seed
 
 func _check_timeout() -> bool:
 	if elapsed > order.deadline_min:
@@ -165,7 +168,7 @@ func roll_event() -> bool:
 		return false
 	if state != State.CHECKS and state != State.PARTS:
 		return false
-	if rng.randf() < EVENT_CHANCE:
+	if event_rng.randf() < EVENT_CHANCE:
 		event_active = true
 		return true
 	return false
