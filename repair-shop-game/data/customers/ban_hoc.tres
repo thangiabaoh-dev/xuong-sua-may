@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CustomerDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/customer_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "ban_hoc"
+display_name = "Bạn học"
+reactions = {"than": "Ôi cảm ơn ông anh, đúng lúc luôn, cứu deadline tui luôn rồi!", "trung_tinh": "Cảm ơn nhé.", "kho": "Gì mà khó tính thế, thôi khỏi nhờ!"}
+effects = {
+"than": { "tip_percent": 10 },
+"trung_tinh": {},
+"kho": { "lost_order": true },
+}
+risk_warning = "Bạn học đang gấp deadline — tone khô là mất đơn ngay."

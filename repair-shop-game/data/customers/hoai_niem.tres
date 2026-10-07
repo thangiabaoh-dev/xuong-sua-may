@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CustomerDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/customer_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "hoai_niem"
+display_name = "Người hoài niệm"
+reactions = {"than": "Cảm ơn cháu, máy này tôi quý lắm.", "trung_tinh": "Cảm ơn cháu.", "kho": "Cháu ăn nói với người lớn kiểu đó sao..."}
+effects = {
+"than": { "uy_tin": 3, "story": "Bác kể hồi đó đi xe đạp lên chợ Lớn tậu máy, cả xóm sang xem." },
+"trung_tinh": {},
+"kho": { "uy_tin": -10 },
+}
+risk_warning = "Người hoài niệm dễ giận với tone khô (mất 10 uy tín)."

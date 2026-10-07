@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CustomerDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/customer_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "giao_vien"
+display_name = "Giáo viên"
+reactions = {"than": "Cảm ơn em, thầy sẽ giới thiệu cho các thầy cô khác.", "trung_tinh": "Cảm ơn em.", "kho": "Làm việc với khách thì nên giữ thái độ em nhé."}
+effects = {
+"than": { "uy_tin": 3 },
+"trung_tinh": {},
+"kho": { "uy_tin": -3 },
+}
+risk_warning = "Giáo viên khó tính — tone khô trừ 3 uy tín."
