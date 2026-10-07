@@ -1,0 +1,56 @@
+[gd_scene load_steps=8 format=3]
+[sub_resource type="StandardMaterial3D" id="mat_road"]
+albedo_color = Color(0.2, 0.2, 0.2, 1)
+[sub_resource type="StandardMaterial3D" id="mat_walk"]
+albedo_color = Color(0.7, 0.7, 0.7, 1)
+[sub_resource type="StandardMaterial3D" id="mat_house"]
+albedo_color = Color(0.6, 0.4, 0.35, 1)
+[sub_resource type="StandardMaterial3D" id="mat_lamp"]
+albedo_color = Color(0.1, 0.1, 0.1, 1)
+[sub_resource type="BoxShape3D" id="shape_road"]
+size = Vector3(20, 0.01, 6)
+[sub_resource type="BoxMesh" id="mesh_road"]
+material = SubResource("mat_road")
+size = Vector3(20, 0.4, 6)
+[sub_resource type="BoxMesh" id="mesh_walk"]
+material = SubResource("mat_walk")
+size = Vector3(20, 0.1, 2)
+[sub_resource type="BoxMesh" id="mesh_house"]
+material = SubResource("mat_house")
+size = Vector3(4, 3, 4)
+[sub_resource type="BoxMesh" id="mesh_lamp"]
+material = SubResource("mat_lamp")
+size = Vector3(0.15, 3, 0.15)
+[node name="Street" type="Node3D"]
+[node name="Road" type="Node3D" parent="."]
+[node name="StaticBody3D" type="StaticBody3D" parent="Road"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Road/StaticBody3D"]
+position = Vector3(0, -0.005, 0)
+shape = SubResource("shape_road")
+[node name="Mesh" type="MeshInstance3D" parent="Road"]
+position = Vector3(0, -0.2, 0)
+mesh = SubResource("mesh_road")
+[node name="WalkL" type="Node3D" parent="."]
+position = Vector3(0, 0.05, -4)
+[node name="Mesh" type="MeshInstance3D" parent="WalkL"]
+mesh = SubResource("mesh_walk")
+[node name="WalkR" type="Node3D" parent="."]
+position = Vector3(0, 0.05, 4)
+[node name="Mesh" type="MeshInstance3D" parent="WalkR"]
+mesh = SubResource("mesh_walk")
+[node name="House1" type="Node3D" parent="."]
+position = Vector3(-5, 1.5, -7)
+[node name="Mesh" type="MeshInstance3D" parent="House1"]
+mesh = SubResource("mesh_house")
+[node name="House2" type="Node3D" parent="."]
+position = Vector3(5, 1.5, 7)
+[node name="Mesh" type="MeshInstance3D" parent="House2"]
+mesh = SubResource("mesh_house")
+[node name="Lamp1" type="Node3D" parent="."]
+position = Vector3(-6, 1.5, 3)
+[node name="Mesh" type="MeshInstance3D" parent="Lamp1"]
+mesh = SubResource("mesh_lamp")
+[node name="Lamp2" type="Node3D" parent="."]
+position = Vector3(6, 1.5, -3)
+[node name="Mesh" type="MeshInstance3D" parent="Lamp2"]
+mesh = SubResource("mesh_lamp")
