@@ -391,6 +391,7 @@ func _render() -> void:
 		_hide_all()
 		get_node("Root/Screens/ScreenResult").visible = true
 		get_node("Root/Screens/ScreenResult/LblResult").text = "Hết đơn hôm nay"
+		get_node("Root/Screens/ScreenResult/LblReaction").text = ""
 		return
 	# header
 	(get_node("Root/Header/LblMoney") as Label).text = "💰 %dđ" % int(game_state.money)

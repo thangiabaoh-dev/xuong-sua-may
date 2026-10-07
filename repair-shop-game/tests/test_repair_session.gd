@@ -200,6 +200,25 @@ func run() -> void:
 	check_eq(int(s15.result), int(RepairSession.Result.LOST_TIME), "LOST_TIME")
 	check(not s15.choose_tone("than"), "tone guard after result")
 
+	# 16. uy_tin clamp ≤100 (spec §1 range 0-100)
+	var st16 = _state(50000, 98)
+	var o16 := _make_order("no_power", "giao_vien")
+	var s16 := RepairSession.new(o16, st16, _rng())
+	_flow_to_test(s16)
+	s16.run_test()
+	check(s16.choose_tone("than"), "giao_vien than ok")
+	check_eq(st16.uy_tin, 100, "uy_tin clamped at 100")
+
+	# 17. effect positive + story append (spec §8 hoai_niem than)
+	var st17 = _state(50000, 0)
+	var o17 := _make_order("no_power", "hoai_niem")
+	var s17 := RepairSession.new(o17, st17, _rng())
+	_flow_to_test(s17)
+	s17.run_test()
+	check(s17.choose_tone("than"), "hoai_niem than ok")
+	check_eq(st17.uy_tin, 3, "uy_tin +3 applied")
+	check(s17.tone_reaction.contains("chợ Lớn"), "story appended")
+
 	#9. Stock: lay tu kho 0dong/0 phut, tru count; het stock -> buy ngay
 	var st9 = _state(50000, 0)
 	var s9 := RepairSession.new(_make_order(), st9, _rng())

@@ -194,7 +194,7 @@ func choose_tone(tone_key: String) -> bool:
 	game_state.money = int(game_state.money) + earned
 	var udelta := int(fx.get("uy_tin", 0))
 	if udelta != 0:
-		game_state.uy_tin = maxi(0, int(game_state.uy_tin) + udelta)
+		game_state.uy_tin = clampi(int(game_state.uy_tin) + udelta, 0, 100)
 	var story := String(fx.get("story", ""))
 	if story != "":
 		tone_reaction += "\n" + story
