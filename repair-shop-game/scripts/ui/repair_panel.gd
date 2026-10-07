@@ -170,18 +170,28 @@ func _build_ui() -> void:
 	var lbl_progress := Label.new()
 	lbl_progress.name = "LblProgress"
 	dis.add_child(lbl_progress)
+	var lbl_needle := Label.new()
+	lbl_needle.name = "LblNeedle"
+	lbl_needle.visible = false
+	dis.add_child(lbl_needle)
 	for i in 4:
 		var btn_port := Button.new()
 		btn_port.name = "BtnPort%d" % i
 		btn_port.text = "Cổng %d" % (i + 1)
+		btn_port.position = Vector2(i * 70, 180)
 		btn_port.visible = false
 		dis.add_child(btn_port)
 	for i in 2:
 		var btn_orient := Button.new()
 		btn_orient.name = "BtnOrient%d" % i
 		btn_orient.text = "Chiều %s" % ("A" if i == 0 else "B")
+		btn_orient.position = Vector2(i * 80, 220)
 		btn_orient.visible = false
 		dis.add_child(btn_orient)
+	lbl_action.position = Vector2(0, 0)
+	btn_dis.position = Vector2(0, 56)
+	lbl_progress.position = Vector2(0, 100)
+	lbl_needle.position = Vector2(0, 140)
 
 	# TEST
 	var test_scr := Control.new()
@@ -552,17 +562,23 @@ func _render() -> void:
 			btn_dis.text = "Tháo – lắp"
 			lbl_a.text = "Tháo – lắp"
 			lbl_p.text = ""
+			(scr.get_node("LblNeedle") as Label).visible = false
 			for i in 4:
 				scr.get_node("BtnPort%d" % i).visible = false
 			for i in 2:
 				scr.get_node("BtnOrient%d" % i).visible = false
 		else:
+			(scr.get_node("LblNeedle") as Label).visible = false
 			match cc.kind:
 				MinigameController.Kind.VAN_OC:
 					btn_dis.visible = true
 					btn_dis.text = "Bấm nhịp"
 					lbl_a.text = "Bấm khi kim vào vùng xanh"
 					lbl_p.text = "Nhịp %d/%d" % [cc.progress, cc.beats_needed]
+					var lbl_n := scr.get_node("LblNeedle") as Label
+					lbl_n.visible = true
+					lbl_n.text = "Kim %d%% · Vùng xanh %d–%d%%" % [
+						int(cc.needle_pos * 100.0), int(cc.zone_lo * 100.0), int(cc.zone_hi * 100.0)]
 					for i in 4:
 						scr.get_node("BtnPort%d" % i).visible = false
 					for i in 2:

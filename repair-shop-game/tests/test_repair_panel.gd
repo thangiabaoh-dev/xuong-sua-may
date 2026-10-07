@@ -28,12 +28,21 @@ func run() -> void:
 		"Root/Screens/ScreenDisassemble/BtnPort3",
 		"Root/Screens/ScreenDisassemble/BtnOrient0",
 		"Root/Screens/ScreenDisassemble/BtnOrient1",
+		"Root/Screens/ScreenDisassemble/LblNeedle",
 		"Root/Screens/ScreenTest/BtnRunTest",
 		"Root/Screens/ScreenTone/BtnToneThan", "Root/Screens/ScreenTone/BtnToneNeutral",
 		"Root/Screens/ScreenTone/BtnToneKho", "Root/Screens/ScreenTone/LblRisk",
 		"Root/Screens/ScreenResult/BtnContinue", "Root/Screens/ScreenResult/LblReaction", "BtnOpen"]
 	for p in paths:
 		check(panel.get_node_or_null(p) != null, "node " + p)
+
+	# fix layout: nut DISASSEMBLE khong duoc chồng (0,0)
+	var p_port0: Vector2 = panel.get_node("Root/Screens/ScreenDisassemble/BtnPort0").position
+	var p_port1: Vector2 = panel.get_node("Root/Screens/ScreenDisassemble/BtnPort1").position
+	check(p_port1.x > p_port0.x + 10.0, "port row khong chồng nhau")
+	var p_or0: Vector2 = panel.get_node("Root/Screens/ScreenDisassemble/BtnOrient0").position
+	var p_or1: Vector2 = panel.get_node("Root/Screens/ScreenDisassemble/BtnOrient1").position
+	check(p_or1.x > p_or0.x + 10.0, "orient row khong chồng nhau")
 
 	check(panel.get_node("Root/Screens/ScreenOffer").visible, "OFFER visible")
 	check(not panel.get_node("Root/Screens/ScreenChecks").visible, "CHECKS hidden")
@@ -159,6 +168,8 @@ func run() -> void:
 	check_eq(ctrlV.kind, int(MinigameController.Kind.VAN_OC), "no_wifi -> van_oc")
 	check(panel.get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").visible, "van_oc hien nut chinh")
 	check(not panel.get_node("Root/Screens/ScreenDisassemble/BtnPort0").visible, "van_oc an port")
+	check(panel.get_node("Root/Screens/ScreenDisassemble/LblNeedle").visible, "van_oc hien kim")
+	check(panel.get_node("Root/Screens/ScreenDisassemble/LblNeedle").text.contains("Vùng"), "kim + vung xanh render")
 	var elapsed0: int = int(panel.session.elapsed)
 	ctrlV.needle_pos = ctrlV.zone_lo - 0.01
 	panel.get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").emit_signal("pressed")
