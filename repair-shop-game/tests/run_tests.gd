@@ -8,6 +8,7 @@ const TEST_SCRIPTS: PackedStringArray = [
 	"res://tests/test_main_scene.gd",
 	"res://tests/test_machine_catalog.gd",
 	"res://tests/test_machine_generator.gd",
+	"res://tests/test_game_state.gd",
 ]
 
 func _init() -> void:
