@@ -22,7 +22,9 @@ func run() -> void:
 		"Root/Screens/ScreenParts/BtnBuy", "Root/Screens/ScreenParts/BtnGiveUp",
 		"Root/Screens/ScreenDisassemble/BtnDisassemble",
 		"Root/Screens/ScreenTest/BtnRunTest",
-		"Root/Screens/ScreenResult/BtnContinue", "BtnOpen"]
+		"Root/Screens/ScreenTone/BtnToneThan", "Root/Screens/ScreenTone/BtnToneNeutral",
+		"Root/Screens/ScreenTone/BtnToneKho", "Root/Screens/ScreenTone/LblRisk",
+		"Root/Screens/ScreenResult/BtnContinue", "Root/Screens/ScreenResult/LblReaction", "BtnOpen"]
 	for p in paths:
 		check(panel.get_node_or_null(p) != null, "node " + p)
 
@@ -77,6 +79,16 @@ func run() -> void:
 	check_eq(int(panel.game_state.inventory[pid]), 0, "stock used up")
 	check_eq(int(panel.session.elapsed), 10, "take costs 0 minutes")
 	check_eq(int(panel.game_state.money), 50000, "take costs 0 money")
+
+	# ScreenTone: thao -> TEST -> TONE -> RESULT
+	panel.get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").emit_signal("pressed")
+	check(panel.get_node("Root/Screens/ScreenTest").visible, "disassemble -> TEST screen")
+	panel.get_node("Root/Screens/ScreenTest/BtnRunTest").emit_signal("pressed")
+	check(panel.get_node("Root/Screens/ScreenTone").visible, "run_test -> TONE screen")
+	check(panel.get_node("Root/Screens/ScreenTone/LblRisk").text != "", "risk warning shown")
+	panel.get_node("Root/Screens/ScreenTone/BtnToneNeutral").emit_signal("pressed")
+	check(panel.get_node("Root/Screens/ScreenResult").visible, "tone -> RESULT screen")
+	check(panel.get_node("Root/Screens/ScreenResult/LblReaction").text != "", "reaction shown")
 
 	# Shop: Continue -> ScreenShop; thieu tien no-op; mua duoc; 1 mon/lan; khong dong clock
 	if not panel.has_node("Root/Screens/ScreenShop/ShopBox"):

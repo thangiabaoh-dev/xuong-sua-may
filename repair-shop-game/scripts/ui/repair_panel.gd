@@ -175,6 +175,30 @@ func _build_ui() -> void:
 	btn_run.text = "Bật nguồn"
 	test_scr.add_child(btn_run)
 
+	# TONE
+	var tone := Control.new()
+	tone.name = "ScreenTone"
+	screens.add_child(tone)
+	var lbl_q := Label.new()
+	lbl_q.name = "LblToneQuestion"
+	lbl_q.text = "Bạn nói chuyện với khách thế nào?"
+	tone.add_child(lbl_q)
+	var btn_than := Button.new()
+	btn_than.name = "BtnToneThan"
+	btn_than.text = "Thân"
+	tone.add_child(btn_than)
+	var btn_neutral := Button.new()
+	btn_neutral.name = "BtnToneNeutral"
+	btn_neutral.text = "Trung tính"
+	tone.add_child(btn_neutral)
+	var btn_kho := Button.new()
+	btn_kho.name = "BtnToneKho"
+	btn_kho.text = "Khô"
+	tone.add_child(btn_kho)
+	var lbl_risk := Label.new()
+	lbl_risk.name = "LblRisk"
+	tone.add_child(lbl_risk)
+
 	# RESULT
 	var res := Control.new()
 	res.name = "ScreenResult"
@@ -182,6 +206,9 @@ func _build_ui() -> void:
 	var lbl_res := Label.new()
 	lbl_res.name = "LblResult"
 	res.add_child(lbl_res)
+	var lbl_reaction := Label.new()
+	lbl_reaction.name = "LblReaction"
+	res.add_child(lbl_reaction)
 	var btn_cont := Button.new()
 	btn_cont.name = "BtnContinue"
 	btn_cont.text = "Tiếp tục"
@@ -228,6 +255,9 @@ func _connect_signals() -> void:
 	get_node("Root/Screens/ScreenParts/BtnGiveUp").pressed.connect(_on_give_up)
 	get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").pressed.connect(_on_disassemble)
 	get_node("Root/Screens/ScreenTest/BtnRunTest").pressed.connect(_on_run_test)
+	get_node("Root/Screens/ScreenTone/BtnToneThan").pressed.connect(_on_tone.bind("than"))
+	get_node("Root/Screens/ScreenTone/BtnToneNeutral").pressed.connect(_on_tone.bind("trung_tinh"))
+	get_node("Root/Screens/ScreenTone/BtnToneKho").pressed.connect(_on_tone.bind("kho"))
 	get_node("Root/Screens/ScreenResult/BtnContinue").pressed.connect(_on_continue)
 	get_node("Root/Screens/ScreenShop/BtnSkip").pressed.connect(_on_skip)
 	get_node("Root/Header/BtnClose").pressed.connect(_on_close)
@@ -302,6 +332,12 @@ func _on_run_test() -> void:
 	session.run_test()
 	_render()
 
+func _on_tone(tone_key: String) -> void:
+	if session == null:
+		return
+	session.choose_tone(tone_key)
+	_render()
+
 func _on_continue() -> void:
 	open_shop()
 
@@ -345,7 +381,7 @@ func _on_open() -> void:
 	get_node("BtnOpen").visible = false
 
 func _hide_all() -> void:
-	for n in ["ScreenOffer", "ScreenSymptom", "ScreenChecks", "ScreenConclusion", "ScreenParts", "ScreenDisassemble", "ScreenTest", "ScreenResult", "ScreenShop"]:
+	for n in ["ScreenOffer", "ScreenSymptom", "ScreenChecks", "ScreenConclusion", "ScreenParts", "ScreenDisassemble", "ScreenTest", "ScreenTone", "ScreenResult", "ScreenShop"]:
 		get_node("Root/Screens/" + n).visible = false
 
 func _render() -> void:
@@ -422,6 +458,10 @@ func _render() -> void:
 		(get_node("Root/Screens/ScreenDisassemble/LblAction") as Label).text = "Tháo – lắp (%s)" % mg
 	elif st == int(RepairSession.State.TEST):
 		get_node("Root/Screens/ScreenTest").visible = true
+	elif st == int(RepairSession.State.TONE):
+		get_node("Root/Screens/ScreenTone").visible = true
+		var cust := CustomerCatalog.get_customer(String(session.order.customer_key))
+		(get_node("Root/Screens/ScreenTone/LblRisk") as Label).text = String(cust.risk_warning) if cust != null else ""
 	elif st == int(RepairSession.State.RESULT):
 		get_node("Root/Screens/ScreenResult").visible = true
 		var txt := ""
@@ -432,7 +472,10 @@ func _render() -> void:
 				txt = "Hết giờ — khách bỏ đi"
 			int(RepairSession.Result.LOST_MONEY):
 				txt = "Hết tiền — bỏ đơn"
+			int(RepairSession.Result.LOST_TONE):
+				txt = "Khách bỏ đi — mất đơn (tone khô)"
 			int(RepairSession.Result.DONE):
 				var tip: int = int(session.earned) - int(session.order.money_reward)
 				txt = "Xong! +%dđ (tip %d)" % [int(session.earned), tip]
 		(get_node("Root/Screens/ScreenResult/LblResult") as Label).text = txt
+		(get_node("Root/Screens/ScreenResult/LblReaction") as Label).text = session.tone_reaction
