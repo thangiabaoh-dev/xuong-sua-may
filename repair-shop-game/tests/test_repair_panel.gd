@@ -21,6 +21,13 @@ func run() -> void:
 		"Root/Screens/ScreenConclusion/ConclusionBox",
 		"Root/Screens/ScreenParts/BtnBuy", "Root/Screens/ScreenParts/BtnGiveUp",
 		"Root/Screens/ScreenDisassemble/BtnDisassemble",
+		"Root/Screens/ScreenDisassemble/LblProgress",
+		"Root/Screens/ScreenDisassemble/BtnPort0",
+		"Root/Screens/ScreenDisassemble/BtnPort1",
+		"Root/Screens/ScreenDisassemble/BtnPort2",
+		"Root/Screens/ScreenDisassemble/BtnPort3",
+		"Root/Screens/ScreenDisassemble/BtnOrient0",
+		"Root/Screens/ScreenDisassemble/BtnOrient1",
 		"Root/Screens/ScreenTest/BtnRunTest",
 		"Root/Screens/ScreenTone/BtnToneThan", "Root/Screens/ScreenTone/BtnToneNeutral",
 		"Root/Screens/ScreenTone/BtnToneKho", "Root/Screens/ScreenTone/LblRisk",
@@ -80,9 +87,24 @@ func run() -> void:
 	check_eq(int(panel.session.elapsed), 10, "take costs 0 minutes")
 	check_eq(int(panel.game_state.money), 50000, "take costs 0 money")
 
-	# ScreenTone: thao -> TEST -> TONE -> RESULT
-	panel.get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").emit_signal("pressed")
-	check(panel.get_node("Root/Screens/ScreenTest").visible, "disassemble -> TEST screen")
+	# Minigame cam_cap (slow_hdd, d=1, 3 cong): sai -> +2' retry; dung -> TEST
+	var ctrl0 = panel.session.begin_minigame()
+	check(ctrl0 != null and ctrl0.kind == int(MinigameController.Kind.CAM_CAP), "dau don -> cam_cap")
+	check_eq(int(ctrl0.port_count), 3, "d1 -> 3 cong")
+	check(panel.get_node("Root/Screens/ScreenDisassemble/BtnPort0").visible, "port buttons visible")
+	check(not panel.get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").visible, "cam_cap an nut chinh")
+	var wrong_port: int = (ctrl0.correct_port + 1) % ctrl0.port_count
+	panel.get_node("Root/Screens/ScreenDisassemble/BtnPort%d" % wrong_port).emit_signal("pressed")
+	panel.get_node("Root/Screens/ScreenDisassemble/BtnOrient%d" % ctrl0.correct_orientation).emit_signal("pressed")
+	check_eq(int(panel.session.elapsed), 10 + 2, "fail +2 minutes")
+	check(panel.get_node("Root/Screens/ScreenDisassemble").visible, "fail stays DISASSEMBLE")
+	check(not ctrl0.failed, "reset after fail")
+	# dap an da re-roll sau reset — chon dung
+	panel.get_node("Root/Screens/ScreenDisassemble/BtnPort%d" % ctrl0.correct_port).emit_signal("pressed")
+	panel.get_node("Root/Screens/ScreenDisassemble/BtnOrient%d" % ctrl0.correct_orientation).emit_signal("pressed")
+	check(panel.get_node("Root/Screens/ScreenTest").visible, "correct -> TEST screen")
+	check_eq(int(panel.session.elapsed), 12 + 5 * 1, "pass cost 5xd")
+	# ScreenTone: TEST -> TONE -> RESULT
 	panel.get_node("Root/Screens/ScreenTest/BtnRunTest").emit_signal("pressed")
 	check(panel.get_node("Root/Screens/ScreenTone").visible, "run_test -> TONE screen")
 	check(panel.get_node("Root/Screens/ScreenTone/LblRisk").text != "", "risk warning shown")
@@ -122,5 +144,29 @@ func run() -> void:
 	check_eq(int(panel.session.state), state_before, "shop does not touch session")
 	panel.get_node("Root/Screens/ScreenShop/BtnSkip").emit_signal("pressed")
 	check(panel.get_node("Root/Screens/ScreenOffer").visible, "skip -> new order OFFER")
+
+	# Van_oc wiring (don ke no_wifi): BtnDisassemble that -> fail -> that du -> TEST
+	panel.game_state.money = 200000
+	var sV: RepairSession = panel.session
+	sV.accept(); sV.advance_symptom()
+	sV.do_check("do_nguon"); sV.do_check("nghe_quat")
+	sV.begin_conclusion()
+	check(sV.conclude("no_wifi"), "conclude no_wifi")
+	sV.buy_part()
+	panel._render()
+	check(panel.get_node("Root/Screens/ScreenDisassemble").visible, "DISASSEMBLE sau buy")
+	var ctrlV = panel.session.begin_minigame()
+	check_eq(ctrlV.kind, int(MinigameController.Kind.VAN_OC), "no_wifi -> van_oc")
+	check(panel.get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").visible, "van_oc hien nut chinh")
+	check(not panel.get_node("Root/Screens/ScreenDisassemble/BtnPort0").visible, "van_oc an port")
+	var elapsed0: int = int(panel.session.elapsed)
+	ctrlV.needle_pos = ctrlV.zone_lo - 0.01
+	panel.get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").emit_signal("pressed")
+	check_eq(int(panel.session.elapsed), elapsed0 + 2, "van_oc fail +2")
+	check(panel.get_node("Root/Screens/ScreenDisassemble").visible, "van_oc van o DISASSEMBLE")
+	for i in ctrlV.beats_needed:
+		ctrlV.needle_pos = (ctrlV.zone_lo + ctrlV.zone_hi) * 0.5
+		panel.get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").emit_signal("pressed")
+	check(panel.get_node("Root/Screens/ScreenTest").visible, "van_oc pass -> TEST")
 
 	panel.free()

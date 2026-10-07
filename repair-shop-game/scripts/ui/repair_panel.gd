@@ -8,6 +8,8 @@ var game_state
 var rng: RandomNumberGenerator
 var _built := false
 var _last_log := ""
+var _pending_port := -1
+var _holding := false
 var bought_this_visit := false
 
 func _ready() -> void:
@@ -165,6 +167,21 @@ func _build_ui() -> void:
 	btn_dis.name = "BtnDisassemble"
 	btn_dis.text = "Tháo – lắp"
 	dis.add_child(btn_dis)
+	var lbl_progress := Label.new()
+	lbl_progress.name = "LblProgress"
+	dis.add_child(lbl_progress)
+	for i in 4:
+		var btn_port := Button.new()
+		btn_port.name = "BtnPort%d" % i
+		btn_port.text = "Cổng %d" % (i + 1)
+		btn_port.visible = false
+		dis.add_child(btn_port)
+	for i in 2:
+		var btn_orient := Button.new()
+		btn_orient.name = "BtnOrient%d" % i
+		btn_orient.text = "Chiều %s" % ("A" if i == 0 else "B")
+		btn_orient.visible = false
+		dis.add_child(btn_orient)
 
 	# TEST
 	var test_scr := Control.new()
@@ -253,7 +270,14 @@ func _connect_signals() -> void:
 	get_node("Root/Screens/ScreenParts/BtnBuy").pressed.connect(_on_buy)
 	get_node("Root/Screens/ScreenParts/BtnTake").pressed.connect(_on_take)
 	get_node("Root/Screens/ScreenParts/BtnGiveUp").pressed.connect(_on_give_up)
-	get_node("Root/Screens/ScreenDisassemble/BtnDisassemble").pressed.connect(_on_disassemble)
+	var btn_dis_a := get_node("Root/Screens/ScreenDisassemble/BtnDisassemble") as Button
+	btn_dis_a.pressed.connect(_on_disassemble)
+	btn_dis_a.button_down.connect(_on_hold_start)
+	btn_dis_a.button_up.connect(_on_hold_end)
+	for i in 4:
+		get_node("Root/Screens/ScreenDisassemble/BtnPort%d" % i).pressed.connect(_on_port.bind(i))
+	for i in 2:
+		get_node("Root/Screens/ScreenDisassemble/BtnOrient%d" % i).pressed.connect(_on_orient.bind(i))
 	get_node("Root/Screens/ScreenTest/BtnRunTest").pressed.connect(_on_run_test)
 	get_node("Root/Screens/ScreenTone/BtnToneThan").pressed.connect(_on_tone.bind("than"))
 	get_node("Root/Screens/ScreenTone/BtnToneNeutral").pressed.connect(_on_tone.bind("trung_tinh"))
@@ -323,8 +347,71 @@ func _on_give_up() -> void:
 func _on_disassemble() -> void:
 	if session == null:
 		return
-	session.disassemble()
+	var c := session.begin_minigame()
+	if c == null:
+		session.disassemble()
+		_render()
+		return
+	match c.kind:
+		MinigameController.Kind.VAN_OC:
+			c.press()
+		MinigameController.Kind.LAU_BUI:
+			c.wipe_random()
+		_:
+			pass
+	_sync_minigame()
+
+func _on_hold_start() -> void:
+	_holding = true
+
+func _on_hold_end() -> void:
+	_holding = false
+
+func _on_port(i: int) -> void:
+	if session == null:
+		return
+	_pending_port = i
+	_sync_minigame()
+
+func _on_orient(o: int) -> void:
+	if session == null or _pending_port < 0:
+		return
+	var c := session.begin_minigame()
+	if c != null:
+		c.select(_pending_port, o)
+	_pending_port = -1
+	_sync_minigame()
+
+func _sync_minigame() -> void:
+	if session == null:
+		return
+	var c := session.minigame
+	if c == null:
+		_render()
+		return
+	if c.passed:
+		session.disassemble()
+	elif c.failed:
+		session.minigame_fail()
 	_render()
+
+func _process(delta: float) -> void:
+	if not _built or session == null or int(session.state) != int(RepairSession.State.DISASSEMBLE):
+		return
+	var c := session.minigame
+	if c == null or c.passed or c.failed:
+		return
+	match c.kind:
+		MinigameController.Kind.VAN_OC:
+			c.tick(delta)
+		MinigameController.Kind.HAN_MACH:
+			if _holding:
+				c.hold(delta)
+			else:
+				c.release()
+		_:
+			pass
+	_sync_minigame()
 
 func _on_run_test() -> void:
 	if session == null:
@@ -455,8 +542,57 @@ func _render() -> void:
 		(get_node("Root/Screens/ScreenParts/BtnBuy") as Button).visible = not has_stock
 	elif st == int(RepairSession.State.DISASSEMBLE):
 		get_node("Root/Screens/ScreenDisassemble").visible = true
-		var mg := String(fault.minigame) if fault != null else ""
-		(get_node("Root/Screens/ScreenDisassemble/LblAction") as Label).text = "Tháo – lắp (%s)" % mg
+		var scr := get_node("Root/Screens/ScreenDisassemble")
+		var btn_dis := scr.get_node("BtnDisassemble") as Button
+		var lbl_a := scr.get_node("LblAction") as Label
+		var lbl_p := scr.get_node("LblProgress") as Label
+		var cc := session.begin_minigame()
+		if cc == null:
+			btn_dis.visible = true
+			btn_dis.text = "Tháo – lắp"
+			lbl_a.text = "Tháo – lắp"
+			lbl_p.text = ""
+			for i in 4:
+				scr.get_node("BtnPort%d" % i).visible = false
+			for i in 2:
+				scr.get_node("BtnOrient%d" % i).visible = false
+		else:
+			match cc.kind:
+				MinigameController.Kind.VAN_OC:
+					btn_dis.visible = true
+					btn_dis.text = "Bấm nhịp"
+					lbl_a.text = "Bấm khi kim vào vùng xanh"
+					lbl_p.text = "Nhịp %d/%d" % [cc.progress, cc.beats_needed]
+					for i in 4:
+						scr.get_node("BtnPort%d" % i).visible = false
+					for i in 2:
+						scr.get_node("BtnOrient%d" % i).visible = false
+				MinigameController.Kind.HAN_MACH:
+					btn_dis.visible = true
+					btn_dis.text = "Giữ trỏ"
+					lbl_a.text = "Giữ trỏ trong vùng an toàn"
+					lbl_p.text = "Giữ %.1f/%.1f giây" % [cc.held, cc.hold_need]
+					for i in 4:
+						scr.get_node("BtnPort%d" % i).visible = false
+					for i in 2:
+						scr.get_node("BtnOrient%d" % i).visible = false
+				MinigameController.Kind.CAM_CAP:
+					btn_dis.visible = false
+					lbl_a.text = "Chọn đúng cổng rồi đúng chiều"
+					lbl_p.text = "Cổng: %s" % ("—" if _pending_port < 0 else str(_pending_port + 1))
+					for i in 4:
+						scr.get_node("BtnPort%d" % i).visible = i < cc.port_count
+					for i in 2:
+						scr.get_node("BtnOrient%d" % i).visible = true
+				MinigameController.Kind.LAU_BUI:
+					btn_dis.visible = true
+					btn_dis.text = "Quét"
+					lbl_a.text = "Quét sạch ≥80% bụi"
+					lbl_p.text = "Đã quét %d%%" % cc.wiped
+					for i in 4:
+						scr.get_node("BtnPort%d" % i).visible = false
+					for i in 2:
+						scr.get_node("BtnOrient%d" % i).visible = false
 	elif st == int(RepairSession.State.TEST):
 		get_node("Root/Screens/ScreenTest").visible = true
 	elif st == int(RepairSession.State.TONE):
