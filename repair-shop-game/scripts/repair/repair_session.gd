@@ -1,8 +1,8 @@
 class_name RepairSession
 extends RefCounted
 
-enum State { OFFER, SYMPTOM, CHECKS, CONCLUSION, PARTS, DISASSEMBLE, TEST, RESULT }
-enum Result { NONE, REJECTED, LOST_TIME, LOST_MONEY, DONE }
+enum State { OFFER, SYMPTOM, CHECKS, CONCLUSION, PARTS, DISASSEMBLE, TEST, TONE, RESULT }
+enum Result { NONE, REJECTED, LOST_TIME, LOST_MONEY, LOST_TONE, DONE }
 
 const CHECK_KEYS: Array[String] = ["do_nguon", "nghe_quat", "kiem_tra_ram", "nhin_bo"]
 const CHECK_MINUTES := 5
@@ -23,6 +23,7 @@ var checks_done: Array[String] = []
 var wrong_count: int = 0
 var earned: int = 0
 var spent: int = 0
+var tone_reaction: String = ""
 
 func _init(order_: RepairOrder, state_, rng_: RandomNumberGenerator) -> void:
 	order = order_
@@ -164,11 +165,39 @@ func run_test() -> void:
 		return
 	if _add_minutes(TEST_MINUTES):
 		return
+	state = State.TONE
+
+func choose_tone(tone_key: String) -> bool:
+	if state != State.TONE:
+		return false
+	if tone_key != "than" and tone_key != "trung_tinh" and tone_key != "kho":
+		return false
+	var customer := CustomerCatalog.get_customer(String(order.customer_key))
+	if customer == null:
+		push_error("RepairSession: missing customer '%s'" % String(order.customer_key))
+		return false
+	var fx = customer.effects.get(tone_key, null)
+	if fx == null:
+		return false
+	tone_reaction = String(customer.reactions.get(tone_key, ""))
+	if bool(fx.get("lost_order", false)):
+		earned = 0
+		result = Result.LOST_TONE
+		state = State.RESULT
+		return true
 	var reward: int = int(order.money_reward)
 	var tip := 0
 	if elapsed * 2 <= order.deadline_min:
 		tip = int(reward * 0.25)
+	tip += int(reward * int(fx.get("tip_percent", 0)) / 100)
 	earned = reward + tip
 	game_state.money = int(game_state.money) + earned
+	var udelta := int(fx.get("uy_tin", 0))
+	if udelta != 0:
+		game_state.uy_tin = maxi(0, int(game_state.uy_tin) + udelta)
+	var story := String(fx.get("story", ""))
+	if story != "":
+		tone_reaction += "\n" + story
 	result = Result.DONE
 	state = State.RESULT
+	return true

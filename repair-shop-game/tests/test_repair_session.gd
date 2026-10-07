@@ -1,6 +1,6 @@
 extends "res://tests/test_case.gd"
 
-func _make_order(fault_key: String = "no_power") -> RepairOrder:
+func _make_order(fault_key: String = "no_power", customer_key: String = "ban_hoc") -> RepairOrder:
 	var def: MachineDef = load("res://data/machines/acer_aspire_5.tres")
 	var gm := GeneratedMachine.new()
 	gm.def = def
@@ -9,8 +9,8 @@ func _make_order(fault_key: String = "no_power") -> RepairOrder:
 	var o := RepairOrder.new()
 	o.machine = gm
 	o.fault_key = fault_key
-	o.customer_key = "ban_hoc"
-	o.symptom_quote = FaultCatalog.get_fault(fault_key).symptoms["ban_hoc"]
+	o.customer_key = customer_key
+	o.symptom_quote = FaultCatalog.get_fault(fault_key).symptoms[customer_key]
 	o.deadline_min = 30 + def.difficulty * 15
 	o.money_reward = def.base_price
 	return o
@@ -25,6 +25,13 @@ func _rng(seed_v: int = 1) -> RandomNumberGenerator:
 	var r := RandomNumberGenerator.new()
 	r.seed = seed_v
 	return r
+
+func _flow_to_test(s: RepairSession) -> void:
+	s.accept(); s.advance_symptom()
+	s.do_check("do_nguon"); s.do_check("nghe_quat")
+	s.begin_conclusion(); s.conclude("no_power")
+	s.buy_part()
+	s.disassemble()
 
 func run() -> void:
 	# 1. Happy path: 2 checks -> dung -> mua -> thao-lap -> chay thu -> DONE
@@ -51,6 +58,8 @@ func run() -> void:
 	check_eq(int(s.state), int(RepairSession.State.DISASSEMBLE), "->DISASSEMBLE")
 	s.disassemble(); check_eq(int(s.state), int(RepairSession.State.TEST), "->TEST")
 	s.run_test()
+	check_eq(int(s.state), int(RepairSession.State.TONE), "run_test -> TONE")
+	check(s.choose_tone("trung_tinh"), "neutral tone")
 	check_eq(int(s.state), int(RepairSession.State.RESULT), "->RESULT")
 	check_eq(int(s.result), int(RepairSession.Result.DONE), "DONE")
 	check_eq(s.earned, 80000, "reward no tip")
@@ -106,6 +115,8 @@ func run() -> void:
 	s6.buy_part(); s6.disassemble()
 	s6.elapsed = 20
 	s6.run_test()
+	check_eq(int(s6.state), int(RepairSession.State.TONE), "boundary -> TONE")
+	check(s6.choose_tone("trung_tinh"), "neutral tone")
 	check_eq(int(s6.result), int(RepairSession.Result.DONE), "done at boundary")
 	check_eq(s6.earned, 80000 + 20000, "tip at boundary")
 
@@ -137,6 +148,57 @@ func run() -> void:
 	check_eq(int(s8.state), int(RepairSession.State.PARTS), "stays PARTS")
 	s8.give_up()
 	check_eq(int(s8.result), int(RepairSession.Result.LOST_MONEY), "LOST_MONEY")
+
+	# 11. TONE: neutral ban_hoc DONE khong tip them
+	var s11 := RepairSession.new(_make_order(), _state(), _rng())
+	_flow_to_test(s11)
+	s11.run_test()
+	check_eq(int(s11.state), int(RepairSession.State.TONE), "run_test -> TONE")
+	check(not s11.choose_tone("xxx"), "invalid tone no-op")
+	check_eq(int(s11.state), int(RepairSession.State.TONE), "still TONE")
+	check(s11.choose_tone("trung_tinh"), "neutral ok")
+	check_eq(int(s11.result), int(RepairSession.Result.DONE), "neutral DONE")
+	check_eq(s11.earned, 80000, "neutral no extra tip")
+
+	# 12. LOST_TONE: ban_hoc kho khong tra
+	var st12 = _state(50000, 0)
+	var s12 := RepairSession.new(_make_order(), st12, _rng())
+	_flow_to_test(s12)
+	s12.run_test()
+	check(s12.choose_tone("kho"), "kho accepted")
+	check_eq(int(s12.result), int(RepairSession.Result.LOST_TONE), "LOST_TONE")
+	check_eq(s12.earned, 0, "lost no earn")
+	check_eq(st12.money, 5000, "lost no pay (only part cost 45000)")
+	check(s12.tone_reaction != "", "reaction recorded")
+
+	# 13. Tip cong don: than + early = 80000 + 20000 + 8000
+	var st13 = _state(50000, 0)
+	var s13 := RepairSession.new(_make_order(), st13, _rng())
+	_flow_to_test(s13)
+	s13.elapsed = 0
+	s13.run_test()
+	check(s13.choose_tone("than"), "than ok")
+	check_eq(s13.earned, 80000 + 20000 + 8000, "tip stacked")
+	check_eq(st13.money, 5000 + 108000, "money with stacked tips (after part)")
+
+	# 14. uy_tin clamp: giao_vien kho tai uy_tin=0 van 0
+	var st14 = _state(50000, 0)
+	var o14 := _make_order("no_power", "giao_vien")
+	var s14 := RepairSession.new(o14, st14, _rng())
+	_flow_to_test(s14)
+	s14.run_test()
+	check(s14.choose_tone("kho"), "giao_vien kho")
+	check_eq(int(s14.result), int(RepairSession.Result.DONE), "giao_vien kho still DONE")
+	check_eq(st14.uy_tin, 0, "uy_tin clamped at 0")
+
+	# 15. Timeout trong run_test -> LOST_TIME bo qua TONE
+	var s15 := RepairSession.new(_make_order(), _state(), _rng())
+	_flow_to_test(s15)
+	s15.elapsed = s15.order.deadline_min - 4
+	s15.run_test()
+	check_eq(int(s15.state), int(RepairSession.State.RESULT), "timeout skips TONE")
+	check_eq(int(s15.result), int(RepairSession.Result.LOST_TIME), "LOST_TIME")
+	check(not s15.choose_tone("than"), "tone guard after result")
 
 	#9. Stock: lay tu kho 0dong/0 phut, tru count; het stock -> buy ngay
 	var st9 = _state(50000, 0)
