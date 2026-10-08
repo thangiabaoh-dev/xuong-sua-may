@@ -18,12 +18,14 @@ static func location_for_key(keycode: int) -> String:
 		return KEY_ORDER[i]
 	return ""
 
-static func change_map(parent: Node3D, player: CharacterBody3D, loc: String, gs: Node) -> void:
+static func change_map(parent: Node3D, player: CharacterBody3D, loc: String, gs: Node) -> bool:
 	if not LOCATIONS.has(loc):
-		return
+		return false
+	if gs != null and gs.has_method("can_enter") and not bool(gs.call("can_enter", loc)):
+		return false
 	var packed = load(LOCATIONS[loc])
 	if packed == null:
-		return
+		return false
 	for k in LOCATIONS:
 		var old := parent.get_node_or_null(NodePath(str(k).capitalize()))
 		if old != null:
@@ -35,6 +37,7 @@ static func change_map(parent: Node3D, player: CharacterBody3D, loc: String, gs:
 	gs.set("current_location", loc)
 	player.position = SPAWN
 	player.velocity = Vector3.ZERO
+	return true
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventKey):
