@@ -1,290 +1,746 @@
 [gd_resource type="Resource" script_class="WeekSchedule" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/day_schedule.gd" id="1_msv84"]
-[ext_resource type="Script" path="res://scripts/data/time_slot.gd" id="2_tscib"]
-[ext_resource type="Script" path="res://scripts/data/week_schedule.gd" id="3_bpova"]
+[ext_resource type="Script" path="res://scripts/data/day_schedule.gd" id="1_tscib"]
+[ext_resource type="Script" path="res://scripts/data/time_slot.gd" id="2_bpova"]
+[ext_resource type="Script" path="res://scripts/data/activity_def.gd" id="3_8il5w"]
+[ext_resource type="Script" path="res://scripts/data/week_schedule.gd" id="4_8mtih"]
 
-[sub_resource type="Resource" id="Resource_8il5w"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_wtc1e"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 270
+
+[sub_resource type="Resource" id="Resource_lg0kb"]
+script = ExtResource("2_bpova")
 start_minute = 420
 end_minute = 690
 kind = "SCHOOL"
 locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_wtc1e")])
 
-[sub_resource type="Resource" id="Resource_8mtih"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_rufyt"]
+script = ExtResource("3_8il5w")
+id = "doc_thu_vien"
+label = "Đọc thư viện"
+required_location = "library"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_3ts12"]
+script = ExtResource("3_8il5w")
+id = "project_ca_phe"
+label = "Project ở cà phê"
+required_location = "cafe"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_gedhm"]
+script = ExtResource("2_bpova")
 start_minute = 690
 end_minute = 825
 kind = "CHOICE"
 locations = Array[String](["library", "cafe", "street", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_rufyt"), SubResource("Resource_3ts12")])
 
-[sub_resource type="Resource" id="Resource_wtc1e"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_xude2"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 195
+
+[sub_resource type="Resource" id="Resource_b1vnl"]
+script = ExtResource("2_bpova")
 start_minute = 825
 end_minute = 1020
 kind = "SCHOOL"
 locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_xude2")])
 
-[sub_resource type="Resource" id="Resource_lg0kb"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_c8rjb"]
+script = ExtResource("3_8il5w")
+id = "mo_panel"
+label = "Mở panel sửa"
+required_location = "workshop"
+
+[sub_resource type="Resource" id="Resource_pruhx"]
+script = ExtResource("3_8il5w")
+id = "nghi_tai_nha"
+label = "Nghỉ tại nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_k2h44"]
+script = ExtResource("3_8il5w")
+id = "doc_sach_nha"
+label = "Đọc sách ở nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_x1w7g"]
+script = ExtResource("2_bpova")
 start_minute = 1020
 end_minute = 1140
 kind = "REPAIR"
 locations = Array[String](["workshop", "street", "gate"])
 repair = true
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_c8rjb"), SubResource("Resource_pruhx"), SubResource("Resource_k2h44")])
 
-[sub_resource type="Resource" id="Resource_rufyt"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_4il3j"]
+script = ExtResource("3_8il5w")
+id = "lam_project"
+label = "Làm project"
+required_location = "workshop"
+minutes = 180
+
+[sub_resource type="Resource" id="Resource_m4cx5"]
+script = ExtResource("2_bpova")
 start_minute = 1140
 end_minute = 1320
 kind = "PROJECT"
 locations = Array[String](["workshop"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_4il3j")])
 
-[sub_resource type="Resource" id="Resource_3ts12"]
-script = ExtResource("1_msv84")
-slots = Array[ExtResource("2_tscib")]([SubResource("Resource_8il5w"), SubResource("Resource_8mtih"), SubResource("Resource_wtc1e"), SubResource("Resource_lg0kb"), SubResource("Resource_rufyt")])
+[sub_resource type="Resource" id="Resource_5euxk"]
+script = ExtResource("1_tscib")
+slots = Array[ExtResource("2_bpova")]([SubResource("Resource_lg0kb"), SubResource("Resource_gedhm"), SubResource("Resource_b1vnl"), SubResource("Resource_x1w7g"), SubResource("Resource_m4cx5")])
 
-[sub_resource type="Resource" id="Resource_gedhm"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_0mj82"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 270
+
+[sub_resource type="Resource" id="Resource_2xbgk"]
+script = ExtResource("2_bpova")
 start_minute = 420
 end_minute = 690
 kind = "SCHOOL"
 locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_0mj82")])
 
-[sub_resource type="Resource" id="Resource_xude2"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_5kel0"]
+script = ExtResource("3_8il5w")
+id = "doc_thu_vien"
+label = "Đọc thư viện"
+required_location = "library"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_5trhk"]
+script = ExtResource("3_8il5w")
+id = "project_ca_phe"
+label = "Project ở cà phê"
+required_location = "cafe"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_hx6du"]
+script = ExtResource("2_bpova")
 start_minute = 690
 end_minute = 825
 kind = "CHOICE"
 locations = Array[String](["library", "cafe", "street", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_5kel0"), SubResource("Resource_5trhk")])
 
-[sub_resource type="Resource" id="Resource_b1vnl"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_3vnb7"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 195
+
+[sub_resource type="Resource" id="Resource_87eed"]
+script = ExtResource("2_bpova")
 start_minute = 825
 end_minute = 1020
 kind = "SCHOOL"
 locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_3vnb7")])
 
-[sub_resource type="Resource" id="Resource_c8rjb"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_ui0u6"]
+script = ExtResource("3_8il5w")
+id = "lam_project_som"
+label = "Làm project sớm"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_5835g"]
+script = ExtResource("3_8il5w")
+id = "doc_sach_nha"
+label = "Đọc sách ở nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_tr4ft"]
+script = ExtResource("3_8il5w")
+id = "don_kho"
+label = "Dọn dẹp"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_gbxge"]
+script = ExtResource("3_8il5w")
+id = "nghi_ngoi"
+label = "Nghỉ ngơi"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_1p5xn"]
+script = ExtResource("2_bpova")
 start_minute = 1020
 end_minute = 1140
 kind = "FREE_HOME"
 locations = Array[String](["workshop"])
-
-[sub_resource type="Resource" id="Resource_pruhx"]
-script = ExtResource("2_tscib")
-start_minute = 1140
-end_minute = 1320
-kind = "PROJECT"
-locations = Array[String](["workshop"])
-
-[sub_resource type="Resource" id="Resource_k2h44"]
-script = ExtResource("1_msv84")
-slots = Array[ExtResource("2_tscib")]([SubResource("Resource_gedhm"), SubResource("Resource_xude2"), SubResource("Resource_b1vnl"), SubResource("Resource_c8rjb"), SubResource("Resource_pruhx")])
-
-[sub_resource type="Resource" id="Resource_x1w7g"]
-script = ExtResource("2_tscib")
-start_minute = 420
-end_minute = 690
-kind = "SCHOOL"
-locations = Array[String](["schoolyard", "classroom", "gate"])
-
-[sub_resource type="Resource" id="Resource_4il3j"]
-script = ExtResource("2_tscib")
-start_minute = 690
-end_minute = 825
-kind = "CHOICE"
-locations = Array[String](["library", "cafe", "street", "gate"])
-
-[sub_resource type="Resource" id="Resource_m4cx5"]
-script = ExtResource("2_tscib")
-start_minute = 825
-end_minute = 1020
-kind = "SCHOOL"
-locations = Array[String](["schoolyard", "classroom", "gate"])
-
-[sub_resource type="Resource" id="Resource_5euxk"]
-script = ExtResource("2_tscib")
-start_minute = 1020
-end_minute = 1140
-kind = "REPAIR"
-locations = Array[String](["workshop", "street", "gate"])
-repair = true
-
-[sub_resource type="Resource" id="Resource_0mj82"]
-script = ExtResource("2_tscib")
-start_minute = 1140
-end_minute = 1320
-kind = "PROJECT"
-locations = Array[String](["workshop"])
-
-[sub_resource type="Resource" id="Resource_2xbgk"]
-script = ExtResource("1_msv84")
-slots = Array[ExtResource("2_tscib")]([SubResource("Resource_x1w7g"), SubResource("Resource_4il3j"), SubResource("Resource_m4cx5"), SubResource("Resource_5euxk"), SubResource("Resource_0mj82")])
-
-[sub_resource type="Resource" id="Resource_5kel0"]
-script = ExtResource("2_tscib")
-start_minute = 420
-end_minute = 690
-kind = "SCHOOL"
-locations = Array[String](["schoolyard", "classroom", "gate"])
-
-[sub_resource type="Resource" id="Resource_5trhk"]
-script = ExtResource("2_tscib")
-start_minute = 690
-end_minute = 825
-kind = "CHOICE"
-locations = Array[String](["library", "cafe", "street", "gate"])
-
-[sub_resource type="Resource" id="Resource_hx6du"]
-script = ExtResource("2_tscib")
-start_minute = 825
-end_minute = 1020
-kind = "SCHOOL"
-locations = Array[String](["schoolyard", "classroom", "gate"])
-
-[sub_resource type="Resource" id="Resource_3vnb7"]
-script = ExtResource("2_tscib")
-start_minute = 1020
-end_minute = 1140
-kind = "REPAIR"
-locations = Array[String](["workshop", "street", "gate"])
-repair = true
-
-[sub_resource type="Resource" id="Resource_87eed"]
-script = ExtResource("2_tscib")
-start_minute = 1140
-end_minute = 1320
-kind = "PROJECT"
-locations = Array[String](["workshop"])
-
-[sub_resource type="Resource" id="Resource_ui0u6"]
-script = ExtResource("1_msv84")
-slots = Array[ExtResource("2_tscib")]([SubResource("Resource_5kel0"), SubResource("Resource_5trhk"), SubResource("Resource_hx6du"), SubResource("Resource_3vnb7"), SubResource("Resource_87eed")])
-
-[sub_resource type="Resource" id="Resource_5835g"]
-script = ExtResource("2_tscib")
-start_minute = 420
-end_minute = 690
-kind = "SCHOOL"
-locations = Array[String](["schoolyard", "classroom", "gate"])
-
-[sub_resource type="Resource" id="Resource_tr4ft"]
-script = ExtResource("2_tscib")
-start_minute = 690
-end_minute = 825
-kind = "CHOICE"
-locations = Array[String](["library", "cafe", "street", "gate"])
-
-[sub_resource type="Resource" id="Resource_gbxge"]
-script = ExtResource("2_tscib")
-start_minute = 825
-end_minute = 1020
-kind = "SCHOOL"
-locations = Array[String](["schoolyard", "classroom", "gate"])
-
-[sub_resource type="Resource" id="Resource_1p5xn"]
-script = ExtResource("2_tscib")
-start_minute = 1020
-end_minute = 1140
-kind = "REPAIR"
-locations = Array[String](["workshop", "street", "gate"])
-repair = true
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_ui0u6"), SubResource("Resource_5835g"), SubResource("Resource_tr4ft"), SubResource("Resource_gbxge")])
 
 [sub_resource type="Resource" id="Resource_14kuk"]
-script = ExtResource("2_tscib")
+script = ExtResource("3_8il5w")
+id = "lam_project"
+label = "Làm project"
+required_location = "workshop"
+minutes = 180
+
+[sub_resource type="Resource" id="Resource_spcdu"]
+script = ExtResource("2_bpova")
 start_minute = 1140
 end_minute = 1320
 kind = "PROJECT"
 locations = Array[String](["workshop"])
-
-[sub_resource type="Resource" id="Resource_spcdu"]
-script = ExtResource("1_msv84")
-slots = Array[ExtResource("2_tscib")]([SubResource("Resource_5835g"), SubResource("Resource_tr4ft"), SubResource("Resource_gbxge"), SubResource("Resource_1p5xn"), SubResource("Resource_14kuk")])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_14kuk")])
 
 [sub_resource type="Resource" id="Resource_ybreg"]
-script = ExtResource("2_tscib")
+script = ExtResource("1_tscib")
+slots = Array[ExtResource("2_bpova")]([SubResource("Resource_2xbgk"), SubResource("Resource_hx6du"), SubResource("Resource_87eed"), SubResource("Resource_1p5xn"), SubResource("Resource_spcdu")])
+
+[sub_resource type="Resource" id="Resource_4ie1j"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 270
+
+[sub_resource type="Resource" id="Resource_hkhcl"]
+script = ExtResource("2_bpova")
 start_minute = 420
 end_minute = 690
 kind = "SCHOOL"
 locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_4ie1j")])
 
-[sub_resource type="Resource" id="Resource_4ie1j"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_q34r7"]
+script = ExtResource("3_8il5w")
+id = "doc_thu_vien"
+label = "Đọc thư viện"
+required_location = "library"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_dmbob"]
+script = ExtResource("3_8il5w")
+id = "project_ca_phe"
+label = "Project ở cà phê"
+required_location = "cafe"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_cweml"]
+script = ExtResource("2_bpova")
 start_minute = 690
 end_minute = 825
 kind = "CHOICE"
 locations = Array[String](["library", "cafe", "street", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_q34r7"), SubResource("Resource_dmbob")])
 
-[sub_resource type="Resource" id="Resource_hkhcl"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_uvtg8"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 195
+
+[sub_resource type="Resource" id="Resource_2cj08"]
+script = ExtResource("2_bpova")
 start_minute = 825
 end_minute = 1020
 kind = "SCHOOL"
 locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_uvtg8")])
 
-[sub_resource type="Resource" id="Resource_q34r7"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_2qfql"]
+script = ExtResource("3_8il5w")
+id = "mo_panel"
+label = "Mở panel sửa"
+required_location = "workshop"
+
+[sub_resource type="Resource" id="Resource_xs8tt"]
+script = ExtResource("3_8il5w")
+id = "nghi_tai_nha"
+label = "Nghỉ tại nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_1420r"]
+script = ExtResource("3_8il5w")
+id = "doc_sach_nha"
+label = "Đọc sách ở nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_2mrjq"]
+script = ExtResource("2_bpova")
 start_minute = 1020
 end_minute = 1140
 kind = "REPAIR"
 locations = Array[String](["workshop", "street", "gate"])
 repair = true
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_2qfql"), SubResource("Resource_xs8tt"), SubResource("Resource_1420r")])
 
-[sub_resource type="Resource" id="Resource_dmbob"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_ox3f6"]
+script = ExtResource("3_8il5w")
+id = "lam_project"
+label = "Làm project"
+required_location = "workshop"
+minutes = 180
+
+[sub_resource type="Resource" id="Resource_eljg1"]
+script = ExtResource("2_bpova")
 start_minute = 1140
 end_minute = 1320
 kind = "PROJECT"
 locations = Array[String](["workshop"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_ox3f6")])
 
-[sub_resource type="Resource" id="Resource_cweml"]
-script = ExtResource("1_msv84")
-slots = Array[ExtResource("2_tscib")]([SubResource("Resource_ybreg"), SubResource("Resource_4ie1j"), SubResource("Resource_hkhcl"), SubResource("Resource_q34r7"), SubResource("Resource_dmbob")])
+[sub_resource type="Resource" id="Resource_k6x5g"]
+script = ExtResource("1_tscib")
+slots = Array[ExtResource("2_bpova")]([SubResource("Resource_hkhcl"), SubResource("Resource_cweml"), SubResource("Resource_2cj08"), SubResource("Resource_2mrjq"), SubResource("Resource_eljg1")])
 
-[sub_resource type="Resource" id="Resource_uvtg8"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_ljq1h"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 270
+
+[sub_resource type="Resource" id="Resource_u3xvv"]
+script = ExtResource("2_bpova")
+start_minute = 420
+end_minute = 690
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_ljq1h")])
+
+[sub_resource type="Resource" id="Resource_oyfdn"]
+script = ExtResource("3_8il5w")
+id = "doc_thu_vien"
+label = "Đọc thư viện"
+required_location = "library"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_vao1d"]
+script = ExtResource("3_8il5w")
+id = "project_ca_phe"
+label = "Project ở cà phê"
+required_location = "cafe"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_sm5rp"]
+script = ExtResource("2_bpova")
+start_minute = 690
+end_minute = 825
+kind = "CHOICE"
+locations = Array[String](["library", "cafe", "street", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_oyfdn"), SubResource("Resource_vao1d")])
+
+[sub_resource type="Resource" id="Resource_e7rnq"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 195
+
+[sub_resource type="Resource" id="Resource_geut2"]
+script = ExtResource("2_bpova")
+start_minute = 825
+end_minute = 1020
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_e7rnq")])
+
+[sub_resource type="Resource" id="Resource_5b38t"]
+script = ExtResource("3_8il5w")
+id = "mo_panel"
+label = "Mở panel sửa"
+required_location = "workshop"
+
+[sub_resource type="Resource" id="Resource_p77uh"]
+script = ExtResource("3_8il5w")
+id = "nghi_tai_nha"
+label = "Nghỉ tại nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_glidm"]
+script = ExtResource("3_8il5w")
+id = "doc_sach_nha"
+label = "Đọc sách ở nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_8mhkb"]
+script = ExtResource("2_bpova")
+start_minute = 1020
+end_minute = 1140
+kind = "REPAIR"
+locations = Array[String](["workshop", "street", "gate"])
+repair = true
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_5b38t"), SubResource("Resource_p77uh"), SubResource("Resource_glidm")])
+
+[sub_resource type="Resource" id="Resource_m5mb0"]
+script = ExtResource("3_8il5w")
+id = "lam_project"
+label = "Làm project"
+required_location = "workshop"
+minutes = 180
+
+[sub_resource type="Resource" id="Resource_sv4bn"]
+script = ExtResource("2_bpova")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_m5mb0")])
+
+[sub_resource type="Resource" id="Resource_7iwuh"]
+script = ExtResource("1_tscib")
+slots = Array[ExtResource("2_bpova")]([SubResource("Resource_u3xvv"), SubResource("Resource_sm5rp"), SubResource("Resource_geut2"), SubResource("Resource_8mhkb"), SubResource("Resource_sv4bn")])
+
+[sub_resource type="Resource" id="Resource_ngbbl"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 270
+
+[sub_resource type="Resource" id="Resource_cb51r"]
+script = ExtResource("2_bpova")
+start_minute = 420
+end_minute = 690
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_ngbbl")])
+
+[sub_resource type="Resource" id="Resource_kjj4f"]
+script = ExtResource("3_8il5w")
+id = "doc_thu_vien"
+label = "Đọc thư viện"
+required_location = "library"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_77j35"]
+script = ExtResource("3_8il5w")
+id = "project_ca_phe"
+label = "Project ở cà phê"
+required_location = "cafe"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_7aru5"]
+script = ExtResource("2_bpova")
+start_minute = 690
+end_minute = 825
+kind = "CHOICE"
+locations = Array[String](["library", "cafe", "street", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_kjj4f"), SubResource("Resource_77j35")])
+
+[sub_resource type="Resource" id="Resource_fernp"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 195
+
+[sub_resource type="Resource" id="Resource_2knfm"]
+script = ExtResource("2_bpova")
+start_minute = 825
+end_minute = 1020
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_fernp")])
+
+[sub_resource type="Resource" id="Resource_2m6p6"]
+script = ExtResource("3_8il5w")
+id = "mo_panel"
+label = "Mở panel sửa"
+required_location = "workshop"
+
+[sub_resource type="Resource" id="Resource_n7kyw"]
+script = ExtResource("3_8il5w")
+id = "nghi_tai_nha"
+label = "Nghỉ tại nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_eamev"]
+script = ExtResource("3_8il5w")
+id = "doc_sach_nha"
+label = "Đọc sách ở nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_djg2r"]
+script = ExtResource("2_bpova")
+start_minute = 1020
+end_minute = 1140
+kind = "REPAIR"
+locations = Array[String](["workshop", "street", "gate"])
+repair = true
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_2m6p6"), SubResource("Resource_n7kyw"), SubResource("Resource_eamev")])
+
+[sub_resource type="Resource" id="Resource_8sy7d"]
+script = ExtResource("3_8il5w")
+id = "lam_project"
+label = "Làm project"
+required_location = "workshop"
+minutes = 180
+
+[sub_resource type="Resource" id="Resource_g6rjs"]
+script = ExtResource("2_bpova")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_8sy7d")])
+
+[sub_resource type="Resource" id="Resource_1hua6"]
+script = ExtResource("1_tscib")
+slots = Array[ExtResource("2_bpova")]([SubResource("Resource_cb51r"), SubResource("Resource_7aru5"), SubResource("Resource_2knfm"), SubResource("Resource_djg2r"), SubResource("Resource_g6rjs")])
+
+[sub_resource type="Resource" id="Resource_h0bo6"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 270
+
+[sub_resource type="Resource" id="Resource_c43ok"]
+script = ExtResource("2_bpova")
+start_minute = 420
+end_minute = 690
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_h0bo6")])
+
+[sub_resource type="Resource" id="Resource_0ow6n"]
+script = ExtResource("3_8il5w")
+id = "doc_thu_vien"
+label = "Đọc thư viện"
+required_location = "library"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_5ciby"]
+script = ExtResource("3_8il5w")
+id = "project_ca_phe"
+label = "Project ở cà phê"
+required_location = "cafe"
+minutes = 135
+
+[sub_resource type="Resource" id="Resource_ttdgl"]
+script = ExtResource("2_bpova")
+start_minute = 690
+end_minute = 825
+kind = "CHOICE"
+locations = Array[String](["library", "cafe", "street", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_0ow6n"), SubResource("Resource_5ciby")])
+
+[sub_resource type="Resource" id="Resource_p2aj8"]
+script = ExtResource("3_8il5w")
+id = "di_hoc"
+label = "Đi học"
+required_location = "classroom"
+minutes = 195
+
+[sub_resource type="Resource" id="Resource_2ymj6"]
+script = ExtResource("2_bpova")
+start_minute = 825
+end_minute = 1020
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_p2aj8")])
+
+[sub_resource type="Resource" id="Resource_43pqr"]
+script = ExtResource("3_8il5w")
+id = "mo_panel"
+label = "Mở panel sửa"
+required_location = "workshop"
+
+[sub_resource type="Resource" id="Resource_genit"]
+script = ExtResource("3_8il5w")
+id = "nghi_tai_nha"
+label = "Nghỉ tại nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_hfb7j"]
+script = ExtResource("3_8il5w")
+id = "doc_sach_nha"
+label = "Đọc sách ở nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_es5mm"]
+script = ExtResource("2_bpova")
+start_minute = 1020
+end_minute = 1140
+kind = "REPAIR"
+locations = Array[String](["workshop", "street", "gate"])
+repair = true
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_43pqr"), SubResource("Resource_genit"), SubResource("Resource_hfb7j")])
+
+[sub_resource type="Resource" id="Resource_6wel0"]
+script = ExtResource("3_8il5w")
+id = "lam_project"
+label = "Làm project"
+required_location = "workshop"
+minutes = 180
+
+[sub_resource type="Resource" id="Resource_1quvq"]
+script = ExtResource("2_bpova")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_6wel0")])
+
+[sub_resource type="Resource" id="Resource_aebgr"]
+script = ExtResource("1_tscib")
+slots = Array[ExtResource("2_bpova")]([SubResource("Resource_c43ok"), SubResource("Resource_ttdgl"), SubResource("Resource_2ymj6"), SubResource("Resource_es5mm"), SubResource("Resource_1quvq")])
+
+[sub_resource type="Resource" id="Resource_tr8um"]
+script = ExtResource("3_8il5w")
+id = "lam_project_som"
+label = "Làm project sớm"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_llvga"]
+script = ExtResource("3_8il5w")
+id = "doc_sach_nha"
+label = "Đọc sách ở nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_2w2av"]
+script = ExtResource("3_8il5w")
+id = "don_kho"
+label = "Dọn dẹp"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_yryu8"]
+script = ExtResource("3_8il5w")
+id = "nghi_ngoi"
+label = "Nghỉ ngơi"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_7cebx"]
+script = ExtResource("2_bpova")
 start_minute = 420
 end_minute = 540
 kind = "FREE_HOME"
 locations = Array[String](["workshop"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_tr8um"), SubResource("Resource_llvga"), SubResource("Resource_2w2av"), SubResource("Resource_yryu8")])
 
-[sub_resource type="Resource" id="Resource_2cj08"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_me1xo"]
+script = ExtResource("3_8il5w")
+id = "mo_panel"
+label = "Mở panel sửa"
+required_location = "workshop"
+
+[sub_resource type="Resource" id="Resource_ne5lg"]
+script = ExtResource("3_8il5w")
+id = "nghi_tai_nha"
+label = "Nghỉ tại nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_j2l7h"]
+script = ExtResource("3_8il5w")
+id = "doc_sach_nha"
+label = "Đọc sách ở nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_7olbj"]
+script = ExtResource("2_bpova")
 start_minute = 540
 end_minute = 720
 kind = "REPAIR"
 locations = Array[String](["workshop", "street"])
 repair = true
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_me1xo"), SubResource("Resource_ne5lg"), SubResource("Resource_j2l7h")])
 
-[sub_resource type="Resource" id="Resource_2qfql"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_tena5"]
+script = ExtResource("3_8il5w")
+id = "nghi_giac"
+label = "Ngủ trưa"
+required_location = "workshop"
+minutes = 90
+
+[sub_resource type="Resource" id="Resource_1jfjk"]
+script = ExtResource("2_bpova")
 start_minute = 720
 end_minute = 810
 kind = "BREAK"
 locations = Array[String](["workshop"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_tena5")])
 
-[sub_resource type="Resource" id="Resource_xs8tt"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_qismg"]
+script = ExtResource("3_8il5w")
+id = "mo_panel"
+label = "Mở panel sửa"
+required_location = "workshop"
+
+[sub_resource type="Resource" id="Resource_cuyri"]
+script = ExtResource("3_8il5w")
+id = "nghi_tai_nha"
+label = "Nghỉ tại nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_1760h"]
+script = ExtResource("3_8il5w")
+id = "doc_sach_nha"
+label = "Đọc sách ở nhà"
+required_location = "workshop"
+minutes = 120
+
+[sub_resource type="Resource" id="Resource_euivi"]
+script = ExtResource("2_bpova")
 start_minute = 810
 end_minute = 1140
 kind = "REPAIR"
 locations = Array[String](["workshop", "street"])
 repair = true
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_qismg"), SubResource("Resource_cuyri"), SubResource("Resource_1760h")])
 
-[sub_resource type="Resource" id="Resource_1420r"]
-script = ExtResource("2_tscib")
+[sub_resource type="Resource" id="Resource_gcxoj"]
+script = ExtResource("3_8il5w")
+id = "lam_project"
+label = "Làm project"
+required_location = "workshop"
+minutes = 180
+
+[sub_resource type="Resource" id="Resource_f044s"]
+script = ExtResource("2_bpova")
 start_minute = 1140
 end_minute = 1320
 kind = "PROJECT"
 locations = Array[String](["workshop"])
+activities = Array[ExtResource("3_8il5w")]([SubResource("Resource_gcxoj")])
 
-[sub_resource type="Resource" id="Resource_2mrjq"]
-script = ExtResource("1_msv84")
-slots = Array[ExtResource("2_tscib")]([SubResource("Resource_uvtg8"), SubResource("Resource_2cj08"), SubResource("Resource_2qfql"), SubResource("Resource_xs8tt"), SubResource("Resource_1420r")])
+[sub_resource type="Resource" id="Resource_vu8da"]
+script = ExtResource("1_tscib")
+slots = Array[ExtResource("2_bpova")]([SubResource("Resource_7cebx"), SubResource("Resource_7olbj"), SubResource("Resource_1jfjk"), SubResource("Resource_euivi"), SubResource("Resource_f044s")])
 
 [resource]
-script = ExtResource("3_bpova")
-days = Array[ExtResource("1_msv84")]([SubResource("Resource_3ts12"), SubResource("Resource_k2h44"), SubResource("Resource_2xbgk"), SubResource("Resource_ui0u6"), SubResource("Resource_spcdu"), SubResource("Resource_cweml"), SubResource("Resource_2mrjq")])
+script = ExtResource("4_8mtih")
+days = Array[ExtResource("1_tscib")]([SubResource("Resource_5euxk"), SubResource("Resource_ybreg"), SubResource("Resource_k6x5g"), SubResource("Resource_7iwuh"), SubResource("Resource_1hua6"), SubResource("Resource_aebgr"), SubResource("Resource_vu8da")])
 holidays = PackedStringArray("04-30", "09-02", "2026-02-17")

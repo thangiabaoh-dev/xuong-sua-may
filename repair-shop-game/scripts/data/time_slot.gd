@@ -6,3 +6,4 @@ extends Resource
 @export var kind: String = ""
 @export var locations: Array[String] = []
 @export var repair: bool = false
+@export var activities: Array[ActivityDef] = []

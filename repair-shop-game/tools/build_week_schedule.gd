@@ -6,6 +6,38 @@ const REPAIR_WD := ["workshop", "street", "gate"]
 const REPAIR_CN := ["workshop", "street"]
 const HOME := ["workshop"]
 
+func _act(id: String, label: String, loc: String, minutes: int) -> ActivityDef:
+	var a := ActivityDef.new()
+	a.id = id
+	a.label = label
+	a.required_location = loc
+	a.minutes = minutes
+	return a
+
+func _acts_for(kind: String, s: int, e: int) -> Array:
+	match kind:
+		"SCHOOL":
+			return [_act("di_hoc", "Đi học", "classroom", e - s)]
+		"CHOICE":
+			return [_act("doc_thu_vien", "Đọc thư viện", "library", 135),
+				_act("project_ca_phe", "Project ở cà phê", "cafe", 135)]
+		"REPAIR":
+			return [_act("mo_panel", "Mở panel sửa", "workshop", 0),
+				_act("nghi_tai_nha", "Nghỉ tại nhà", "workshop", 120),
+				_act("doc_sach_nha", "Đọc sách ở nhà", "workshop", 120)]
+		"FREE_HOME":
+			return [_act("lam_project_som", "Làm project sớm", "workshop", 120),
+				_act("doc_sach_nha", "Đọc sách ở nhà", "workshop", 120),
+				_act("don_kho", "Dọn dẹp", "workshop", 120),
+				_act("nghi_ngoi", "Nghỉ ngơi", "workshop", 120)]
+		"PROJECT":
+			return [_act("lam_project", "Làm project", "workshop", 180)]
+		"BREAK":
+			return [_act("nghi_giac", "Ngủ trưa", "workshop", 90)]
+		"HOLIDAY":
+			return [_act("su_kien_doi_thuong", "Sự kiện đổi thưởng", "workshop", 900)]
+	return []
+
 func _slot(s: int, e: int, kind: String, locs: Array, repair := false) -> TimeSlot:
 	var t := TimeSlot.new()
 	t.start_minute = s
@@ -13,6 +45,7 @@ func _slot(s: int, e: int, kind: String, locs: Array, repair := false) -> TimeSl
 	t.kind = kind
 	t.locations.assign(locs)
 	t.repair = repair
+	t.activities.assign(_acts_for(kind, s, e))
 	return t
 
 func _day(rows: Array) -> DaySchedule:
