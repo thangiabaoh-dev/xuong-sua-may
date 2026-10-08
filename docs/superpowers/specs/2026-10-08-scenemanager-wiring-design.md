@@ -47,3 +47,11 @@ Parent scope: Visual + wiring + full lich tuan §4, split into 3 specs. Spec 1/3
 ## 6. Next
 
 Spec 3: full lich tuan §4 (T2-CN, ngay le, ca sua, tu do) + cho phep/chan map theo khung gio, de len tren Spec 2.
+
+## 7. Amendment (post-review 2026-10-08)
+
+Review grep ra 3 loi spec §3/plan thieu, da fix + test:
+- Handler loc su kien `pressed` (spec §3 chi ghi khong echo — release cung gay doi map).
+- `change_map` xoa TAT CA map (khong skip target) truoc khi instance — cong thuc `capitalize(loc)` nguoc logic ban dau, skip tao ghost `@Node3D@N` khong giao duoc.
+- Validate `LOCATIONS.has(loc)` + `load()` TRUOC khi mutate — truoc do loc sai pha het map.
+Spec 3 (lich tuan) phai keu 3 diem nay: pressed, same-loc semantics (reload sach), validate-before-mutate.
