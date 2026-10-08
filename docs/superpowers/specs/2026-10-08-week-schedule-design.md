@@ -169,7 +169,7 @@ Thêm 3 instance: `HUD`, `ScheduleScreen`, `ClockTimer`. Đây là lần đầu 
 
 ## 11. Amendment 2 (post-plan-review 2026-10-08)
 
-Bảng locations ban đầu chỉ chứa 4/7 map — `gate/classroom/street` **không bao giờ**进入 được → 3 map chết + test Spec 2 (`change_map -> gate`) fail vô điều kiện. Sửa theo §3 (cổng trường tan học 11:30/17:00, lớp học/hành lang, phố = tiệm linh kiện):
+Bảng locations ban đầu chỉ chứa 4/7 map — `gate/classroom/street` **không bao giờ**vào được → 3 map chết + test Spec 2 (`change_map -> gate`) fail vô điều kiện. Sửa theo §3 (cổng trường tan học 11:30/17:00, lớp học/hành lang, phố = tiệm linh kiện):
 - SCHOOL: `[schoolyard, classroom, gate]`
 - CHOICE: `[library, cafe, street, gate]`
 - REPAIR ngày thường: `[workshop, street, gate]` · REPAIR CN: `[workshop, street]`
