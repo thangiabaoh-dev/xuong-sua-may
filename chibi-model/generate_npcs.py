@@ -368,9 +368,15 @@ def build_giao_vien():
     _add(objs, "hair_neat", "hair_neat",
         shell_cap(HEAD_POS, HA, HB, HC, M, M,
             phi_min_quad(1.620, 1.300, 1.150, HC, M, 1.50), n_lam=28, n_phi=6))
-    # glasses: thin black box across eyes + bridge
-    _add(objs, "glasses", "glasses_black", box((0, -0.430, 1.445), 0.20, 0.020, 0.060), smooth=False)
-    _add(objs, "glasses_bridge", "glasses_black", box((0, -0.430, 1.450), 0.03, 0.015, 0.015), smooth=False)
+    # glasses: two rectangular rims + bridge (eyes visible through lens gaps)
+    for sx in (-1, 1):
+        cx, cz = sx * 0.17, 1.445
+        _add(objs, "glasses", "glasses_black", box((cx, -0.432, cz + 0.115), 0.135, 0.020, 0.018), smooth=False)
+        _add(objs, "glasses", "glasses_black", box((cx, -0.432, cz - 0.115), 0.135, 0.020, 0.018), smooth=False)
+        _add(objs, "glasses", "glasses_black", box((cx - 0.135, -0.432, cz), 0.018, 0.020, 0.115), smooth=False)
+        _add(objs, "glasses", "glasses_black", box((cx + 0.135, -0.432, cz), 0.018, 0.020, 0.115), smooth=False)
+    _add(objs, "glasses", "glasses_black", box((0, -0.432, 1.445), 0.055, 0.018, 0.018), smooth=False)
+
     _add(objs, "mouth", "mouth", super_shape((0, -0.410, 1.215), 0.052, 0.032, 0.030, 1, 1, 12, 8))
     # torso cream shirt + brown pants
     _add(objs, "torso", "shirt_cream", super_shape((0, 0, 0.83), 0.31, 0.26, 0.31, 0.5, 0.5, 24, 16))
