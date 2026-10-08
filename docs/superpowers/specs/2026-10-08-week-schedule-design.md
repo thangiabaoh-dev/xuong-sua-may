@@ -57,7 +57,7 @@ Thứ 3: như trên, nhưng `17:00–19:00` = `FREE_HOME [workshop]` (§4.2 — 
 
 Chủ nhật: `07:00–09:00 FREE_HOME [workshop]` · `09:00–12:00 REPAIR [workshop] repair=true` · `12:00–13:30 BREAK [workshop]` · `13:30–19:00 REPAIR [workshop] repair=true` · `19:00–22:00 PROJECT [workshop]`.
 
-Ngày lễ (date khớp `holidays`): một slot `07:00–22:00 HOLIDAY [workshop] repair=false` — không đơn, không trường.
+Ngày lễ (date khớp `holidays`): `slots_for_day` **tự sinh** slot `07:00–22:00 HOLIDAY [workshop] repair=false` (không lưu trong data) — không đơn, không trường.
 
 ### Quy ước ngoài khung
 - Game day = 07:00→22:00. `minute < 420` hoặc `>= 1320` là trạng thái ngoài lịch: **không có slot data** (không thêm kind SLEEP — deviation có chủ đích), `current_slot` trả `null`, `can_enter` trả `false` (fail-closed). `advance_to` tự gọi `end_day()` khi `minute >= 1320`, nên ngoài lịch chỉ tới được qua debug key.
@@ -70,7 +70,7 @@ Ngày lễ (date khớp `holidays`): một slot `07:00–22:00 HOLIDAY [workshop
 ```gdscript
 static func weekday(date: Dictionary) -> int          # Time.get_date_day_of_week, 1=T2..7=CN
 static func is_holiday(week, date) -> bool            # match "MM-DD" hoặc "YYYY-MM-DD"
-static func slots_for_day(week, date) -> Array        # holiday -> [HOLIDAY slot], else days[weekday-2]... 
+static func slots_for_day(week, date) -> Array        # holiday -> [HOLIDAY tự sinh], else days[weekday-1] slots
 static func current_slot(week, date, minute) -> Resource  # null nếu ngoài 07:00-22:00
 static func is_repair_slot(week, date, minute) -> bool
 static func allowed_locations(week, date, minute) -> Array  # []; fail-closed
@@ -133,7 +133,7 @@ static func change_map(parent, player, loc, gs) -> bool:
 
 ### `scenes/ui/schedule_screen.tscn` + `schedule_screen.gd` (CanvasLayer, `visible=false`)
 - Phím **Tab** (`_unhandled_input`, bỏ qua echo) toggle.
-- Bảng 7 cột `T2..CN`: mỗi cột liệt kê slot `start–end` + nhãn kind của ngày đó (dùng `ScheduleLogic.slots_for_day` với 1 `date` đại diện cho cột đó trong tuần hiện tại — thứ tự cột luôn T2→CN, nội dung theo template ngày thường/T3/CN).
+- Bảng 7 cột `T2..CN`: mỗi cột liệt kê slot `start–end` + nhãn kind của ngày đó (tính thứ Hai của tuần hiện tại, cột thứ i (0..6) lấy `date` = thứ Hai + i ngày rồi gọi `ScheduleLogic.slots_for_day` — thứ tự cột luôn T2→CN, nội dung theo template ngày thường/T3/CN/holiday của tuần đó).
 - Cột ngày hôm nay tô nổi bật. Mục "Ngày lễ" liệt kê `week.holidays`.
 - Không pause clock (áp lực §2.4).
 
@@ -145,7 +145,7 @@ Thêm 3 instance: `HUD`, `ScheduleScreen`, `ClockTimer`. Đây là lần đầu 
 | File | Bắt |
 |---|---|
 | `test_schedule_logic.gd` | weekday(2026-10-05)=1; slot T3 có FREE_HOME ≠ REPAIR; CN có 2 REPAIR + BREAK; boundary 11:29/11:30; holiday 2 format; allowed_locations strict/mở/fail-closed; can_enter |
-| `test_game_state_time.gd` | init 420/T2; advance_to(11:30) → CHOICE; advance_to(1320) → end_day (date+1, 420, mode SCHEDULE qua SUMMARIZE stub); state enum 4 giá trị |
+| `test_game_state_time.gd` | init 420/T2; advance_to(11:30) → CHOICE; advance_to(1320) → end_day tự kích hoạt (date+1, minute=420, mode về SCHEDULE — SUMMARIZE chỉ là trạng thái giữa, không kéo dài); state enum 4 giá trị |
 | `test_map_gating.gd` | change_map bị deny giờ học (false, scene không đổi); allow `workshop` lúc 17:00; CHOICE cho library+cafe,deny schoolyard; return true ở case allow |
 | `test_schedule_screen.gd` | instantiate `schedule_screen.tscn`/`hud.tscn`: đủ 7 cột, holiday list, TimeLabel tồn tại; source-pin update hook |
 | `test_clock_timer.gd` | `tick()` khi REPAIR advance minute; khi SCHEDULE không advance; F5/F6/F7 handler source-pin |
