@@ -12,10 +12,13 @@ func run() -> void:
 	if packed == null:
 		return
 	var root := packed.instantiate()
-	check_eq(root.get_child_count(), 3, "Main has 3 direct children")
+	check_eq(root.get_child_count(), 6, "Main has 6 direct children")
 	check(root.has_node("Workshop"), "has Workshop")
 	check(root.has_node("Player"), "has Player")
 	check(root.has_node("CameraRig"), "has CameraRig")
+	check(root.has_node("HUD"), "has HUD")
+	check(root.has_node("ScheduleScreen"), "has ScheduleScreen")
+	check(root.has_node("ClockTimer"), "has ClockTimer")
 
 	var player := root.get_node_or_null("Player")
 	if player != null:
