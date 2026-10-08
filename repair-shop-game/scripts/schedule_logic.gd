@@ -30,3 +30,21 @@ static func current_slot(week, date: Dictionary, minute: int):
 		if minute >= s.start_minute and minute < s.end_minute:
 			return s
 	return null
+
+static func allowed_locations(week, date: Dictionary, minute: int) -> Array:
+	var s = current_slot(week, date, minute)
+	if s == null:
+		return []
+	var out: Array = []
+	for loc in s.locations:
+		out.append(loc)
+	return out
+
+static func can_enter(week, date: Dictionary, minute: int, loc: String) -> bool:
+	return allowed_locations(week, date, minute).has(loc)
+
+static func is_repair_slot(week, date: Dictionary, minute: int) -> bool:
+	var s = current_slot(week, date, minute)
+	if s == null:
+		return false
+	return String(s.kind) == "REPAIR" and bool(s.repair)
