@@ -24,7 +24,7 @@ Parent scope: Visual + wiring + full lich tuan §4, split into 3 specs. Spec 1/3
   1. xoa child cua `parent` ten `capitalize(loc)` (cong thuc: voi "workshop" thi ten node la "Workshop", "schoolyard" → "Schoolyard"... dung `loc.capitalize()` — Godot String.capitalize() bo underscore va upper moi chu, "schoolyard" → "Schoolyard" — dung),
   2. `load(LOCATIONS[loc]).instantiate()`, dat ten, `parent.add_child(...)`,
   3. `GameState.current_location = loc`,
-  4. `player.position = SPAWN`, `player.velocity = Vector3.ZERO` (neu co).
+  4. `player.position = SPAWN`; player kieu `CharacterBody3D` (player.gd + test dummy deu la CharacterBody3D) → `velocity = Vector3.ZERO` khong dieu kien.
 - `_unhandled_input(event)`: InputEventKey khong echo, keycode KEY_1..KEY_7 → index vao LOCATIONS theo thu tu fixed `["workshop","schoolyard","gate","classroom","library","cafe","street"]` → goi change_map(get_tree().current_scene, player, loc) (player lay tu group "player", giong camera_follow).
 - Camera khong reset — camera_follow.gd tu catch-up.
 
@@ -32,7 +32,7 @@ Parent scope: Visual + wiring + full lich tuan §4, split into 3 specs. Spec 1/3
 
 `repair-shop-game/tests/test_scene_manager.gd` (headless, khong can frame):
 - LOCATIONS du 7 key, moi path load() khac null.
-- current_location mac dinh "workshop" (test_game_state hoac test nay).
+- current_location mac dinh "workshop" — assert trong test_scene_manager nay (khong dua test_game_state).
 - change_map thu vien: `var main := load("res://scenes/main.tscn").instantiate()` trong test → goi `SceneManager.change_map(main, player_dummy, "gate")` → assert: khong con node "Workshop", co node "Gate", GameState.current_location=="gate", player.position==SPAWN. Ghi chu: goi truc tiep script method (khuon mau get_script_method_list cua test_main_scene) vi autoload khong chay trong harness. Tuy nhien change_map static → load script .new()? GDScript static goi duoc qua resource: `load("...scene_manager.gd").change_map(...)`? Cach on nhat: static func — test goi `SceneMgr.change_map(...)` bang cach `var sm = load("res://scripts/autoload/scene_manager.gd")` roi `sm.change_map(...)` (GDScript static method goi duoc tu resource). Neu static khong goi duoc tu resource → test instance script (`.new()`) roi goi method.
 - Player dummy: `CharacterBody3D.new()` + them vao main, dat group "player".
 - Dau vao TEST_SCRIPTS truoc test_main_scene.
