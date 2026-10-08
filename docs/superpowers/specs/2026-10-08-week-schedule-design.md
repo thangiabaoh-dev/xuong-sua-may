@@ -47,15 +47,15 @@ Ngày thường T2, T4, T5, T6, T7:
 
 | phút | kind | locations | repair |
 |---|---|---|---|
-| 07:00–11:30 | SCHOOL | [schoolyard] | false |
-| 11:30–13:45 | CHOICE | [library, cafe] | false |
-| 13:45–17:00 | SCHOOL | [schoolyard] | false |
-| 17:00–19:00 | REPAIR | [workshop] | **true** (mở — hết đơn thì ở nhà làm việc khác) |
+| 07:00–11:30 | SCHOOL | [schoolyard, classroom, gate] | false |
+| 11:30–13:45 | CHOICE | [library, cafe, street, gate] | false |
+| 13:45–17:00 | SCHOOL | [schoolyard, classroom, gate] | false |
+| 17:00–19:00 | REPAIR | [workshop, street, gate] | **true** (mở — hết đơn thì ở nhà làm việc khác) |
 | 19:00–22:00 | PROJECT | [workshop] | false |
 
 Thứ 3: như trên, nhưng `17:00–19:00` = `FREE_HOME [workshop]` (§4.2 — bỏ ca sửa, 4 lựa chọn do spec hoạt động sau).
 
-Chủ nhật: `07:00–09:00 FREE_HOME [workshop]` · `09:00–12:00 REPAIR [workshop] repair=true` · `12:00–13:30 BREAK [workshop]` · `13:30–19:00 REPAIR [workshop] repair=true` · `19:00–22:00 PROJECT [workshop]`.
+Chủ nhật: `07:00–09:00 FREE_HOME [workshop]` · `09:00–12:00 REPAIR [workshop, street] repair=true` · `12:00–13:30 BREAK [workshop]` · `13:30–19:00 REPAIR [workshop, street] repair=true` · `19:00–22:00 PROJECT [workshop]`. (street = tiệm mua linh kiện §2.3; gate = nhận máy ở cổng tan học/`tan chiều` §3)
 
 Ngày lễ (date khớp `holidays`): `slots_for_day` **tự sinh** slot `07:00–22:00 HOLIDAY [workshop] repair=false` (không lưu trong data) — không đơn, không trường.
 
@@ -166,3 +166,12 @@ Thêm 3 instance: `HUD`, `ScheduleScreen`, `ClockTimer`. Đây là lần đầu 
 - Harness `godot --headless -s tests/run_tests.gd`; không autoload trong test → mọi thứ thuần/DI.
 - Không sửa file của session NPC (`chibi-model/*`, `test_npc_import.gd`, `verify_npcs.py`).
 - Gate + smoke đỏ thì không commit.
+
+## 11. Amendment 2 (post-plan-review 2026-10-08)
+
+Bảng locations ban đầu chỉ chứa 4/7 map — `gate/classroom/street` **không bao giờ**进入 được → 3 map chết + test Spec 2 (`change_map -> gate`) fail vô điều kiện. Sửa theo §3 (cổng trường tan học 11:30/17:00, lớp học/hành lang, phố = tiệm linh kiện):
+- SCHOOL: `[schoolyard, classroom, gate]`
+- CHOICE: `[library, cafe, street, gate]`
+- REPAIR ngày thường: `[workshop, street, gate]` · REPAIR CN: `[workshop, street]`
+- PROJECT / FREE_HOME / BREAK / HOLIDAY: giữ `[workshop]`.
+Mọi slot strict 1 phần tử vẫn strict; `can_enter` 2 mức không đổi.
