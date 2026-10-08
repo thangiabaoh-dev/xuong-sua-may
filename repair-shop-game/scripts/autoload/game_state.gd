@@ -6,6 +6,7 @@ var uy_tin: int = 0
 var ky_luat: int = 100
 
 const NIGHT_BAN_THRESHOLD := 50
+var current_location: String = "workshop"
 var inventory: Dictionary = {}
 
 func night_banned() -> bool:
