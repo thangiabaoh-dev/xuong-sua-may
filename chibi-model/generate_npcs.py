@@ -282,6 +282,15 @@ MATERIALS_NPCS_BASE = {
     "shoe_navy": (0.137, 0.173, 0.302),
     "stripe": (0.145, 0.145, 0.155),
     "glove_skin": (0.965, 0.843, 0.737),
+    "shirt_cream": (0.922, 0.882, 0.784),
+    "pants_brown": (0.431, 0.333, 0.235),
+    "hair_neat": (0.118, 0.118, 0.137),
+    "glasses_black": (0.055, 0.055, 0.062),
+    "briefcase_brown": (0.353, 0.255, 0.157),
+    "jacket_brown": (0.588, 0.431, 0.314),
+    "pants_gray": (0.510, 0.510, 0.529),
+    "hair_long": (0.314, 0.235, 0.176),
+    "laptop_gray": (0.549, 0.549, 0.569),
 }
 
 HEAD_POS = (0.0, 0.0, 1.50)
@@ -342,9 +351,97 @@ def build_ban_hoc():
         _add(objs, "backpack_strap", "backpack_green", box((sx*0.16, -0.27, 0.90), 0.05, 0.03, 0.28), smooth=False)
     return objs, mats
 
+def build_giao_vien():
+    objs = []
+    import copy
+    mats = dict(MATERIALS_NPCS_BASE)
+    # head reuse but neat hair
+    _add(objs, "head", "skin", super_shape(HEAD_POS, HEAD_A, HEAD_B, HEAD_C, M, M, 28, 18))
+    _add(objs, "neck", "skin", tcyl((0, 0, 1.00), (0, 0, 1.18), 0.12, 0.115, 12))
+    for sx in (-1, 1):
+        _add(objs, "ear", "skin", super_shape((sx * 0.45, 0.03, 1.42), 0.03, 0.06, 0.075, 1, 1, 10, 8))
+        _add(objs, "eye_white", "eye_white", super_shape((sx * 0.17, -0.396, 1.44), 0.115, 0.052, 0.11, 1, 1, 14, 10))
+        _add(objs, "iris", "iris", super_shape((sx * 0.17, -0.420, 1.435), 0.072, 0.040, 0.080, 1, 1, 12, 8))
+        _add(objs, "pupil", "pupil", super_shape((sx * 0.17, -0.440, 1.432), 0.034, 0.030, 0.044, 1, 1, 10, 8))
+    # neat combed hair (shorter shell)
+    HA, HB, HC = hs(1.05)
+    _add(objs, "hair_neat", "hair_neat",
+        shell_cap(HEAD_POS, HA, HB, HC, M, M,
+            phi_min_quad(1.620, 1.300, 1.150, HC, M, 1.50), n_lam=28, n_phi=6))
+    # glasses: thin black box across eyes + bridge
+    _add(objs, "glasses", "glasses_black", box((0, -0.430, 1.445), 0.20, 0.020, 0.060), smooth=False)
+    _add(objs, "glasses_bridge", "glasses_black", box((0, -0.430, 1.450), 0.03, 0.015, 0.015), smooth=False)
+    _add(objs, "mouth", "mouth", super_shape((0, -0.410, 1.215), 0.052, 0.032, 0.030, 1, 1, 12, 8))
+    # torso cream shirt + brown pants
+    _add(objs, "torso", "shirt_cream", super_shape((0, 0, 0.83), 0.31, 0.26, 0.31, 0.5, 0.5, 24, 16))
+    for sx in (-1, 1):
+        sh = (sx * 0.23, 0.0, 1.06)
+        wr = (sx * 0.41, -0.03, 0.60)
+        _add(objs, "sleeve", "shirt_cream", tcyl(sh, wr, 0.125, 0.09, 12))
+        _add(objs, "glove", "glove_skin", super_shape((sx * 0.425, -0.035, 0.545), 0.088, 0.078, 0.098, 0.8, 0.8, 14, 10))
+    _add(objs, "hips", "pants_brown", super_shape((0, 0, 0.615), 0.27, 0.23, 0.06, 0.5, 0.5, 20, 10))
+    for sx in (-1, 1):
+        hip = (sx * 0.13, 0.0, 0.62)
+        ank = (sx * 0.145, 0.0, 0.155)
+        _add(objs, "pant_leg", "pants_brown", tcyl(hip, ank, 0.135, 0.098, 12))
+        x = sx * 0.145
+        _add(objs, "shoe_sole", "shoe_navy", super_shape((x, -0.025, 0.035), 0.108, 0.148, 0.035, 0.45, 0.45, 16, 10))
+        _add(objs, "shoe_midsole", "shoe_blue", super_shape((x, -0.025, 0.072), 0.104, 0.144, 0.030, 0.45, 0.45, 16, 10))
+        _add(objs, "shoe_upper", "shoe_white", super_shape((x, -0.015, 0.135), 0.100, 0.140, 0.065, 0.5, 0.5, 16, 10))
+    # briefcase right side
+    _add(objs, "briefcase", "briefcase_brown", box((0.48, 0.10, 0.55), 0.12, 0.10, 0.20), smooth=False)
+    _add(objs, "briefcase_handle", "briefcase_brown", box((0.48, -0.02, 0.78), 0.03, 0.03, 0.06), smooth=False)
+    return objs, mats
+
+def build_hoai_niem():
+    objs = []
+    mats = dict(MATERIALS_NPCS_BASE)
+    _add(objs, "head", "skin", super_shape(HEAD_POS, HEAD_A, HEAD_B, HEAD_C, M, M, 28, 18))
+    _add(objs, "neck", "skin", tcyl((0, 0, 1.00), (0, 0, 1.18), 0.12, 0.115, 12))
+    for sx in (-1, 1):
+        _add(objs, "ear", "skin", super_shape((sx * 0.45, 0.03, 1.42), 0.03, 0.06, 0.075, 1, 1, 10, 8))
+        _add(objs, "eye_white", "eye_white", super_shape((sx * 0.17, -0.396, 1.44), 0.115, 0.052, 0.11, 1, 1, 14, 10))
+        _add(objs, "iris", "iris", super_shape((sx * 0.17, -0.420, 1.435), 0.072, 0.040, 0.080, 1, 1, 12, 8))
+        _add(objs, "pupil", "pupil", super_shape((sx * 0.17, -0.440, 1.432), 0.034, 0.030, 0.044, 1, 1, 10, 8))
+    _add(objs, "mouth", "mouth", super_shape((0, -0.410, 1.215), 0.052, 0.032, 0.030, 1, 1, 12, 8))
+    # long hair shell + ponytail back
+    HA, HB, HC = hs(1.08)
+    _add(objs, "hair_long_shell", "hair_long",
+        shell_cap(HEAD_POS, HA, HB, HC, M, M,
+            phi_min_quad(1.560, 1.180, 1.020, HC, M, 1.50), n_lam=28, n_phi=7))
+    _add(objs, "ponytail", "hair_long", cone((0, 0.35, 1.30), (0, 0.48, 0.95), 0.10, 12, 0.7))
+    # jacket torso
+    _add(objs, "torso", "jacket_brown", super_shape((0, 0, 0.83), 0.32, 0.27, 0.31, 0.5, 0.5, 24, 16))
+    _add(objs, "collar", "jacket_brown", super_shape((0, 0.10, 1.10), 0.20, 0.12, 0.08, 0.6, 0.6, 16, 10))
+    # arms forward holding laptop
+    for sx in (-1, 1):
+        sh = (sx * 0.24, 0.0, 1.02)
+        el = (sx * 0.30, -0.20, 0.80)
+        ha = (sx * 0.18, -0.32, 0.82)
+        _add(objs, "sleeve_upper", "jacket_brown", tcyl(sh, el, 0.125, 0.10, 12))
+        _add(objs, "sleeve_fore", "jacket_brown", tcyl(el, ha, 0.10, 0.085, 12))
+        _add(objs, "glove", "glove_skin", super_shape((ha[0], ha[1], ha[2]-0.03), 0.08, 0.07, 0.09, 0.8, 0.8, 12, 10))
+    # old thick laptop in front (-Y)
+    _add(objs, "old_laptop", "laptop_gray", box((0, -0.33, 0.82), 0.28, 0.06, 0.20), smooth=False)
+    _add(objs, "old_laptop_screen", "laptop_gray", box((0, -0.30, 0.98), 0.28, 0.04, 0.14), smooth=False)
+    _add(objs, "hips", "pants_gray", super_shape((0, 0, 0.615), 0.27, 0.23, 0.06, 0.5, 0.5, 20, 10))
+    for sx in (-1, 1):
+        hip = (sx * 0.13, 0.0, 0.62)
+        ank = (sx * 0.145, 0.0, 0.155)
+        _add(objs, "pant_leg", "pants_gray", tcyl(hip, ank, 0.135, 0.098, 12))
+        x = sx * 0.145
+        _add(objs, "shoe_sole", "shoe_navy", super_shape((x, -0.025, 0.035), 0.108, 0.148, 0.035, 0.45, 0.45, 16, 10))
+        _add(objs, "shoe_midsole", "shoe_blue", super_shape((x, -0.025, 0.072), 0.104, 0.144, 0.030, 0.45, 0.45, 16, 10))
+        _add(objs, "shoe_upper", "shoe_white", super_shape((x, -0.015, 0.135), 0.100, 0.140, 0.065, 0.5, 0.5, 16, 10))
+    return objs, mats
+
 def build_variant(name: str):
     if name == "ban_hoc":
         return build_ban_hoc()
+    if name == "giao_vien":
+        return build_giao_vien()
+    if name == "hoai_niem":
+        return build_hoai_niem()
     raise ValueError(f"unknown variant {name}")
 
 def face_normal(v, f):
@@ -436,7 +533,7 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     variants = ["ban_hoc"]
     if "--all" in args:
-        variants = ["ban_hoc"]
+        variants = ["ban_hoc", "giao_vien", "hoai_niem"]
     elif "--variant" in args:
         i = args.index("--variant")
         variants = [args[i+1]] if i+1 < len(args) else variants
