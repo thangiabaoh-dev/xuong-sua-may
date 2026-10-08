@@ -145,9 +145,27 @@ def test_rendered_colours():
     print(f"PASS test_rendered_colours ({len(COLOR_CHECKS)} samples)")
 
 
+def test_source_assets_in_sync():
+    """chibi-model source copies must be byte-identical to what Godot imports."""
+    import hashlib
+
+    def md5(f):
+        return hashlib.md5(open(f, "rb").read()).hexdigest()
+
+    assets = os.path.join(HERE, "..", "repair-shop-game", "assets", "models")
+    for v in VARIANTS:
+        for ext in (".obj", ".mtl"):
+            src = os.path.join(HERE, v + ext)
+            dst = os.path.join(assets, v + ext)
+            assert os.path.exists(dst), f"{v}{ext}: missing in assets/models"
+            assert md5(src) == md5(dst), f"{v}{ext}: chibi-model and assets/models differ"
+    print("PASS test_source_assets_in_sync")
+
+
 def main():
     tests = [test_face_orientation_minus_y, test_budget_and_height,
-             test_mtl_names_match, test_rendered_colours]
+             test_mtl_names_match, test_rendered_colours,
+             test_source_assets_in_sync]
     for t in tests:
         try:
             t()
