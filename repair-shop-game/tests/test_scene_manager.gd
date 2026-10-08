@@ -33,3 +33,7 @@ func run() -> void:
 	check_near(player.position.z, 0.0, 0.001, "spawn Z")
 	check_eq(player.velocity, Vector3.ZERO, "velocity reset")
 	main.free()
+	# handler source pin (khuon mau _camera_script_reads_player_group)
+	var f = FileAccess.open("res://scripts/autoload/scene_manager.gd", FileAccess.READ)
+	check(f != null and f.get_as_text().contains("_unhandled_input"), "handler defined")
+	check(f != null and f.get_as_text().contains("get_first_node_in_group(\"player\")"), "resolves player group")

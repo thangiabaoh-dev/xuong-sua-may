@@ -32,3 +32,23 @@ static func change_map(parent: Node3D, player: CharacterBody3D, loc: String, gs:
 	gs.set("current_location", loc)
 	player.position = SPAWN
 	player.velocity = Vector3.ZERO
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventKey):
+		return
+	var key := event as InputEventKey
+	if key.echo:
+		return
+	var loc := location_for_key(key.keycode)
+	if loc == "":
+		return
+	var tree := get_tree()
+	if tree == null or tree.current_scene == null:
+		return
+	var player := tree.get_first_node_in_group("player") as CharacterBody3D
+	if player == null:
+		return
+	var gs := get_node_or_null("/root/GameState")
+	if gs == null:
+		return
+	change_map(tree.current_scene as Node3D, player, loc, gs)
