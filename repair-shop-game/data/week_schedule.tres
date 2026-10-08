@@ -1,0 +1,290 @@
+[gd_resource type="Resource" script_class="WeekSchedule" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/day_schedule.gd" id="1_msv84"]
+[ext_resource type="Script" path="res://scripts/data/time_slot.gd" id="2_tscib"]
+[ext_resource type="Script" path="res://scripts/data/week_schedule.gd" id="3_bpova"]
+
+[sub_resource type="Resource" id="Resource_8il5w"]
+script = ExtResource("2_tscib")
+start_minute = 420
+end_minute = 690
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_8mtih"]
+script = ExtResource("2_tscib")
+start_minute = 690
+end_minute = 825
+kind = "CHOICE"
+locations = Array[String](["library", "cafe", "street", "gate"])
+
+[sub_resource type="Resource" id="Resource_wtc1e"]
+script = ExtResource("2_tscib")
+start_minute = 825
+end_minute = 1020
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_lg0kb"]
+script = ExtResource("2_tscib")
+start_minute = 1020
+end_minute = 1140
+kind = "REPAIR"
+locations = Array[String](["workshop", "street", "gate"])
+repair = true
+
+[sub_resource type="Resource" id="Resource_rufyt"]
+script = ExtResource("2_tscib")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_3ts12"]
+script = ExtResource("1_msv84")
+slots = Array[ExtResource("2_tscib")]([SubResource("Resource_8il5w"), SubResource("Resource_8mtih"), SubResource("Resource_wtc1e"), SubResource("Resource_lg0kb"), SubResource("Resource_rufyt")])
+
+[sub_resource type="Resource" id="Resource_gedhm"]
+script = ExtResource("2_tscib")
+start_minute = 420
+end_minute = 690
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_xude2"]
+script = ExtResource("2_tscib")
+start_minute = 690
+end_minute = 825
+kind = "CHOICE"
+locations = Array[String](["library", "cafe", "street", "gate"])
+
+[sub_resource type="Resource" id="Resource_b1vnl"]
+script = ExtResource("2_tscib")
+start_minute = 825
+end_minute = 1020
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_c8rjb"]
+script = ExtResource("2_tscib")
+start_minute = 1020
+end_minute = 1140
+kind = "FREE_HOME"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_pruhx"]
+script = ExtResource("2_tscib")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_k2h44"]
+script = ExtResource("1_msv84")
+slots = Array[ExtResource("2_tscib")]([SubResource("Resource_gedhm"), SubResource("Resource_xude2"), SubResource("Resource_b1vnl"), SubResource("Resource_c8rjb"), SubResource("Resource_pruhx")])
+
+[sub_resource type="Resource" id="Resource_x1w7g"]
+script = ExtResource("2_tscib")
+start_minute = 420
+end_minute = 690
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_4il3j"]
+script = ExtResource("2_tscib")
+start_minute = 690
+end_minute = 825
+kind = "CHOICE"
+locations = Array[String](["library", "cafe", "street", "gate"])
+
+[sub_resource type="Resource" id="Resource_m4cx5"]
+script = ExtResource("2_tscib")
+start_minute = 825
+end_minute = 1020
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_5euxk"]
+script = ExtResource("2_tscib")
+start_minute = 1020
+end_minute = 1140
+kind = "REPAIR"
+locations = Array[String](["workshop", "street", "gate"])
+repair = true
+
+[sub_resource type="Resource" id="Resource_0mj82"]
+script = ExtResource("2_tscib")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_2xbgk"]
+script = ExtResource("1_msv84")
+slots = Array[ExtResource("2_tscib")]([SubResource("Resource_x1w7g"), SubResource("Resource_4il3j"), SubResource("Resource_m4cx5"), SubResource("Resource_5euxk"), SubResource("Resource_0mj82")])
+
+[sub_resource type="Resource" id="Resource_5kel0"]
+script = ExtResource("2_tscib")
+start_minute = 420
+end_minute = 690
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_5trhk"]
+script = ExtResource("2_tscib")
+start_minute = 690
+end_minute = 825
+kind = "CHOICE"
+locations = Array[String](["library", "cafe", "street", "gate"])
+
+[sub_resource type="Resource" id="Resource_hx6du"]
+script = ExtResource("2_tscib")
+start_minute = 825
+end_minute = 1020
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_3vnb7"]
+script = ExtResource("2_tscib")
+start_minute = 1020
+end_minute = 1140
+kind = "REPAIR"
+locations = Array[String](["workshop", "street", "gate"])
+repair = true
+
+[sub_resource type="Resource" id="Resource_87eed"]
+script = ExtResource("2_tscib")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_ui0u6"]
+script = ExtResource("1_msv84")
+slots = Array[ExtResource("2_tscib")]([SubResource("Resource_5kel0"), SubResource("Resource_5trhk"), SubResource("Resource_hx6du"), SubResource("Resource_3vnb7"), SubResource("Resource_87eed")])
+
+[sub_resource type="Resource" id="Resource_5835g"]
+script = ExtResource("2_tscib")
+start_minute = 420
+end_minute = 690
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_tr4ft"]
+script = ExtResource("2_tscib")
+start_minute = 690
+end_minute = 825
+kind = "CHOICE"
+locations = Array[String](["library", "cafe", "street", "gate"])
+
+[sub_resource type="Resource" id="Resource_gbxge"]
+script = ExtResource("2_tscib")
+start_minute = 825
+end_minute = 1020
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_1p5xn"]
+script = ExtResource("2_tscib")
+start_minute = 1020
+end_minute = 1140
+kind = "REPAIR"
+locations = Array[String](["workshop", "street", "gate"])
+repair = true
+
+[sub_resource type="Resource" id="Resource_14kuk"]
+script = ExtResource("2_tscib")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_spcdu"]
+script = ExtResource("1_msv84")
+slots = Array[ExtResource("2_tscib")]([SubResource("Resource_5835g"), SubResource("Resource_tr4ft"), SubResource("Resource_gbxge"), SubResource("Resource_1p5xn"), SubResource("Resource_14kuk")])
+
+[sub_resource type="Resource" id="Resource_ybreg"]
+script = ExtResource("2_tscib")
+start_minute = 420
+end_minute = 690
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_4ie1j"]
+script = ExtResource("2_tscib")
+start_minute = 690
+end_minute = 825
+kind = "CHOICE"
+locations = Array[String](["library", "cafe", "street", "gate"])
+
+[sub_resource type="Resource" id="Resource_hkhcl"]
+script = ExtResource("2_tscib")
+start_minute = 825
+end_minute = 1020
+kind = "SCHOOL"
+locations = Array[String](["schoolyard", "classroom", "gate"])
+
+[sub_resource type="Resource" id="Resource_q34r7"]
+script = ExtResource("2_tscib")
+start_minute = 1020
+end_minute = 1140
+kind = "REPAIR"
+locations = Array[String](["workshop", "street", "gate"])
+repair = true
+
+[sub_resource type="Resource" id="Resource_dmbob"]
+script = ExtResource("2_tscib")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_cweml"]
+script = ExtResource("1_msv84")
+slots = Array[ExtResource("2_tscib")]([SubResource("Resource_ybreg"), SubResource("Resource_4ie1j"), SubResource("Resource_hkhcl"), SubResource("Resource_q34r7"), SubResource("Resource_dmbob")])
+
+[sub_resource type="Resource" id="Resource_uvtg8"]
+script = ExtResource("2_tscib")
+start_minute = 420
+end_minute = 540
+kind = "FREE_HOME"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_2cj08"]
+script = ExtResource("2_tscib")
+start_minute = 540
+end_minute = 720
+kind = "REPAIR"
+locations = Array[String](["workshop", "street"])
+repair = true
+
+[sub_resource type="Resource" id="Resource_2qfql"]
+script = ExtResource("2_tscib")
+start_minute = 720
+end_minute = 810
+kind = "BREAK"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_xs8tt"]
+script = ExtResource("2_tscib")
+start_minute = 810
+end_minute = 1140
+kind = "REPAIR"
+locations = Array[String](["workshop", "street"])
+repair = true
+
+[sub_resource type="Resource" id="Resource_1420r"]
+script = ExtResource("2_tscib")
+start_minute = 1140
+end_minute = 1320
+kind = "PROJECT"
+locations = Array[String](["workshop"])
+
+[sub_resource type="Resource" id="Resource_2mrjq"]
+script = ExtResource("1_msv84")
+slots = Array[ExtResource("2_tscib")]([SubResource("Resource_uvtg8"), SubResource("Resource_2cj08"), SubResource("Resource_2qfql"), SubResource("Resource_xs8tt"), SubResource("Resource_1420r")])
+
+[resource]
+script = ExtResource("3_bpova")
+days = Array[ExtResource("1_msv84")]([SubResource("Resource_3ts12"), SubResource("Resource_k2h44"), SubResource("Resource_2xbgk"), SubResource("Resource_ui0u6"), SubResource("Resource_spcdu"), SubResource("Resource_cweml"), SubResource("Resource_2mrjq")])
+holidays = PackedStringArray("04-30", "09-02", "2026-02-17")

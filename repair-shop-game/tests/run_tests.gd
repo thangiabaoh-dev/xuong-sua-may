@@ -24,6 +24,7 @@ const TEST_SCRIPTS: PackedStringArray = [
 	"res://tests/test_part_catalog.gd",
 	"res://tests/test_customer_catalog.gd",
 	"res://tests/test_minigame_controller.gd",
+	"res://tests/test_schedule_logic.gd",
 ]
 
 func _init() -> void:
