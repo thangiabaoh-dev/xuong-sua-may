@@ -145,6 +145,17 @@ def test_rendered_colours():
     print(f"PASS test_rendered_colours ({len(COLOR_CHECKS)} samples)")
 
 
+def test_brow_present():
+    for v in ("giao_vien", "hoai_niem"):
+        found = False
+        for line in open(os.path.join(HERE, f"{v}.obj")):
+            if line.split() == ["o", "brow"]:
+                found = True
+                break
+        assert found, f"{v}: no brow object (ban_hoc has it)"
+    print("PASS test_brow_present")
+
+
 def test_source_assets_in_sync():
     """chibi-model source copies must be byte-identical to what Godot imports."""
     import hashlib
@@ -164,7 +175,7 @@ def test_source_assets_in_sync():
 
 def main():
     tests = [test_face_orientation_minus_y, test_budget_and_height,
-             test_mtl_names_match, test_rendered_colours,
+             test_mtl_names_match, test_rendered_colours, test_brow_present,
              test_source_assets_in_sync]
     for t in tests:
         try:

@@ -353,7 +353,6 @@ def build_ban_hoc():
 
 def build_giao_vien():
     objs = []
-    import copy
     mats = dict(MATERIALS_NPCS_BASE)
     # head reuse but neat hair
     _add(objs, "head", "skin", super_shape(HEAD_POS, HEAD_A, HEAD_B, HEAD_C, M, M, 28, 18))
@@ -363,6 +362,7 @@ def build_giao_vien():
         _add(objs, "eye_white", "eye_white", super_shape((sx * 0.17, -0.396, 1.44), 0.115, 0.052, 0.11, 1, 1, 14, 10))
         _add(objs, "iris", "iris", super_shape((sx * 0.17, -0.420, 1.435), 0.072, 0.040, 0.080, 1, 1, 12, 8))
         _add(objs, "pupil", "pupil", super_shape((sx * 0.17, -0.440, 1.432), 0.034, 0.030, 0.044, 1, 1, 10, 8))
+        _add(objs, "brow", "brow", box((sx * 0.17, -0.418, 1.575), 0.055, 0.016, 0.012), smooth=False)
     # neat combed hair (shorter shell)
     HA, HB, HC = hs(1.05)
     _add(objs, "hair_neat", "hair_neat",
@@ -409,6 +409,7 @@ def build_hoai_niem():
         _add(objs, "eye_white", "eye_white", super_shape((sx * 0.17, -0.396, 1.44), 0.115, 0.052, 0.11, 1, 1, 14, 10))
         _add(objs, "iris", "iris", super_shape((sx * 0.17, -0.420, 1.435), 0.072, 0.040, 0.080, 1, 1, 12, 8))
         _add(objs, "pupil", "pupil", super_shape((sx * 0.17, -0.440, 1.432), 0.034, 0.030, 0.044, 1, 1, 10, 8))
+        _add(objs, "brow", "brow", box((sx * 0.17, -0.418, 1.575), 0.055, 0.016, 0.012), smooth=False)
     _add(objs, "mouth", "mouth", super_shape((0, -0.410, 1.215), 0.052, 0.032, 0.030, 1, 1, 12, 8))
     # long hair shell + ponytail back
     HA, HB, HC = hs(1.08)
