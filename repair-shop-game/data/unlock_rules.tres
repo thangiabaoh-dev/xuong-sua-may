@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="UnlockRuleSet" format=3]
+
+[ext_resource type="Script" path="res://scripts/progression/unlock_rule.gd" id="1_qxo5v"]
+[ext_resource type="Script" path="res://scripts/progression/unlock_rule_set.gd" id="2_027ol"]
+
+[sub_resource type="Resource" id="Resource_8atkr"]
+script = ExtResource("1_qxo5v")
+id = &"may_co"
+target_kind = "machine"
+target_id = &"may_co"
+condition = "knowledge >= 50"
+
+[sub_resource type="Resource" id="Resource_qwxk5"]
+script = ExtResource("1_qxo5v")
+id = &"may_phuc_tap"
+target_kind = "machine"
+target_id = &"may_phuc_tap"
+condition = "knowledge >= 80"
+
+[sub_resource type="Resource" id="Resource_jewx8"]
+script = ExtResource("1_qxo5v")
+id = &"khach_giao_vien"
+target_kind = "customer"
+target_id = &"khach_giao_vien"
+condition = "uy_tin >= 60"
+
+[sub_resource type="Resource" id="Resource_w8wut"]
+script = ExtResource("1_qxo5v")
+id = &"khach_phong_tin"
+target_kind = "customer"
+target_id = &"khach_phong_tin"
+condition = "uy_tin >= 90 and workspace_tier >= 1"
+
+[resource]
+script = ExtResource("2_027ol")
+rules = Array[ExtResource("1_qxo5v")]([SubResource("Resource_8atkr"), SubResource("Resource_qwxk5"), SubResource("Resource_jewx8"), SubResource("Resource_w8wut")])
