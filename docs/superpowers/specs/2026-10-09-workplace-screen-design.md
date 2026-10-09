@@ -23,10 +23,10 @@ Structure (code-built children theo pattern `hud.gd::_build_ui`):
   - Primitive tối giản, style low-poly DESIGN.md §8. Không asset ngoài.
 - **UpgradePanel** — hiện tier hiện tại → tier kế (`data/workspace_upgrades.tres`: ROOM 1.000.000/uy_tin 40; SHOP 5.000.000/uy_tin 120), nút "NÂNG CẤP" (tắt khi tier = 2).
 - **GoalTracker** — 2 khối:
-  - *Milestones*: mỗi enabled rule trong `data/unlock_rules.tres` →1 dòng: tên rule + % (`min(giá trị hiện tại / ngưỡng)`, rule nhiều điều kiện lấy % nhỏ nhất) + dấu ✓ khi `core.is_unlocked(id)`.
-  - *Khách*: `CustomerCatalog.load_all()` →1 dòng/khách; nếu `customer.unlock_rule != ""` và chưa unlock → hàng mờ + ghi chú lý do; unlock_rule rỗng = luôn thấy.
+  - *Milestones*: mỗi enabled rule trong `data/unlock_rules.tres` →1 dòng: tên rule (`UnlockRule.label`, field thêm ở §2.4) + % (`min(giá trị hiện tại / ngưỡng)`, rule nhiều điều kiện lấy % nhỏ nhất) + dấu ✓ khi `core.is_unlocked(id)`.
+  - *Khách*: `CustomerCatalog.load_all()` →1 dòng/khách; nếu `customer.unlock_rule != ""` và chưa unlock → hàng mờ (`modulate.a = 0.4`) + ghi chú `Chưa mở` (cần gì → xem mục Milestones phía trên); unlock_rule rỗng = luôn thấy.
 - **Toast** — `Label` transient trong scene: hiện text1.5s rồi ẩn (dùng cho kết quả nâng cấp, §3.2–3.3).
-- **Đóng:** nút ✕ + `Esc` → gỡ overlay khỏi cây (main.tscn giữ nguyên, scene load động).
+- **Đóng:** nút ✕ + `Esc` → ẩn overlay (giữ instance); mở lại từ HUD → refresh trạng thái (main.tscn giữ nguyên, scene load động).
 
 ### 2.2 UnlockCore — scene-local
 
@@ -38,8 +38,10 @@ Structure (code-built children theo pattern `hud.gd::_build_ui`):
 - `scripts/ui/hud.gd::_build_ui()` +1 `Button` "CHỖ LÀM" (additive).
 - Click → `load("res://scenes/ui/workplace_screen.tscn").instantiate()` → `add_child` overlay full-rect (không sửa `main.tscn`).
 
-### 2.4 Catalog hook
+### 2.4 Catalog & data hooks
 
+- `scripts/progression/unlock_rule.gd` +1 field: `@export var label: String = ""`.
+- `tools/build_progression.gd`: gán nhãn 4 rule — `may_co`→"Máy cổ", `may_phuc_tap`→"Máy phức tạp", `khach_giao_vien`→"Khách giáo viên", `khach_phong_tin`→"Khách phòng tin" → chạy lại tool regen `data/unlock_rules.tres`.
 - `scripts/customer_def.gd` +1 field: `@export var unlock_rule: StringName = &""`.
 - `data/customers/*.tres`: `ban_hoc` → `&""` (luôn mở), `giao_vien` → `&"khach_giao_vien"`, `hoai_niem` → `&"khach_phong_tin"`.
 - Không helper mới trong `CustomerCatalog` — screen tự filter (đơn giản, 1 chỗ dùng).
@@ -49,7 +51,7 @@ Structure (code-built children theo pattern `hud.gd::_build_ui`):
 | Loại | File |
 |---|---|
 | Mới | `scenes/ui/workplace_screen.tscn`, `scripts/ui/workplace_screen.gd`, `tests/test_workplace_screen.gd` |
-| Sửa (additive) | `scripts/ui/hud.gd` (+1 nút), `scripts/customer_def.gd` (+1 field), `data/customers/*.tres` (3 file +1 dòng), `tests/run_tests.gd` (+đăng ký) |
+| Sửa (additive) | `scripts/ui/hud.gd` (+1 nút), `scripts/customer_def.gd` (+1 field), `scripts/progression/unlock_rule.gd` (+1 field), `tools/build_progression.gd` (+label), `data/unlock_rules.tres` (regen), `data/customers/*.tres` (3 file +1 dòng), `tests/run_tests.gd` (+đăng ký) |
 | Không sửa | `game_state.gd`, `main.tscn`, `unlock_core.gd`, `workspace_upgrades.gd` |
 
 ## 3. Behavior
@@ -58,7 +60,7 @@ Structure (code-built children theo pattern `hud.gd::_build_ui`):
 2. Upgrade thành công (`try_upgrade` trả `""`): `money` trừ, `workspace_tier` +1 (logic 4a, validate-before-mutate) → toast "Đã mở chỗ làm mới!" → backdrop rebuild → core refresh → tracker cập nhật.
 3. Upgrade fail: toast theo reason key — `no_money`→"Chưa đủ tiền", `low_uy_tin`→"Uy tín còn thấp", `condition`→"Điều kiện chưa đạt", `max_tier`→"Đã là tiệm rồi"; **không mutate** `money`/`workspace_tier`.
 4. Milestone mở khoá trong lúc scene đang mở (upgrade thỏa điều kiện uy_tin/tier) → `unlock_changed` phát → ô đó chuyển ✓ ngay, không cần mở lại.
-5. Đóng bằng ✕ hoặc `Esc`, mở lại từ HUD → trạng thái đọc lại từ GameState (không cache cũ).
+5. Đóng bằng ✕ hoặc `Esc` (ẩn overlay), mở lại từ HUD → trạng thái đọc lại từ GameState (không cache cũ).
 
 ## 4. Error handling
 
