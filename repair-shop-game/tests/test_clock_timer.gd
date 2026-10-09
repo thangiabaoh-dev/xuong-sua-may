@@ -59,15 +59,21 @@ func run() -> void:
 	check_eq(gs.date["day"], 6, "date +1 after sleep")
 	check_eq(int(gs.mode), int(gs_script.GameStateMode.SCHEDULE), "SCHEDULE after sleep")
 
-	# tick qua 22:00: end_day, ve SCHEDULE, KHONG tiep tuc (Review Focus #4)
+	# tick qua 22:00: end_day dung tai SUMMARIZE, ngay moi khi begin_new_day (merge 2 spec)
 	gs.mode = gs_script.GameStateMode.REPAIR
 	gs.minute = 1319
 	ct.tick(2.0)
-	check_eq(gs.minute, 420, "crossed 22:00 -> 07:00")
-	check_eq(gs.date["day"], 7, "date +1 after midnight")
-	check_eq(gs.mode, gs_script.GameStateMode.SCHEDULE, "mode SCHEDULE after end_day")
+	check_eq(gs.minute, 1320, "crossed 22:00 -> clamp 1320")
+	check_eq(gs.mode, gs_script.GameStateMode.SUMMARIZE, "mode SUMMARIZE after end_day")
+	check_eq(gs.date["day"], 6, "date unchanged until begin_new_day")
 	ct.tick(60.0)
-	check_eq(gs.minute, 420, "not ticking after end_day")
+	check_eq(gs.minute, 1320, "not ticking in SUMMARIZE")
+	gs.begin_new_day()
+	check_eq(gs.minute, 420, "07:00 after begin_new_day")
+	check_eq(gs.date["day"], 7, "date +1 after begin_new_day")
+	check_eq(gs.mode, gs_script.GameStateMode.SCHEDULE, "SCHEDULE after begin_new_day")
+	ct.tick(60.0)
+	check_eq(gs.minute, 420, "not ticking in SCHEDULE")
 	check_eq(gs.date["day"], 7, "date untouched by extra ticks")
 
 	ct.free()
