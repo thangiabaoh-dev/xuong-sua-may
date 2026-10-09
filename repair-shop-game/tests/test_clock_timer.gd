@@ -44,12 +44,16 @@ func run() -> void:
 	check_eq(gs.minute, 453, "F6 +30 min")
 	check_eq(box[1], 453, "F6 emits")
 
-	# F7 end_day
+	# F7 -> SUMMARIZE (khong con auto reset)
 	ev.keycode = KEY_F7
+	ev.pressed = true
 	ct._unhandled_input(ev)
-	check_eq(gs.minute, 420, "F7 -> 07:00")
-	check_eq(gs.date["day"], 6, "F7 date +1")
-	check_eq(box[1], 420, "F7 emits")
+	check_eq(int(gs.mode), int(gs_script.GameStateMode.SUMMARIZE), "F7 -> SUMMARIZE")
+	check_eq(gs.date["day"], 5, "date unchanged until sleep (van 5/10)")
+	gs.begin_new_day()
+	check_eq(gs.minute, 420, "reset after sleep")
+	check_eq(gs.date["day"], 6, "date +1 after sleep")
+	check_eq(int(gs.mode), int(gs_script.GameStateMode.SCHEDULE), "SCHEDULE after sleep")
 
 	# tick khong bao gio vuot 22:00 tu no (Q1)
 	gs.mode = gs_script.GameStateMode.REPAIR
