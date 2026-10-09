@@ -21,5 +21,8 @@ func run() -> void:
 	check_eq(String(t3.slots[3].kind), "FREE_HOME", "T3 no REPAIR")
 	check_eq(t3.slots[3].activities.size(), 4, "FREE_HOME 4 choices")
 	var cn = week.days[6]
+	check_eq(cn.slots.size(), 5, "CN 5 slots")
+	check_eq(String(cn.slots[2].kind), "BREAK", "CN slot2 BREAK")
 	check_eq(cn.slots[2].activities[0].id, "nghi_giac", "CN BREAK activity (720-810)")
+	check_eq(int(cn.slots[2].activities[0].minutes), 90, "CN BREAK 90")
 	check_eq(week.days[0].slots[0].activities[0].hook, "", "hook empty cycle1")
