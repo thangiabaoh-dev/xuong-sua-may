@@ -156,6 +156,34 @@ def test_brow_present():
     print("PASS test_brow_present")
 
 
+def test_mirror_cap_parts():
+    """shell_patch cap parts must mirror exactly across x=0 (endpoints are
+    exact mirror pairs, e.g. b = pi - a, so grid samples pair i+j = n)."""
+    want = {"cap_brim", "cap_brim_stripe", "cap_band", "cap_gap"}
+    verts, cur = [], None
+    parts = {}
+    for line in open(os.path.join(HERE, "chibi.obj")):
+        t = line.split()
+        if not t:
+            continue
+        if t[0] == "o":
+            cur = t[1]
+        elif t[0] == "v" and cur in want:
+            parts.setdefault(cur, []).append(
+                (float(t[1]), float(t[2]), float(t[3])))
+    missing = want - set(parts)
+    assert not missing, f"cap parts missing: {missing}"
+    bad = {}
+    for name, vs in parts.items():
+        keys = {(round(x, 4), round(y, 4), round(z, 4)) for x, y, z in vs}
+        for x, y, z in vs:
+            if (-round(x, 4), round(y, 4), round(z, 4)) not in keys:
+                bad.setdefault(name, []).append((x, y, z))
+    assert not bad, "asymmetric cap verts: " + ", ".join(
+        f"{n}({len(p)} e.g. {p[0]})" for n, p in bad.items())
+    print("PASS test_mirror_cap_parts")
+
+
 def test_source_assets_in_sync():
     """chibi-model source copies must be byte-identical to what Godot imports."""
     import hashlib
@@ -176,7 +204,7 @@ def test_source_assets_in_sync():
 def main():
     tests = [test_face_orientation_minus_y, test_budget_and_height,
              test_mtl_names_match, test_rendered_colours, test_brow_present,
-             test_source_assets_in_sync]
+             test_mirror_cap_parts, test_source_assets_in_sync]
     for t in tests:
         try:
             t()
