@@ -8,11 +8,13 @@ const INPUT_NAMES := ["money", "knowledge", "uy_tin", "ky_luat", "workspace_tier
 var _parsed: Dictionary = {}
 var _errors: Array[String] = []
 var _unlocked: Dictionary = {}
+var _permanent: Dictionary = {}
 
 func setup(rules: Array) -> void:
 	_parsed.clear()
 	_errors.clear()
 	_unlocked.clear()
+	_permanent.clear()
 	for rule in rules:
 		if not bool(rule.enabled):
 			continue
@@ -39,7 +41,13 @@ func refresh(game_state: Node) -> void:
 			_add_error("%s: evaluate null (unknown identifier?)" % id)
 			continue
 		if r == true:
-			_unlocked[id] = true
+			if not _unlocked.has(id):
+				_unlocked[id] = true
+				if not _permanent.has(id):
+					_permanent[id] = true
+					unlock_changed.emit(id)
+		elif _unlocked.has(id) and not _permanent.has(id):
+			_unlocked.erase(id)
 
 func is_unlocked(id: StringName) -> bool:
 	return _unlocked.has(id)

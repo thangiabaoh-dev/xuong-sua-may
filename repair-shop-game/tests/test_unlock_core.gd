@@ -90,3 +90,33 @@ func run() -> void:
 	c9.refresh(gs)
 	check_eq(c9.is_unlocked("sc_rule"), false, "short-circuit false -> locked")
 	check(c9.parse_errors().is_empty(), "short-circuit khong tao loi")
+
+	# unlock_changed: dung 1 lan per transition (Review Focus #4)
+	var ce = core_script.new()
+	ce.setup([_rule("khach_giao_vien", "uy_tin >= 60")])
+	var box: Array = []
+	ce.unlock_changed.connect(func(id): box.append(id))
+	gs.uy_tin = 0
+	ce.refresh(gs)
+	check_eq(box.size(), 0, "khong emit khi van locked")
+	gs.uy_tin = 60
+	ce.refresh(gs)
+	check_eq(box.size(), 1, "emit dung 1 lan khi unlock")
+	check_eq(box[0], &"khach_giao_vien", "emit id dung")
+	ce.refresh(gs)
+	check_eq(box.size(), 1, "refresh lai khong emit lai")
+
+	# permanent: money tieu het van giu unlock (Review Focus #1)
+	var cp = core_script.new()
+	cp.setup([_rule("tool_x", "money >= 100")])
+	var box2: Array = []
+	cp.unlock_changed.connect(func(id): box2.append(id))
+	gs.money = 200
+	cp.refresh(gs)
+	check_eq(cp.is_unlocked("tool_x"), true, "money 200 -> unlocked")
+	check_eq(box2.size(), 1, "emit lan dau cho tool_x")
+	gs.money = 0
+	cp.refresh(gs)
+	check_eq(cp.is_unlocked("tool_x"), true, "permanent: money 0 van unlocked")
+	check_eq(box2.size(), 1, "khong emit lai khi van unlocked")
+	gs.money = 50000
