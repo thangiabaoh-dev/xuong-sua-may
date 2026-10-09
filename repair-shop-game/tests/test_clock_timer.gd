@@ -16,12 +16,16 @@ func run() -> void:
 	ct.tick(5.0)
 	check_eq(gs.minute, 420, "no tick in SCHEDULE")
 
-	# tick khong con tang minute theo wall-clock (Q1)
+	# REPAIR: 1 game min / SECONDS_PER_GAME_MINUTE
 	gs.mode = gs_script.GameStateMode.REPAIR
-	var m_before: int = gs.minute
-	ct.tick(5.0)
-	check_eq(gs.minute, m_before, "tick does not advance minute")
-	gs.minute = 423  # dat day du lieu cho cac block F5/F6/F7 giu nguyen assertion cu
+	ct.tick(2.5)
+	check_eq(gs.minute, 422, "2.5s -> +2 min")
+	check_eq(box[0], 421, "signal old = prior minute (last of 2 emits)")
+	check_eq(box[1], 422, "signal new")
+	check_near(ct._acc, 0.5, 0.001, "acc remainder 0.5")
+	ct.tick(1.0)
+	check_eq(gs.minute, 423, "remainder + 1s completes a minute")
+	check_near(ct._acc, 0.5, 0.001, "acc still 0.5 after full cycle")
 
 	# F5 toggle + release ignore
 	var ev = InputEventKey.new()
@@ -55,12 +59,15 @@ func run() -> void:
 	check_eq(gs.date["day"], 6, "date +1 after sleep")
 	check_eq(int(gs.mode), int(gs_script.GameStateMode.SCHEDULE), "SCHEDULE after sleep")
 
-	# tick khong bao gio vuot 22:00 tu no (Q1)
+	# tick qua 22:00: end_day, ve SCHEDULE, KHONG tiep tuc (Review Focus #4)
 	gs.mode = gs_script.GameStateMode.REPAIR
 	gs.minute = 1319
 	ct.tick(2.0)
-	check_eq(gs.minute, 1319, "tick never crosses 22:00 by itself")
+	check_eq(gs.minute, 420, "crossed 22:00 -> 07:00")
+	check_eq(gs.date["day"], 7, "date +1 after midnight")
+	check_eq(gs.mode, gs_script.GameStateMode.SCHEDULE, "mode SCHEDULE after end_day")
 	ct.tick(60.0)
-	check_eq(gs.minute, 1319, "still no realtime advance")
+	check_eq(gs.minute, 420, "not ticking after end_day")
+	check_eq(gs.date["day"], 7, "date untouched by extra ticks")
 
 	ct.free()
