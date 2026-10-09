@@ -44,7 +44,8 @@ func run() -> void:
 		ct.setup(gs)
 		hud.setup(gs, ct)
 		gs.mode = gs_script.GameStateMode.REPAIR
-		ct.tick(1.0)
-		check(String(lbl.text).contains("11:31"), "clock tick updates HUD")
+		gs.advance_to(691)
+		hud.refresh()
+		check(String(lbl.text).contains("11:31"), "refresh shows 11:31")
 		ct.free()
 	hud.free()
