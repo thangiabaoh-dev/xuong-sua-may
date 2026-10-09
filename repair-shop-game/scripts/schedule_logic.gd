@@ -10,7 +10,11 @@ static func is_holiday(week, date: Dictionary) -> bool:
 	var mmdd := "%02d-%02d" % [int(date["month"]), int(date["day"])]
 	var ymd := "%04d-%02d-%02d" % [int(date["year"]), int(date["month"]), int(date["day"])]
 	for h in week.holidays:
-		if h == mmdd or h == ymd:
+		var hs := String(h)
+		if hs.length() != 5 and hs.length() != 10:
+			push_warning("holiday key sai format: %s" % hs)
+			continue
+		if hs == mmdd or hs == ymd:
 			return true
 	return false
 
