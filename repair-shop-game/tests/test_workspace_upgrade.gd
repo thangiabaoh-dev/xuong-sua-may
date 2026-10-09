@@ -66,6 +66,14 @@ func run() -> void:
 	# defs rong
 	check_eq(logic.try_upgrade(gs_script.new(), []), "max_tier", "defs rong -> max_tier")
 
+	# non-bool upgrade condition -> "condition", khong crash (Critical #1 companion)
+	var badc = [_def(1, 1000000, 40, "knowledge")]
+	var gsb = gs_script.new()
+	gsb.money = 2000000
+	gsb.uy_tin = 50
+	check_eq(logic.try_upgrade(gsb, badc), "condition", "non-bool -> condition")
+	check_eq(gsb.money, 2000000, "non-bool khong mutate")
+
 	# file .tres
 	var set = load("res://data/workspace_upgrades.tres")
 	check(set != null, "workspace_upgrades.tres loads")
@@ -73,3 +81,8 @@ func run() -> void:
 		check_eq(set.defs.size(), 2, "2 upgrade defs")
 		check_eq(set.defs[0].to_tier, 1, "def0 -> ROOM")
 		check_eq(set.defs[1].cost, 5000000, "def1 cost 5.000.000")
+		# Important #2: moi condition trong .tres phai parse duoc
+		for d in set.defs:
+			if String(d.condition) != "":
+				var ex := Expression.new()
+				check_eq(ex.parse(String(d.condition), UnlockCore.INPUT_NAMES), OK, "upgrade cond parse to_tier=%d" % d.to_tier)

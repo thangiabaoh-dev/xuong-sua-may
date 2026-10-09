@@ -40,6 +40,9 @@ func refresh(game_state: Node) -> void:
 		if r == null:
 			_add_error("%s: evaluate null (unknown identifier?)" % id)
 			continue
+		if not (r is bool):
+			_add_error("%s: non-boolean result (%s)" % [id, type_string(typeof(r))])
+			continue
 		if r == true:
 			if not _unlocked.has(id):
 				_unlocked[id] = true

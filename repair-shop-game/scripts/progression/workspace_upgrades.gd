@@ -33,7 +33,7 @@ static func _eval(cond: String, game_state: Node) -> bool:
 		if cp is Array:
 			ctx.completed_projects = cp
 	var r = expr.execute(inputs, ctx, false)
-	return r == true
+	return r is bool and r == true
 
 static func _int(game_state: Node, prop: String) -> int:
 	if game_state == null:

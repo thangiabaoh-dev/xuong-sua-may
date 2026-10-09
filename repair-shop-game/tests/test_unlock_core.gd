@@ -120,3 +120,12 @@ func run() -> void:
 	check_eq(cp.is_unlocked("tool_x"), true, "permanent: money 0 van unlocked")
 	check_eq(box2.size(), 1, "khong emit lai khi van unlocked")
 	gs.money = 50000
+
+	# non-bool result: khong crash, khong cat cascade cac rule sau (Critical #1)
+	var cb = core_script.new()
+	cb.setup([_rule("bad_int", "knowledge"), _rule("after_good", "knowledge >= 50")])
+	gs.knowledge = 100
+	cb.refresh(gs)
+	check(not cb.parse_errors().is_empty(), "non-bool result reported")
+	check_eq(cb.is_unlocked("after_good"), true, "rule sau van evaluate duoc")
+	check_eq(cb.is_unlocked("bad_int"), false, "non-bool -> locked")

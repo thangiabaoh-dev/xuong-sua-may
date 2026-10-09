@@ -23,3 +23,12 @@ func run() -> void:
 	check(core.parse_errors().is_empty(), "khong evaluate null (Review Focus #3)")
 	check_eq(core.unlocked_ids().size(), 0, "mac dinh khong co gi mo khoa")
 	check_eq(gs.money, 50000, "tien dau game 50000 (khong bi rule nao an)")
+
+	# spec §6: moi rule trong .tres execute tra bool tren ctx mac dinh
+	var ctx2 = load("res://scripts/progression/unlock_context.gd").new()
+	var def_inputs: Array = [50000, 0, 0, 100, 0]
+	for r in set.rules:
+		var ex := Expression.new()
+		check_eq(ex.parse(String(r.condition), core_script.INPUT_NAMES), OK, "parse %s" % r.id)
+		var res = ex.execute(def_inputs, ctx2, false)
+		check(res is bool, "rule %s tra bool" % r.id)
