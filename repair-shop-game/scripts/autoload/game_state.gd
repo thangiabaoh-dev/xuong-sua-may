@@ -64,3 +64,6 @@ func can_enter(loc: String) -> bool:
 	if week == null:
 		return false
 	return ScheduleLogic.can_enter(week, date, minute, loc)
+
+var workspace_tier: int = 0
+var completed_projects: Array[StringName] = []
