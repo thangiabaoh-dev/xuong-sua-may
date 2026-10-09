@@ -69,12 +69,13 @@ class_name ActivityDef extends Resource
 ### 4.2 `ScheduleCore` (RefCounted — logic thuần, test headless)
 
 ```gdscript
-func available(gs) -> Array[ActivityDef]         # slot hiện tại ∩ đúng current_location
-func try_activity(gs, id: String) -> Dictionary  # {ok, reason}; state==SCHEDULE + slot + location
+func available(gs) -> Array[ActivityDef]         # activities slot hiện tại — KHÔNG lọc location; slot HOLIDAY runtime → tự sinh su_kien_doi_thuong
+func reason_for(gs, act) -> String               # "" | "Ngoài lịch" | "Cần ở: <loc>"
+func try_activity(gs, id: String) -> Dictionary  # {ok, reason}; tìm act trong available + reason_for
 ```
 
-- Thành công → `minutes += min(activity.minutes, slot.end − minutes)`; clamp `[0, 1320]`, không bao giờ giảm; chạm 1320 → signal `day_ended`.
-- Sai → `{ok:false, reason}` (`"Ngoài khung giờ"`, `"Cần ở: thư viện"`, `"Chưa tới giờ"`) + `push_error`, **không** đổi state.
+- Thành công → `minutes += min(activity.minutes, slot.end − minutes)`; clamp `[0, 1320]`, không bao giờ giảm; chạm 1320 → `end_day()` (phát `schedule_changed`).
+- Sai → `{ok:false, reason}` (`"Ngoài khung giờ"`, `"Cần ở: thư viện"`, `"Ngoài lịch"`) — **không** đổi state; id lạ → thêm `push_error`.
 - `mo_panel` đặc biệt: hợp lệ → cho `RepairPanel.open()` (state → REPAIR theo §6), không consume phút.
 
 ### 4.3 Gate di chuyển → advisory (Q2)
@@ -84,9 +85,9 @@ func try_activity(gs, id: String) -> Dictionary  # {ok, reason}; state==SCHEDULE
 
 ## 5. Budget ca sửa (R4)
 
-- `GameState.shift_used: int = 0` — reset ở `end_day()`.
+- `GameState.shift_used: int = 0` — reset ở `begin_new_day()` (end_day chỉ dừng ở SUMMARIZE).
 - `ScheduleCore.shift_budget(gs) -> int`: tổng `end−start` của các slot `repair=true` trong ngày (weekday 120, CN 510, T3/lễ 0).
-- `shift_tick(n) -> bool`: `shift_used += n`; trả `false` khi vượt budget.
+- `shift_tick(gs, n) -> bool`: **chỉ tính khi đang trong slot `REPAIR`** → `shift_used += n`; trả `false` khi vượt budget; ngoài slot → không cộng, trả `true` (không làm cháy test nền họ chạy ở phút 420).
 - **Gate đơn:** `RepairPanel.open_new_order()` thêm check — `ScheduleLogic.is_repair_slot(...) && shift_used < shift_budget && mode != SUMMARIZE`; không đủ → disabled + lý do (không tạo `OrderFactory.make()`).
 - **Đóng ca:** chạm cuối slot `REPAIR` hoặc hết budget mà session còn dở → `Result.LOST_TIME`, đóng panel, mode → SCHEDULE. Budget CN tính gộp 2 window (giữa window là slot `BREAK` bình thường).
 
@@ -116,18 +117,22 @@ func try_activity(gs, id: String) -> Dictionary  # {ok, reason}; state==SCHEDULE
 
 ## 9. Test (TDD RED→GREEN từng task)
 
-- **3 test nền họ phải amend** (hành vi đổi theo ruling, nội dung giữ, chỉ sửa assertion):
+- **5 test nền họ phải amend** (hành vi đổi theo ruling, nội dung giữ, chỉ sửa assertion; plan chỉ rõ từng block):
   - `test_map_gating` — semantics advisory: `change_map` luôn thành công, `can_enter == false` chỉ → warning.
-  - `test_game_state_time` — `advance_to(1320)` giờ dừng ở `SUMMARIZE` (không tự về `SCHEDULE`); assertion "back to SCHEDULE" đổi thành SUMMARIZE.
-  - `test_clock_timer` — bỏ assertion "tick tăng phút realtime" (tick không còn tăng phút); giữ F5/F6/F7 + "không tick sau end_day".
-- **3 test nền họ giữ nguyên:** `test_schedule_logic`, `test_schedule_screen`, `test_hud`.
+  - `test_game_state_time` — `advance_to(1320)` giờ dừng ở `SUMMARIZE`; rollover qua `begin_new_day()`; thêm clamp + null-week.
+  - `test_clock_timer` — bỏ assertion "tick tăng phút realtime"; mục F7 → SUMMARIZE; giữ F5/F6.
+  - `test_hud` — block "ct.tick cập nhật HUD" → `advance_to` + `schedule_changed`.
+  - `test_repair_panel` — `state.advance_to(1020)` trước `setup()` (vào slot REPAIR để qua gate).
+- **2 test nền họ giữ nguyên:** `test_schedule_logic`, `test_schedule_screen`.
 - Mới:
-  - `test_activities.gd` — `try_activity`: đúng chỗ/đúng khung → phút tăng đúng (boundary clamp cuối slot); sai chỗ/sai khung/id lạ/`mode != SCHEDULE` → `{ok:false}`, phút không đổi.
-  - `test_shift_budget.gd` — `shift_budget` weekday 120 / CN 510 / T3+lễ 0; `shift_tick` tích lũy + trả false khi hết; `open_new_order` ngoài khung/budget hết → không tạo đơn.
-  - `test_day_end.gd` — `advance_to(1320)` → `end_day()` dừng ở SUMMARIZE; bấm ngủ → `date` +1 ngày, `minute = 420`, `shift_used = 0`, mode SCHEDULE.
-  - `test_school_penalty.gd` — thiếu 450′ → −10, thiếu 451′ → −20, đủ → không phạt.
-  - `test_hud_activity.gd` (scene, pattern `test_npc_import`) — panel list đúng activity, enable/disable theo location.
-- 25+ test cũ còn lại không sửa (3 file amend ở trên là ngoại lệ duy nhất).
+  - `test_activities_data.gd` — `.tres` có activities đúng bảng §4.1 (id/location/minutes/hook rỗng).
+  - `test_activities.gd` — `try_activity`: đúng chỗ/đúng khung → phút tăng đúng (boundary clamp cuối slot); sai chỗ/sai khung/id lạ/`mode != SCHEDULE` → `{ok:false}`, phút không đổi; HOLIDAY synthesize; key lễ sai format → push_warning (source pin).
+  - `test_shift_budget.gd` — `shift_budget` weekday 120 / CN 510 / T3 = 0; `shift_tick` chỉ tính trong slot, tích lũy qua BREAK; session hết budget / chạm 1320 → `LOST_TIME` + clamp.
+  - `test_repair_gate.gd` — ngoài khung/budget hết → không tạo đơn; trong khung → `session != null`.
+  - `test_day_end.gd` — `advance_to(1320)` → SUMMARIZE; bấm ngủ → `date` +1, `minute = 420`, `shift_used = 0`, mode SCHEDULE, phạt −10.
+  - `test_school_penalty.gd` — thiếu 450′ → −10, thiếu 449′ → −10, đủ/vượt → không phạt (cycle 1 không có −20).
+  - `test_hud_activity.gd` (scene) — panel list đúng activity, enable/disable theo location, không nhân đôi nút, auto-refresh qua `schedule_changed`, budget label 120.
+- 25+ test cũ còn lại không sửa (5 file amend ở trên là ngoại lệ duy nhất).
 - Debug key F5/F6/F7 không tham gia assertion gameplay.
 
 ## 10. Out of scope (cycle 1)
