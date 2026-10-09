@@ -394,9 +394,9 @@ def build_giao_vien():
         _add(objs, "shoe_sole", "shoe_navy", super_shape((x, -0.025, 0.035), 0.108, 0.148, 0.035, 0.45, 0.45, 16, 10))
         _add(objs, "shoe_midsole", "shoe_blue", super_shape((x, -0.025, 0.072), 0.104, 0.144, 0.030, 0.45, 0.45, 16, 10))
         _add(objs, "shoe_upper", "shoe_white", super_shape((x, -0.015, 0.135), 0.100, 0.140, 0.065, 0.5, 0.5, 16, 10))
-    # briefcase right side
-    _add(objs, "briefcase", "briefcase_brown", box((0.48, 0.10, 0.55), 0.12, 0.10, 0.20), smooth=False)
-    _add(objs, "briefcase_handle", "briefcase_brown", box((0.48, -0.02, 0.78), 0.03, 0.03, 0.06), smooth=False)
+    # briefcase right side (-X is the character's right: faces -Y, right = fwd x up)
+    _add(objs, "briefcase", "briefcase_brown", box((-0.48, 0.10, 0.55), 0.12, 0.10, 0.20), smooth=False)
+    _add(objs, "briefcase_handle", "briefcase_brown", box((-0.48, -0.02, 0.78), 0.03, 0.03, 0.06), smooth=False)
     return objs, mats
 
 def build_hoai_niem():

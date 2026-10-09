@@ -117,7 +117,7 @@ COLOR_CHECKS = [
     ("giao_vien", "shirt cream",   0.000, 0.95, (235, 225, 200), "front"),
     ("giao_vien", "pants brown",   0.150, 0.40, (110, 85, 60),   "front"),
     ("giao_vien", "glasses black", 0.305, 1.445, (14, 14, 16),   "front"),
-    ("giao_vien", "briefcase",     0.480, 0.55, (90, 65, 40),    "back"),
+    ("giao_vien", "briefcase",    -0.480, 0.55, (90, 65, 40),    "back"),
     ("hoai_niem", "jacket arm",    0.330, 0.90, (150, 110, 80),  "front"),
     ("hoai_niem", "pants gray",    0.150, 0.40, (130, 130, 135), "front"),
     ("hoai_niem", "old laptop",    0.000, 0.82, (140, 140, 145), "front"),
