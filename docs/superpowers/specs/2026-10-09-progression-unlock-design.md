@@ -110,7 +110,7 @@ var completed_projects: Array[StringName] = []
 
 ## 4. Quyết định semantics: unlock vĩnh viễn
 
-Rule có `money >= 100000` sẽ trả `false` trở lại khi người chơi tiêu tiền — nhưng **unlock đã nhận không được thu hồi** (mua xong dụng cụ mất quyền mở máy cổ = bug cảm nhận người chơi, DESIGN "bỏ lỡ là mất thật" nói về cơ hội chưa tới, không phải mất已达).
+Rule có `money >= 100000` sẽ trả `false` trở lại khi người chơi tiêu tiền — nhưng **unlock đã nhận không được thu hồi** (mua xong dụng cụ mất quyền mở máy cổ = bug cảm nhận người chơi, DESIGN "bỏ lỡ là mất thật" nói về cơ hội chưa tới, không phải mất thứ đã đạt được).
 
 - Rule nào đã từng `true` → id vào `permanent`; các `refresh` sau không bao giờ remove khỏi `unlocked` nữa.
 - Điều kiện **tiêu cực** (ví dụ chặn theo `ky_luat`) không tồn tại trong bảng rule khởi tạo; nếu sau này cần, rule đó phải đặt `enabled` theo kiểu điều kiện khác — ngoài spec này.
