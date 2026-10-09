@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/textures/gach_trang.jpg" id="1_gach"]
 [ext_resource type="Texture2D" path="res://assets/textures/cong_teal.jpg" id="2_teal"]
@@ -16,11 +16,16 @@ albedo_color = Color(0.07, 0.52, 0.63, 1)
 roughness = 0.8
 
 [sub_resource type="StandardMaterial3D" id="mat_metal"]
-albedo_color = Color(0.78, 0.8, 0.82, 1)
-metallic = 0.7
-roughness = 0.35
+albedo_color = Color(0.93, 0.94, 0.95, 1)
+metallic = 0.05
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="mat_yellow"]
+albedo_color = Color(0.85, 0.7, 0.12, 1)
+roughness = 0.8
 
 [sub_resource type="StandardMaterial3D" id="mat_brick"]
+albedo_color = Color(0.88, 0.8, 0.78, 1)
 albedo_texture = ExtResource("3_via")
 uv1_scale = Vector3(7, 2.5, 1)
 
@@ -49,11 +54,11 @@ size = Vector3(7.2, 0.9, 0.6)
 
 [sub_resource type="BoxMesh" id="mesh_rail_top"]
 material = SubResource("mat_metal")
-size = Vector3(4, 0.08, 0.08)
+size = Vector3(5.8, 0.08, 0.08)
 
 [sub_resource type="BoxMesh" id="mesh_rail_bot"]
 material = SubResource("mat_metal")
-size = Vector3(4, 0.06, 0.06)
+size = Vector3(5.8, 0.06, 0.06)
 
 [sub_resource type="BoxMesh" id="mesh_bar"]
 material = SubResource("mat_metal")
@@ -74,6 +79,14 @@ size = Vector3(16, 0.2, 6)
 [sub_resource type="BoxMesh" id="mesh_zebra"]
 material = SubResource("mat_white")
 size = Vector3(0.45, 0.04, 5.5)
+
+[sub_resource type="BoxMesh" id="mesh_dash"]
+material = SubResource("mat_yellow")
+size = Vector3(1.2, 0.03, 0.16)
+
+[sub_resource type="BoxMesh" id="mesh_trim"]
+material = SubResource("mat_white")
+size = Vector3(7.3, 0.1, 0.64)
 
 [node name="Gate" type="Node3D"]
 
@@ -110,7 +123,7 @@ position = Vector3(0, 3.2, 5)
 mesh = SubResource("mesh_lintel")
 
 [node name="SignSmall" type="Label3D" parent="GateLintel"]
-position = Vector3(0, 0.17, 0.32)
+position = Vector3(0, 0.23, 0.32)
 text = "TRƯỜNG TRUNG HỌC CƠ SỞ"
 font_size = 38
 pixel_size = 0.005
@@ -118,15 +131,19 @@ modulate = Color(0.92, 0.75, 0.28, 1)
 outline_size = 6
 
 [node name="SignBig" type="Label3D" parent="GateLintel"]
-position = Vector3(0, -0.15, 0.32)
+position = Vector3(0, -0.18, 0.32)
 text = "NGÔ SĨ LIÊN"
 font_size = 90
 pixel_size = 0.005
 modulate = Color(0.92, 0.75, 0.28, 1)
 outline_size = 8
 
+[node name="Trim" type="MeshInstance3D" parent="GateLintel"]
+position = Vector3(0, 0.5, 0)
+mesh = SubResource("mesh_trim")
+
 [node name="FenceL" type="Node3D" parent="."]
-position = Vector3(-5, 0, 5)
+position = Vector3(-4.1, 0, 5)
 
 [node name="MeshRailTop" type="MeshInstance3D" parent="FenceL"]
 position = Vector3(0, 1.16, 0)
@@ -137,35 +154,43 @@ position = Vector3(0, 0.12, 0)
 mesh = SubResource("mesh_rail_bot")
 
 [node name="Bar1" type="MeshInstance3D" parent="FenceL"]
-position = Vector3(-1.8, 0.63, 0)
+position = Vector3(-2.6, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar2" type="MeshInstance3D" parent="FenceL"]
-position = Vector3(-1.2, 0.63, 0)
+position = Vector3(-1.95, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar3" type="MeshInstance3D" parent="FenceL"]
-position = Vector3(-0.6, 0.63, 0)
+position = Vector3(-1.3, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar4" type="MeshInstance3D" parent="FenceL"]
-position = Vector3(0, 0.63, 0)
+position = Vector3(-0.65, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar5" type="MeshInstance3D" parent="FenceL"]
-position = Vector3(0.6, 0.63, 0)
+position = Vector3(0, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar6" type="MeshInstance3D" parent="FenceL"]
-position = Vector3(1.2, 0.63, 0)
+position = Vector3(0.65, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar7" type="MeshInstance3D" parent="FenceL"]
-position = Vector3(1.8, 0.63, 0)
+position = Vector3(1.3, 0.63, 0)
+mesh = SubResource("mesh_bar")
+
+[node name="Bar8" type="MeshInstance3D" parent="FenceL"]
+position = Vector3(1.95, 0.63, 0)
+mesh = SubResource("mesh_bar")
+
+[node name="Bar9" type="MeshInstance3D" parent="FenceL"]
+position = Vector3(2.6, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="FenceR" type="Node3D" parent="."]
-position = Vector3(5, 0, 5)
+position = Vector3(4.1, 0, 5)
 
 [node name="MeshRailTop" type="MeshInstance3D" parent="FenceR"]
 position = Vector3(0, 1.16, 0)
@@ -176,31 +201,39 @@ position = Vector3(0, 0.12, 0)
 mesh = SubResource("mesh_rail_bot")
 
 [node name="Bar1" type="MeshInstance3D" parent="FenceR"]
-position = Vector3(-1.8, 0.63, 0)
+position = Vector3(-2.6, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar2" type="MeshInstance3D" parent="FenceR"]
-position = Vector3(-1.2, 0.63, 0)
+position = Vector3(-1.95, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar3" type="MeshInstance3D" parent="FenceR"]
-position = Vector3(-0.6, 0.63, 0)
+position = Vector3(-1.3, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar4" type="MeshInstance3D" parent="FenceR"]
-position = Vector3(0, 0.63, 0)
+position = Vector3(-0.65, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar5" type="MeshInstance3D" parent="FenceR"]
-position = Vector3(0.6, 0.63, 0)
+position = Vector3(0, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar6" type="MeshInstance3D" parent="FenceR"]
-position = Vector3(1.2, 0.63, 0)
+position = Vector3(0.65, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="Bar7" type="MeshInstance3D" parent="FenceR"]
-position = Vector3(1.8, 0.63, 0)
+position = Vector3(1.3, 0.63, 0)
+mesh = SubResource("mesh_bar")
+
+[node name="Bar8" type="MeshInstance3D" parent="FenceR"]
+position = Vector3(1.95, 0.63, 0)
+mesh = SubResource("mesh_bar")
+
+[node name="Bar9" type="MeshInstance3D" parent="FenceR"]
+position = Vector3(2.6, 0.63, 0)
 mesh = SubResource("mesh_bar")
 
 [node name="SideWallL" type="Node3D" parent="."]
@@ -258,3 +291,39 @@ mesh = SubResource("mesh_zebra")
 [node name="Mesh" type="MeshInstance3D" parent="Zebra5"]
 position = Vector3(1.6, 0.03, 11)
 mesh = SubResource("mesh_zebra")
+
+[node name="Dash1" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Dash1"]
+position = Vector3(-3, 0.035, 11)
+mesh = SubResource("mesh_dash")
+
+[node name="Dash2" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Dash2"]
+position = Vector3(-4.6, 0.035, 11)
+mesh = SubResource("mesh_dash")
+
+[node name="Dash3" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Dash3"]
+position = Vector3(-6.2, 0.035, 11)
+mesh = SubResource("mesh_dash")
+
+[node name="Dash4" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Dash4"]
+position = Vector3(3, 0.035, 11)
+mesh = SubResource("mesh_dash")
+
+[node name="Dash5" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Dash5"]
+position = Vector3(4.6, 0.035, 11)
+mesh = SubResource("mesh_dash")
+
+[node name="Dash6" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Dash6"]
+position = Vector3(6.2, 0.035, 11)
+mesh = SubResource("mesh_dash")
