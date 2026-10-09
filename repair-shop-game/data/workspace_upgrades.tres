@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WorkspaceUpgradeSet" format=3]
+
+[ext_resource type="Script" path="res://scripts/progression/workspace_upgrade.gd" id="1_fxk75"]
+[ext_resource type="Script" path="res://scripts/progression/workspace_upgrade_set.gd" id="2_17flb"]
+
+[sub_resource type="Resource" id="Resource_lfk1m"]
+script = ExtResource("1_fxk75")
+to_tier = 1
+cost = 1000000
+uy_tin_req = 40
+
+[sub_resource type="Resource" id="Resource_yd45s"]
+script = ExtResource("1_fxk75")
+to_tier = 2
+cost = 5000000
+uy_tin_req = 120
+
+[resource]
+script = ExtResource("2_17flb")
+defs = Array[ExtResource("1_fxk75")]([SubResource("Resource_lfk1m"), SubResource("Resource_yd45s")])
