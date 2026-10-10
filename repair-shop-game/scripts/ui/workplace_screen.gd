@@ -140,15 +140,18 @@ func _on_unlock_changed(_id: StringName) -> void:
 	_refresh_tracker()
 
 static func progress_percent(condition: String, values: Dictionary) -> float:
-	var re := RegEx.create_from_string("(\\w+) >= (\\d+)")
+	var re := RegEx.create_from_string("^\\s*(\\w+) >= (\\d+)\\s*$")
 	var best := -1.0
-	for m in re.search_all(condition):
+	for part in condition.split(" and "):
+		var m := re.search(String(part))
+		if m == null:
+			return -1.0
 		var key := m.get_string(1)
 		if not values.has(key):
-			continue
+			return -1.0
 		var threshold := float(int(m.get_string(2)))
 		if threshold <= 0.0:
-			continue
+			return -1.0
 		var ratio := clampf(float(values[key]) / threshold, 0.0, 1.0)
 		if best < 0.0 or ratio < best:
 			best = ratio

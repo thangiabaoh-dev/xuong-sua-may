@@ -142,3 +142,17 @@ func run() -> void:
 	wp._unhandled_input(ev)
 	check(not wp.visible, "Esc 2 -> an (khong tao instance moi)")
 	host.free()
+
+	# RF3 hardening: clause khong phai "X >= N" khong duoc bao % ngu (spec §2.1)
+	var vals2 := {"knowledge": 100, "uy_tin": 0, "workspace_tier": 0, "ky_luat": 100}
+	check_eq(wsp_script.progress_percent("knowledge >= 50 and ky_luat < 3", vals2), -1.0, "mixed clause -> -1")
+
+	# RF2 hardening: unlock_changed cap nhat KHONG can screen refresh (spec §3.4)
+	var scr5 = packed.instantiate()
+	var gs5b = gs_script.new()
+	scr5.setup(gs5b)
+	check(scr5.get_node("Root/Tracker/Customers/giao_vien").modulate.a < 1.0, "signal: truoc do giao vien mo")
+	gs5b.uy_tin = 60
+	scr5._core.refresh(gs5b)  # chi core.refresh — khong goi scr5.refresh()
+	check(scr5.get_node("Root/Tracker/Customers/giao_vien").modulate.a >= 1.0, "unlock_changed -> row sang KHONG can refresh man hinh")
+	scr5.free()
