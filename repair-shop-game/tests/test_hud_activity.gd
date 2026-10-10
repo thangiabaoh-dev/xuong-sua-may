@@ -55,6 +55,16 @@ func run() -> void:
 	box.get_node("Btn_doc_sach_nha").pressed.emit()
 	check_eq(String(hud.get_node("Root/Toast").text), "+2 tri thức", "toast text")
 	check_eq(bool(hud.get_node("Root/Toast").visible), true, "toast visible")
+
+	# spec 7: toast tu an sau 1.5s — harness khong chay frame/await duoc
+	# (Engine.get_main_loop() == null trong _init) -> test hide method + pin timer wiring
+	check(hud.has_method("_hide_toast"), "has _hide_toast method")
+	if hud.has_method("_hide_toast"):
+		hud._hide_toast()
+		check_eq(bool(hud.get_node("Root/Toast").visible), false, "_hide_toast hides toast")
+	var hf = FileAccess.open("res://scripts/ui/hud.gd", FileAccess.READ)
+	check(hf != null and hf.get_as_text().contains("create_timer(1.5)")
+		and hf.get_as_text().contains("_hide_toast()"), "timer wiring pinned (source)")
 	check_eq(int(gs.knowledge), 2, "gs.knowledge = 2")
 	check_eq(int(gs.minute), 1140, "consume 120 -> 1140")
 

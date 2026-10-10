@@ -110,7 +110,10 @@ func _toast(msg: String) -> void:
 	_lbl_toast.visible = true
 	if is_inside_tree():
 		var timer := get_tree().create_timer(1.5)
-		timer.timeout.connect(func() -> void: _lbl_toast.visible = false)
+		timer.timeout.connect(_hide_toast)
+
+func _hide_toast() -> void:
+	_lbl_toast.visible = false
 
 func _refresh_summarize() -> void:
 	var show: bool = int(game_state.mode) == int(game_state.GameStateMode.SUMMARIZE)
