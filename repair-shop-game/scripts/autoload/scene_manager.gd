@@ -22,7 +22,7 @@ static func change_map(parent: Node3D, player: CharacterBody3D, loc: String, gs:
 	if not LOCATIONS.has(loc):
 		return false
 	if gs != null and gs.has_method("can_enter") and not bool(gs.call("can_enter", loc)):
-		return false
+		push_warning("change_map: %s ngoài khung giờ (advisory)" % loc)
 	var packed = load(LOCATIONS[loc])
 	if packed == null:
 		return false

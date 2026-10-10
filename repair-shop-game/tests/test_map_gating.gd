@@ -17,26 +17,22 @@ func run() -> void:
 	check(not main.has_node("Workshop"), "Workshop gone")
 	check_eq(gs.current_location, "gate", "location updated")
 
-	# deny: cafe luc 07:00 -> false, scene giu nguyen
+	# luc 07:00 SCHOOL: khong con chan — advisory (Q2)
 	var before: int = main.get_child_count()
-	var denied = sm.change_map(main, player, "cafe", gs)
-	check_eq(denied, false, "deny cafe in school slot")
-	check_eq(main.get_child_count(), before, "scene unchanged on deny")
-	check(main.has_node("Gate"), "Gate still present")
-	check_eq(gs.current_location, "gate", "location unchanged on deny")
+	var ok2 = sm.change_map(main, player, "cafe", gs)
+	check_eq(ok2, true, "advisory: cafe allowed in school slot")
+	check(main.has_node("Cafe"), "Cafe swapped in")
+	check_eq(gs.current_location, "cafe", "location updated advisory")
+	check_eq(main.get_child_count(), before, "child count stable")
 
-	# CHOICE 11:30: cafe allow, schoolyard deny
 	gs.advance_to(690)
-	check_eq(sm.change_map(main, player, "cafe", gs), true, "allow cafe at CHOICE")
-	check(main.has_node("Cafe"), "Cafe present")
-	check_eq(sm.change_map(main, player, "schoolyard", gs), false, "deny schoolyard at CHOICE")
-	check(main.has_node("Cafe"), "Cafe unchanged after deny")
-
-	# invalid loc van false
-	check_eq(sm.change_map(main, player, "xxx", gs), false, "invalid loc false")
+	check_eq(sm.change_map(main, player, "schoolyard", gs), true, "advisory: schoolyard at CHOICE")
+	check(main.has_node("Schoolyard"), "Schoolyard present")
+	check_eq(sm.change_map(main, player, "xxx", gs), false, "invalid loc still false")
 	main.free()
 
 	# source pin
 	var f = FileAccess.open("res://scripts/autoload/scene_manager.gd", FileAccess.READ)
 	check(f != null and f.get_as_text().contains("-> bool"), "change_map returns bool")
-	check(f != null and f.get_as_text().contains("can_enter"), "gates via can_enter")
+	check(f != null and f.get_as_text().contains("can_enter"), "still consults can_enter (warning)")
+	check(f != null and f.get_as_text().contains("push_warning"), "advisory warns")
