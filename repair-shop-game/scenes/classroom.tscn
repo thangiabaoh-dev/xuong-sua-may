@@ -1,7 +1,10 @@
-[gd_scene load_steps=41 format=3]
+[gd_scene load_steps=50 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/textures/gach_trang.jpg" id="1_gach"]
 [ext_resource type="Texture2D" path="res://assets/textures/go_ban.jpg" id="2_go"]
+[ext_resource type="Texture2D" path="res://assets/reference/lop_hoc_bang.jpg" id="3_bang"]
+[ext_resource type="Texture2D" path="res://assets/reference/lop_hoc_rong.jpg" id="4_rong"]
+[ext_resource type="Texture2D" path="res://assets/reference/lop_hoc_ban.jpg" id="5_ban"]
 
 [sub_resource type="StandardMaterial3D" id="mat_floor"]
 albedo_texture = ExtResource("1_gach")
@@ -158,6 +161,30 @@ size = Vector3(0.85, 0.04, 0.16)
 [sub_resource type="BoxMesh" id="mesh_light"]
 material = SubResource("mat_light")
 size = Vector3(0.14, 0.08, 1.8)
+
+[sub_resource type="StandardMaterial3D" id="mat_photo_bang"]
+albedo_texture = ExtResource("3_bang")
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_photo_rong"]
+albedo_texture = ExtResource("4_rong")
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_photo_ban"]
+albedo_texture = ExtResource("5_ban")
+roughness = 0.9
+
+[sub_resource type="QuadMesh" id="quad_photo_bang"]
+material = SubResource("mat_photo_bang")
+size = Vector2(1.2, 1.6)
+
+[sub_resource type="QuadMesh" id="quad_photo_rong"]
+material = SubResource("mat_photo_rong")
+size = Vector2(1.2, 1.6)
+
+[sub_resource type="QuadMesh" id="quad_photo_ban"]
+material = SubResource("mat_photo_ban")
+size = Vector2(1.2, 1.6)
 
 [node name="Classroom" type="Node3D"]
 
@@ -880,3 +907,16 @@ position = Vector3(3, 0, 2)
 [node name="Mesh" type="MeshInstance3D" parent="Light4"]
 position = Vector3(0, 2.9, 0)
 mesh = SubResource("mesh_light")
+
+[node name="PhotoBackL" type="MeshInstance3D" parent="."]
+position = Vector3(-4, 1.7, -4.98)
+mesh = SubResource("quad_photo_bang")
+
+[node name="PhotoBackR" type="MeshInstance3D" parent="."]
+position = Vector3(4, 1.7, -4.98)
+mesh = SubResource("quad_photo_rong")
+
+[node name="PhotoFront" type="MeshInstance3D" parent="."]
+position = Vector3(3.5, 1.7, 4.98)
+rotation_degrees = Vector3(0, 180, 0)
+mesh = SubResource("quad_photo_ban")

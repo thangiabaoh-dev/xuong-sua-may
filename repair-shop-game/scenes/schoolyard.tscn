@@ -1,9 +1,10 @@
-[gd_scene load_steps=28 format=3]
+[gd_scene load_steps=32 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/reference/cong_1.jpg" id="1_cong"]
 [ext_resource type="Texture2D" path="res://assets/reference/san_thuong.png" id="2_san"]
 [ext_resource type="Texture2D" path="res://assets/reference/banner_truong.png" id="3_banner"]
 [ext_resource type="Texture2D" path="res://assets/reference/so_do_phong_hoc.png" id="4_sodo"]
+[ext_resource type="Texture2D" path="res://assets/reference/hanh_lang_san.jpg" id="5_hanhlang"]
 
 [sub_resource type="StandardMaterial3D" id="mat_ground"]
 albedo_color = Color(0.55, 0.62, 0.45, 1)
@@ -83,6 +84,18 @@ size = Vector3(2.6, 1.9, 0.08)
 [sub_resource type="BoxMesh" id="mesh_post"]
 material = SubResource("mat_bench")
 size = Vector3(0.12, 1.7, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="mat_photo_hanhlang"]
+albedo_texture = ExtResource("5_hanhlang")
+roughness = 0.9
+
+[sub_resource type="QuadMesh" id="quad_hanhlang"]
+material = SubResource("mat_photo_hanhlang")
+size = Vector2(1.5, 2)
+
+[sub_resource type="BoxMesh" id="mesh_boardback2"]
+material = SubResource("mat_gate")
+size = Vector3(1.7, 2.2, 0.08)
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyMat_yard"]
 sky_top_color = Color(0.35, 0.55, 0.9, 1)
@@ -206,3 +219,23 @@ mesh = SubResource("mesh_boardback")
 [node name="MapPhoto" type="MeshInstance3D" parent="MapBoard"]
 position = Vector3(0, 1.5, 0.05)
 mesh = SubResource("quad_map")
+
+[node name="PhotoBoard" type="Node3D" parent="."]
+position = Vector3(-7.5, 0, -0.5)
+rotation_degrees = Vector3(0, 86, 0)
+
+[node name="PostL" type="MeshInstance3D" parent="PhotoBoard"]
+position = Vector3(-0.7, 0.85, -0.02)
+mesh = SubResource("mesh_post")
+
+[node name="PostR" type="MeshInstance3D" parent="PhotoBoard"]
+position = Vector3(0.7, 0.85, -0.02)
+mesh = SubResource("mesh_post")
+
+[node name="BoardBack" type="MeshInstance3D" parent="PhotoBoard"]
+position = Vector3(0, 1.4, 0)
+mesh = SubResource("mesh_boardback2")
+
+[node name="Photo" type="MeshInstance3D" parent="PhotoBoard"]
+position = Vector3(0, 1.4, 0.05)
+mesh = SubResource("quad_hanhlang")
