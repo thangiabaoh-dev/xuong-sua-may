@@ -2,12 +2,10 @@ class_name ClockTimer
 extends Node
 
 const GS = preload("res://scripts/autoload/game_state.gd")
-const SECONDS_PER_GAME_MINUTE := 1.0
 
 signal minute_changed(old_minute: int, new_minute: int)
 
 var game_state
-var _acc := 0.0
 
 func _ready() -> void:
 	if game_state == null:
@@ -16,15 +14,8 @@ func _ready() -> void:
 func setup(gs: Node) -> void:
 	game_state = gs
 
-func tick(delta: float) -> void:
-	if game_state == null or game_state.mode != GS.GameStateMode.REPAIR:
-		return
-	_acc += delta
-	while game_state.mode == GS.GameStateMode.REPAIR and _acc >= SECONDS_PER_GAME_MINUTE:
-		_acc -= SECONDS_PER_GAME_MINUTE
-		var old_m: int = game_state.minute
-		game_state.advance_to(old_m + 1)
-		minute_changed.emit(old_m, game_state.minute)
+func tick(_delta: float) -> void:
+	pass
 
 func _process(delta: float) -> void:
 	tick(delta)

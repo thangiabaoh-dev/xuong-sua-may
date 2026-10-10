@@ -16,16 +16,11 @@ func run() -> void:
 	ct.tick(5.0)
 	check_eq(gs.minute, 420, "no tick in SCHEDULE")
 
-	# REPAIR: 1 game min / SECONDS_PER_GAME_MINUTE
+	# REPAIR: khong con realtime tick (spec Q1)
 	gs.mode = gs_script.GameStateMode.REPAIR
-	ct.tick(2.5)
-	check_eq(gs.minute, 422, "2.5s -> +2 min")
-	check_eq(box[0], 421, "signal old = prior minute (last of 2 emits)")
-	check_eq(box[1], 422, "signal new")
-	check_near(ct._acc, 0.5, 0.001, "acc remainder 0.5")
-	ct.tick(1.0)
-	check_eq(gs.minute, 423, "remainder + 1s completes a minute")
-	check_near(ct._acc, 0.5, 0.001, "acc still 0.5 after full cycle")
+	var m_before: int = gs.minute
+	ct.tick(5.0)
+	check_eq(gs.minute, m_before, "tick does not advance minute")
 
 	# F5 toggle + release ignore
 	var ev = InputEventKey.new()
@@ -34,7 +29,7 @@ func run() -> void:
 	ct._unhandled_input(ev)
 	check_eq(gs.mode, gs_script.GameStateMode.SCHEDULE, "F5 press -> SCHEDULE")
 	ct.tick(3.0)
-	check_eq(gs.minute, 423, "no tick after toggle off")
+	check_eq(gs.minute, 420, "no tick after toggle off")
 	ct._unhandled_input(ev)
 	check_eq(gs.mode, gs_script.GameStateMode.REPAIR, "F5 press -> REPAIR again")
 	ev.pressed = false
@@ -45,8 +40,8 @@ func run() -> void:
 	ev.keycode = KEY_F6
 	ev.pressed = true
 	ct._unhandled_input(ev)
-	check_eq(gs.minute, 453, "F6 +30 min")
-	check_eq(box[1], 453, "F6 emits")
+	check_eq(gs.minute, 450, "F6 +30 min")
+	check_eq(box[1], 450, "F6 emits")
 
 	# F7 -> SUMMARIZE (khong con auto reset)
 	ev.keycode = KEY_F7
@@ -59,11 +54,15 @@ func run() -> void:
 	check_eq(gs.date["day"], 6, "date +1 after sleep")
 	check_eq(int(gs.mode), int(gs_script.GameStateMode.SCHEDULE), "SCHEDULE after sleep")
 
-	# tick qua 22:00: end_day dung tai SUMMARIZE, ngay moi khi begin_new_day (merge 2 spec)
+	# tick qua 22:00: khong con realtime — advance_to moi dua den SUMMARIZE
 	gs.mode = gs_script.GameStateMode.REPAIR
 	gs.minute = 1319
 	ct.tick(2.0)
-	check_eq(gs.minute, 1320, "crossed 22:00 -> clamp 1320")
+	check_eq(gs.minute, 1319, "tick never crosses 22:00 by itself")
+	ct.tick(60.0)
+	check_eq(gs.minute, 1319, "still no realtime advance")
+	gs.advance_to(1320)
+	check_eq(gs.minute, 1320, "advance_to clamps at 1320")
 	check_eq(gs.mode, gs_script.GameStateMode.SUMMARIZE, "mode SUMMARIZE after end_day")
 	check_eq(gs.date["day"], 6, "date unchanged until begin_new_day")
 	ct.tick(60.0)
