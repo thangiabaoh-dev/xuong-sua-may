@@ -17,6 +17,7 @@ var _time_label: Label
 var _summarize: CanvasLayer
 var _activity_box: VBoxContainer
 var _lbl_budget: Label
+var _lbl_toast: Label
 var _workplace
 
 static func slot_label(kind: String) -> String:
@@ -74,7 +75,7 @@ func _refresh_activity_box() -> void:
 	_lbl_budget.visible = true
 	for c in _activity_box.get_children():
 		_activity_box.remove_child(c)
-		c.free()
+		c.queue_free()
 	for act in ScheduleCore.available(game_state):
 		var btn := Button.new()
 		btn.name = "Btn_%s" % String(act.id)
@@ -97,7 +98,19 @@ func _on_activity(id: String) -> void:
 		var panel := get_tree().get_first_node_in_group("repair_panel")
 		if panel != null and panel.has_method("_on_open"):
 			panel._on_open()
+	if bool(r.get("ok", false)):
+		var gains: Dictionary = r.get("gains", {})
+		var k: int = int(gains.get("knowledge", 0))
+		if k > 0:
+			_toast("+%d tri thức" % k)
 	refresh()
+
+func _toast(msg: String) -> void:
+	_lbl_toast.text = msg
+	_lbl_toast.visible = true
+	if is_inside_tree():
+		var timer := get_tree().create_timer(1.5)
+		timer.timeout.connect(func() -> void: _lbl_toast.visible = false)
 
 func _refresh_summarize() -> void:
 	var show: bool = int(game_state.mode) == int(game_state.GameStateMode.SUMMARIZE)
@@ -162,3 +175,13 @@ func _build_ui() -> void:
 	_activity_box.name = "ActivityBox"
 	_activity_box.position = Vector2(16, 560)
 	root.add_child(_activity_box)
+	_lbl_toast = Label.new()
+	_lbl_toast.name = "Toast"
+	_lbl_toast.visible = false
+	_lbl_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_lbl_toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_lbl_toast.offset_left = -260.0
+	_lbl_toast.offset_right = 260.0
+	_lbl_toast.offset_top = 60.0
+	_lbl_toast.offset_bottom = 100.0
+	root.add_child(_lbl_toast)

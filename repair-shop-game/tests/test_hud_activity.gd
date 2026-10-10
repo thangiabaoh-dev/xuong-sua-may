@@ -42,6 +42,22 @@ func run() -> void:
 	check_eq(r.ok, true, "mo_panel try ok")
 	check_eq(int(gs.minute), m0, "minute unchanged")
 
+	# toast rong sau mo_panel khong hook (RF4) — di qua _on_activity qua nut
+	box = hud.get_node("Root/ActivityBox")
+	check(box.has_node("Btn_mo_panel"), "mo_panel button in REPAIR")
+	box.get_node("Btn_mo_panel").pressed.emit()
+	check_eq(String(hud.get_node("Root/Toast").text), "", "toast empty after mo_panel")
+	check_eq(bool(hud.get_node("Root/Toast").visible), false, "toast hidden after mo_panel")
+
+	# doc_sach_nha luc 1020 REPAIR: 120 phut x 0.020 = 2.4 -> +2 (spec 5.1)
+	box = hud.get_node("Root/ActivityBox")
+	check(box.has_node("Btn_doc_sach_nha"), "doc_sach_nha button in REPAIR")
+	box.get_node("Btn_doc_sach_nha").pressed.emit()
+	check_eq(String(hud.get_node("Root/Toast").text), "+2 tri thức", "toast text")
+	check_eq(bool(hud.get_node("Root/Toast").visible), true, "toast visible")
+	check_eq(int(gs.knowledge), 2, "gs.knowledge = 2")
+	check_eq(int(gs.minute), 1140, "consume 120 -> 1140")
+
 	# REPAIR mode -> an panel
 	gs.mode = load("res://scripts/autoload/game_state.gd").GameStateMode.REPAIR
 	hud.refresh()
