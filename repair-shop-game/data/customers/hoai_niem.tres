@@ -13,3 +13,4 @@ effects = {
 "kho": { "uy_tin": -10 },
 }
 risk_warning = "Người hoài niệm dễ giận với tone khô (mất 10 uy tín)."
+unlock_rule = &"khach_phong_tin"

@@ -13,3 +13,4 @@ effects = {
 "kho": { "uy_tin": -3 },
 }
 risk_warning = "Giáo viên khó tính — tone khô trừ 3 uy tín."
+unlock_rule = &"khach_giao_vien"

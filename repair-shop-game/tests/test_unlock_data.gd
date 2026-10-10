@@ -42,3 +42,12 @@ func run() -> void:
 	}
 	for r in set.rules:
 		check_eq(r.get("label"), expected_labels.get(String(r.id)), "label %s" % r.id)
+
+	# catalog hook: moi unlock_rule id phai khop id trong rules (spec §4)
+	check_eq(load("res://data/customers/ban_hoc.tres").get("unlock_rule"), &"", "ban_hoc khong gate")
+	check_eq(load("res://data/customers/giao_vien.tres").get("unlock_rule"), &"khach_giao_vien", "giao_vien map rule")
+	check_eq(load("res://data/customers/hoai_niem.tres").get("unlock_rule"), &"khach_phong_tin", "hoai_niem map rule")
+	for f in ["ban_hoc", "giao_vien", "hoai_niem"]:
+		var ur = load("res://data/customers/%s.tres" % f).get("unlock_rule")
+		if ur != null and String(ur) != "":
+			check(ids.has(String(ur)), "%s unlock_rule khop rule id" % f)

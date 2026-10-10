@@ -13,3 +13,4 @@ effects = {
 "kho": { "lost_order": true },
 }
 risk_warning = "Bạn học đang gấp deadline — tone khô là mất đơn ngay."
+unlock_rule = &""

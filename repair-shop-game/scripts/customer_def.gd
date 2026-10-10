@@ -6,3 +6,4 @@ extends Resource
 @export var reactions: Dictionary = {}
 @export var effects: Dictionary = {}
 @export var risk_warning: String = ""
+@export var unlock_rule: StringName = &""
