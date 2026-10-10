@@ -13,6 +13,7 @@ var _holding := false
 var bought_this_visit := false
 
 func _ready() -> void:
+	add_to_group("repair_panel")
 	if session != null:
 		return
 	var gs = get_node_or_null("/root/GameState")

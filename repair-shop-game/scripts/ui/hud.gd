@@ -15,6 +15,8 @@ var game_state
 var _built := false
 var _time_label: Label
 var _summarize: CanvasLayer
+var _activity_box: VBoxContainer
+var _lbl_budget: Label
 
 static func slot_label(kind: String) -> String:
 	if kind.is_empty():
@@ -57,7 +59,44 @@ func refresh() -> void:
 		String(WEEKDAY_LABELS.get(wd, "?")),
 		slot_label(kind),
 	]
+	_refresh_activity_box()
 	_refresh_summarize()
+
+func _refresh_activity_box() -> void:
+	var in_schedule: bool = int(game_state.mode) == int(game_state.GameStateMode.SCHEDULE)
+	if not in_schedule:
+		_activity_box.visible = false
+		_lbl_budget.visible = false
+		_lbl_budget.text = ""
+		return
+	_activity_box.visible = true
+	_lbl_budget.visible = true
+	for c in _activity_box.get_children():
+		_activity_box.remove_child(c)
+		c.free()
+	for act in ScheduleCore.available(game_state):
+		var btn := Button.new()
+		btn.name = "Btn_%s" % String(act.id)
+		btn.text = String(act.label)
+		var reason := ScheduleCore.reason_for(game_state, act)
+		if reason != "":
+			btn.disabled = true
+			btn.tooltip_text = reason
+		btn.pressed.connect(_on_activity.bind(String(act.id)))
+		_activity_box.add_child(btn)
+	if game_state.week != null and ScheduleLogic.is_repair_slot(game_state.week, game_state.date, int(game_state.minute)):
+		var budget: int = ScheduleCore.shift_budget(game_state)
+		_lbl_budget.text = "Ca còn %d/%d′" % [maxi(budget - int(game_state.shift_used), 0), budget]
+	else:
+		_lbl_budget.text = ""
+
+func _on_activity(id: String) -> void:
+	var r: Dictionary = ScheduleCore.try_activity(game_state, id)
+	if id == "mo_panel" and bool(r.get("ok", false)) and get_tree() != null:
+		var panel := get_tree().get_first_node_in_group("repair_panel")
+		if panel != null and panel.has_method("_on_open"):
+			panel._on_open()
+	refresh()
 
 func _refresh_summarize() -> void:
 	var show: bool = int(game_state.mode) == int(game_state.GameStateMode.SUMMARIZE)
@@ -86,3 +125,12 @@ func _build_ui() -> void:
 	_time_label.position = Vector2(16, 8)
 	_time_label.add_theme_font_size_override("font_size", 22)
 	root.add_child(_time_label)
+	_lbl_budget = Label.new()
+	_lbl_budget.name = "LblBudget"
+	_lbl_budget.position = Vector2(330, 12)
+	_lbl_budget.add_theme_font_size_override("font_size", 22)
+	root.add_child(_lbl_budget)
+	_activity_box = VBoxContainer.new()
+	_activity_box.name = "ActivityBox"
+	_activity_box.position = Vector2(16, 560)
+	root.add_child(_activity_box)
