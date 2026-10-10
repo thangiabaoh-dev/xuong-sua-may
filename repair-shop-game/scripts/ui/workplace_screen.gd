@@ -165,6 +165,18 @@ func _on_upgrade_pressed() -> void:
 	else:
 		_toast(REASON_TEXT.get(reason, reason))
 
+func close() -> void:
+	visible = false
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventKey):
+		return
+	var key := event as InputEventKey
+	if key.echo or not key.pressed:
+		return
+	if key.keycode == KEY_ESCAPE:
+		close()
+
 func _toast(msg: String) -> void:
 	_toast_label.text = msg
 	_toast_label.visible = true
@@ -298,6 +310,17 @@ func _build_ui() -> void:
 	_toast_label.offset_top = 60.0
 	_toast_label.offset_bottom = 100.0
 	root.add_child(_toast_label)
+
+	var close_btn := Button.new()
+	close_btn.name = "CloseBtn"
+	close_btn.text = "✕"
+	close_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	close_btn.offset_left = -72.0
+	close_btn.offset_right = -16.0
+	close_btn.offset_top = 16.0
+	close_btn.offset_bottom = 60.0
+	close_btn.pressed.connect(close)
+	root.add_child(close_btn)
 
 func _add_rect(parent: Control, rect_name: String, pos: Vector2, size: Vector2, color: Color) -> void:
 	var r := ColorRect.new()

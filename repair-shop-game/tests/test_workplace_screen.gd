@@ -106,3 +106,39 @@ func run() -> void:
 	check_eq(String(scr4.get_node("Root/Tracker/Milestones/khach_phong_tin/MMark").text), "✓", "milestone ✓ ngay")
 	check_eq(scr4.get_node("Root/Tracker/Warning").visible, false, "du lieu sach -> warning an")
 	scr4.free()
+
+	# HUD entry + dong/mo lai doc state moi (spec §3.1/§3.5 + Review Focus 5)
+	var hud_script = load("res://scripts/ui/hud.gd")
+	var host := Node.new()
+	var hud = hud_script.new()
+	host.add_child(hud)
+	var gs5 = gs_script.new()
+	hud.setup(gs5)
+	var btn = hud.get_node_or_null("Root/WorkplaceBtn")
+	check(btn != null, "HUD co nut CHỖ LÀM")
+	if btn == null:
+		host.free()
+		return
+	btn.pressed.emit()
+	var wp = host.get_node_or_null("WorkplaceScreen")
+	check(wp != null, "click -> scene instance under parent")
+	if wp == null:
+		host.free()
+		return
+	check(wp.visible, "moi instance -> visible")
+
+	var ev := InputEventKey.new()
+	ev.keycode = KEY_ESCAPE
+	ev.pressed = true
+	wp._unhandled_input(ev)
+	check(not wp.visible, "Esc -> an")
+
+	# Review Focus 5: mo lai doc GameState moi (tier doi trong luc dang dong)
+	gs5.workspace_tier = 2
+	btn.pressed.emit()
+	check(wp.visible, "nhan nut -> hien lai")
+	check_eq(String(wp.get_node("Root/UpgradePanel/TierLabel").text), "CHỖ LÀM: Tiệm", "mo lai -> doc tier moi")
+	ev.pressed = true
+	wp._unhandled_input(ev)
+	check(not wp.visible, "Esc 2 -> an (khong tao instance moi)")
+	host.free()

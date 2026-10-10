@@ -17,6 +17,7 @@ var _time_label: Label
 var _summarize: CanvasLayer
 var _activity_box: VBoxContainer
 var _lbl_budget: Label
+var _workplace
 
 static func slot_label(kind: String) -> String:
 	if kind.is_empty():
@@ -114,6 +115,26 @@ func _refresh_summarize() -> void:
 	elif _summarize != null:
 		_summarize.visible = false
 
+func _toggle_workplace() -> void:
+	if game_state == null:
+		return
+	if _workplace != null and not is_instance_valid(_workplace):
+		_workplace = null
+	if _workplace == null:
+		if get_parent() == null:
+			return
+		var packed = load("res://scenes/ui/workplace_screen.tscn")
+		if packed == null:
+			return
+		_workplace = packed.instantiate()
+		_workplace.setup(game_state)
+		get_parent().add_child(_workplace)
+		_workplace.visible = true
+	else:
+		_workplace.visible = not _workplace.visible
+		if _workplace.visible:
+			_workplace.refresh()
+
 func _build_ui() -> void:
 	var root := Control.new()
 	root.name = "Root"
@@ -125,6 +146,13 @@ func _build_ui() -> void:
 	_time_label.position = Vector2(16, 8)
 	_time_label.add_theme_font_size_override("font_size", 22)
 	root.add_child(_time_label)
+	var wp_btn := Button.new()
+	wp_btn.name = "WorkplaceBtn"
+	wp_btn.text = "CHỖ LÀM"
+	wp_btn.position = Vector2(16, 56)
+	wp_btn.size = Vector2(170, 40)
+	wp_btn.pressed.connect(_toggle_workplace)
+	root.add_child(wp_btn)
 	_lbl_budget = Label.new()
 	_lbl_budget.name = "LblBudget"
 	_lbl_budget.position = Vector2(330, 12)
