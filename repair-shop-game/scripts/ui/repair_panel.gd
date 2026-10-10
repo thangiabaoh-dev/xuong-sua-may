@@ -34,6 +34,22 @@ func setup(p_state, p_rng: RandomNumberGenerator = null) -> void:
 
 func open_new_order() -> void:
 	_last_log = ""
+	if game_state != null:
+		if int(game_state.mode) == int(game_state.GameStateMode.SUMMARIZE):
+			session = null
+			_last_log = "Đã hết ngày — chờ ngủ"
+			_render()
+			return
+		if not ScheduleLogic.is_repair_slot(game_state.week, game_state.date, int(game_state.minute)):
+			session = null
+			_last_log = "Ngoài khung giờ — chưa tới ca sửa"
+			_render()
+			return
+		if int(game_state.shift_used) >= ScheduleCore.shift_budget(game_state):
+			session = null
+			_last_log = "Hết ngân sách ca hôm nay"
+			_render()
+			return
 	var knowledge := 0
 	var uy := 0
 	if game_state != null:
@@ -514,7 +530,7 @@ func _render() -> void:
 		_hide_all()
 		get_node("Root/Screens/ScreenResult").visible = true
 		get_node("Root/Screens/ScreenResult/LblResult").text = "Hết đơn hôm nay"
-		get_node("Root/Screens/ScreenResult/LblReaction").text = ""
+		(get_node("Root/Screens/ScreenResult/LblReaction") as Label).text = _last_log
 		return
 	# header
 	(get_node("Root/Header/LblMoney") as Label).text = "💰 %dđ" % int(game_state.money)

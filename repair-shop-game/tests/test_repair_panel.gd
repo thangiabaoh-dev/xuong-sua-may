@@ -9,6 +9,7 @@ func run() -> void:
 	check(panel is CanvasLayer, "root is CanvasLayer")
 
 	var state = load("res://scripts/autoload/game_state.gd").new()
+	state.advance_to(1020)  # T2 17:00 — vao slot REPAIR de panel duoc phep tao don
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	panel.setup(state, rng)

@@ -1,6 +1,8 @@
 class_name RepairSession
 extends RefCounted
 
+const GSS = preload("res://scripts/autoload/game_state.gd")
+
 enum State { OFFER, SYMPTOM, CHECKS, CONCLUSION, PARTS, DISASSEMBLE, TEST, TONE, RESULT }
 enum Result { NONE, REJECTED, LOST_TIME, LOST_MONEY, LOST_TONE, DONE }
 
@@ -49,6 +51,14 @@ func _check_timeout() -> bool:
 
 func _add_minutes(n: int) -> bool:
 	elapsed += n
+	var forced: bool = not ScheduleCore.shift_tick(game_state, n)
+	game_state.advance_to(game_state.minute + n)
+	if int(game_state.mode) == int(GSS.GameStateMode.SUMMARIZE):
+		forced = true
+	if forced:
+		result = Result.LOST_TIME
+		state = State.RESULT
+		return true
 	return _check_timeout()
 
 func accept() -> void:

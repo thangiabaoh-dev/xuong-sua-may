@@ -26,6 +26,22 @@ static func reason_for(gs: Node, act: ActivityDef) -> String:
 		return "Cần ở: %s" % act.required_location
 	return ""
 
+static func shift_budget(gs: Node) -> int:
+	if gs.week == null:
+		return 0
+	var total: int = 0
+	var slots: Array = ScheduleLogic.slots_for_day(gs.week, gs.date)
+	for s in slots:
+		if bool(s.repair):
+			total += int(s.end_minute) - int(s.start_minute)
+	return total
+
+static func shift_tick(gs: Node, n: int) -> bool:
+	if not ScheduleLogic.is_repair_slot(gs.week, gs.date, int(gs.minute)):
+		return true
+	gs.shift_used = int(gs.shift_used) + n
+	return int(gs.shift_used) < shift_budget(gs)
+
 static func try_activity(gs: Node, id: String) -> Dictionary:
 	var acts := available(gs)
 	var act: ActivityDef = null

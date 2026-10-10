@@ -32,6 +32,8 @@ const TEST_SCRIPTS: PackedStringArray = [
 	"res://tests/test_schedule_screen.gd",
 	"res://tests/test_activities_data.gd",
 	"res://tests/test_activities.gd",
+	"res://tests/test_shift_budget.gd",
+	"res://tests/test_repair_gate.gd",
 	"res://tests/test_unlock_core.gd",
 	"res://tests/test_unlock_data.gd",
 	"res://tests/test_workspace_upgrade.gd",
