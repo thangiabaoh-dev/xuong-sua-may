@@ -513,10 +513,14 @@ func open_shop() -> void:
 func _on_close() -> void:
 	get_node("Root").visible = false
 	get_node("BtnOpen").visible = true
+	if game_state != null and int(game_state.mode) == int(game_state.GameStateMode.REPAIR):
+		game_state.mode = game_state.GameStateMode.SCHEDULE
 
 func _on_open() -> void:
 	if session == null or int(session.state) == int(RepairSession.State.RESULT):
 		open_new_order()
+	if game_state != null and session != null and int(game_state.mode) != int(game_state.GameStateMode.SUMMARIZE):
+		game_state.mode = game_state.GameStateMode.REPAIR  # spec §4.2: mo panel → REPAIR
 	get_node("Root").visible = true
 	get_node("BtnOpen").visible = false
 

@@ -51,13 +51,18 @@ func _check_timeout() -> bool:
 
 func _add_minutes(n: int) -> bool:
 	elapsed += n
+	var in_slot_before := ScheduleLogic.is_repair_slot(game_state.week, game_state.date, int(game_state.minute))
 	var forced: bool = not ScheduleCore.shift_tick(game_state, n)
 	game_state.advance_to(game_state.minute + n)
 	if int(game_state.mode) == int(GSS.GameStateMode.SUMMARIZE):
 		forced = true
+	elif in_slot_before and not ScheduleLogic.is_repair_slot(game_state.week, game_state.date, int(game_state.minute)):
+		forced = true  # chạm cuối slot REPAIR → đóng ca (spec §5)
 	if forced:
 		result = Result.LOST_TIME
 		state = State.RESULT
+		if int(game_state.mode) == int(GSS.GameStateMode.REPAIR):
+			game_state.mode = GSS.GameStateMode.SCHEDULE
 		return true
 	return _check_timeout()
 
