@@ -11,6 +11,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 270
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_lg0kb"]
 script = ExtResource("2_bpova")
@@ -26,6 +27,7 @@ id = "doc_thu_vien"
 label = "Đọc thư viện"
 required_location = "library"
 minutes = 135
+hook = "knowledge_rate:0.030"
 
 [sub_resource type="Resource" id="Resource_3ts12"]
 script = ExtResource("3_8il5w")
@@ -48,6 +50,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 195
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_b1vnl"]
 script = ExtResource("2_bpova")
@@ -76,6 +79,7 @@ id = "doc_sach_nha"
 label = "Đọc sách ở nhà"
 required_location = "workshop"
 minutes = 120
+hook = "knowledge_rate:0.020"
 
 [sub_resource type="Resource" id="Resource_x1w7g"]
 script = ExtResource("2_bpova")
@@ -111,6 +115,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 270
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_2xbgk"]
 script = ExtResource("2_bpova")
@@ -126,6 +131,7 @@ id = "doc_thu_vien"
 label = "Đọc thư viện"
 required_location = "library"
 minutes = 135
+hook = "knowledge_rate:0.030"
 
 [sub_resource type="Resource" id="Resource_5trhk"]
 script = ExtResource("3_8il5w")
@@ -148,6 +154,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 195
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_87eed"]
 script = ExtResource("2_bpova")
@@ -170,6 +177,7 @@ id = "doc_sach_nha"
 label = "Đọc sách ở nhà"
 required_location = "workshop"
 minutes = 120
+hook = "knowledge_rate:0.020"
 
 [sub_resource type="Resource" id="Resource_tr4ft"]
 script = ExtResource("3_8il5w")
@@ -218,6 +226,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 270
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_hkhcl"]
 script = ExtResource("2_bpova")
@@ -233,6 +242,7 @@ id = "doc_thu_vien"
 label = "Đọc thư viện"
 required_location = "library"
 minutes = 135
+hook = "knowledge_rate:0.030"
 
 [sub_resource type="Resource" id="Resource_dmbob"]
 script = ExtResource("3_8il5w")
@@ -255,6 +265,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 195
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_2cj08"]
 script = ExtResource("2_bpova")
@@ -283,6 +294,7 @@ id = "doc_sach_nha"
 label = "Đọc sách ở nhà"
 required_location = "workshop"
 minutes = 120
+hook = "knowledge_rate:0.020"
 
 [sub_resource type="Resource" id="Resource_2mrjq"]
 script = ExtResource("2_bpova")
@@ -318,6 +330,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 270
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_u3xvv"]
 script = ExtResource("2_bpova")
@@ -333,6 +346,7 @@ id = "doc_thu_vien"
 label = "Đọc thư viện"
 required_location = "library"
 minutes = 135
+hook = "knowledge_rate:0.030"
 
 [sub_resource type="Resource" id="Resource_vao1d"]
 script = ExtResource("3_8il5w")
@@ -355,6 +369,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 195
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_geut2"]
 script = ExtResource("2_bpova")
@@ -383,6 +398,7 @@ id = "doc_sach_nha"
 label = "Đọc sách ở nhà"
 required_location = "workshop"
 minutes = 120
+hook = "knowledge_rate:0.020"
 
 [sub_resource type="Resource" id="Resource_8mhkb"]
 script = ExtResource("2_bpova")
@@ -418,6 +434,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 270
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_cb51r"]
 script = ExtResource("2_bpova")
@@ -433,6 +450,7 @@ id = "doc_thu_vien"
 label = "Đọc thư viện"
 required_location = "library"
 minutes = 135
+hook = "knowledge_rate:0.030"
 
 [sub_resource type="Resource" id="Resource_77j35"]
 script = ExtResource("3_8il5w")
@@ -455,6 +473,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 195
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_2knfm"]
 script = ExtResource("2_bpova")
@@ -483,6 +502,7 @@ id = "doc_sach_nha"
 label = "Đọc sách ở nhà"
 required_location = "workshop"
 minutes = 120
+hook = "knowledge_rate:0.020"
 
 [sub_resource type="Resource" id="Resource_djg2r"]
 script = ExtResource("2_bpova")
@@ -518,6 +538,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 270
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_c43ok"]
 script = ExtResource("2_bpova")
@@ -533,6 +554,7 @@ id = "doc_thu_vien"
 label = "Đọc thư viện"
 required_location = "library"
 minutes = 135
+hook = "knowledge_rate:0.030"
 
 [sub_resource type="Resource" id="Resource_5ciby"]
 script = ExtResource("3_8il5w")
@@ -555,6 +577,7 @@ id = "di_hoc"
 label = "Đi học"
 required_location = "classroom"
 minutes = 195
+hook = "knowledge_rate:0.008"
 
 [sub_resource type="Resource" id="Resource_2ymj6"]
 script = ExtResource("2_bpova")
@@ -583,6 +606,7 @@ id = "doc_sach_nha"
 label = "Đọc sách ở nhà"
 required_location = "workshop"
 minutes = 120
+hook = "knowledge_rate:0.020"
 
 [sub_resource type="Resource" id="Resource_es5mm"]
 script = ExtResource("2_bpova")
@@ -625,6 +649,7 @@ id = "doc_sach_nha"
 label = "Đọc sách ở nhà"
 required_location = "workshop"
 minutes = 120
+hook = "knowledge_rate:0.020"
 
 [sub_resource type="Resource" id="Resource_2w2av"]
 script = ExtResource("3_8il5w")
@@ -667,6 +692,7 @@ id = "doc_sach_nha"
 label = "Đọc sách ở nhà"
 required_location = "workshop"
 minutes = 120
+hook = "knowledge_rate:0.020"
 
 [sub_resource type="Resource" id="Resource_7olbj"]
 script = ExtResource("2_bpova")
@@ -711,6 +737,7 @@ id = "doc_sach_nha"
 label = "Đọc sách ở nhà"
 required_location = "workshop"
 minutes = 120
+hook = "knowledge_rate:0.020"
 
 [sub_resource type="Resource" id="Resource_euivi"]
 script = ExtResource("2_bpova")

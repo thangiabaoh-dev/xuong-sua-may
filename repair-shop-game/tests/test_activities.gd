@@ -15,6 +15,8 @@ func run() -> void:
 	var r = core.try_activity(gs, "di_hoc")
 	check_eq(r.ok, false, "fail wrong location")
 	check_eq(gs.minute, 420, "minute unchanged on fail")
+	check(not r.has("gains"), "fail: no gains key")
+	check_eq(int(gs.knowledge), 0, "fail: knowledge unchanged")
 
 	# dung cho
 	gs.current_location = "classroom"
@@ -22,6 +24,10 @@ func run() -> void:
 	r = core.try_activity(gs, "di_hoc")
 	check_eq(r.ok, true, "di_hoc ok")
 	check_eq(gs.minute, 690, "consume 270 -> 11:30")
+	var gains: Dictionary = r.get("gains", {})
+	check_eq(int(gains.get("knowledge", -1)), 2, "di_hoc gains +2 (0.008 x 270)")
+	check_eq(int(gs.knowledge), 2, "knowledge = 2")
+	check_eq(int(gs.today_activities[-1].get("knowledge", 0)), 2, "today entry knowledge")
 
 	# id la
 	r = core.try_activity(gs, "khong_ton_tai")
@@ -38,6 +44,9 @@ func run() -> void:
 	r = core.try_activity(gs, "doc_thu_vien")
 	check_eq(r.ok, true, "doc_thu_vien ok")
 	check_eq(gs.minute, 825, "consume 135 -> 13:45")
+	var gains2: Dictionary = r.get("gains", {})
+	check_eq(int(gains2.get("knowledge", -1)), 4, "thu_vien gains +4 (0.030 x 135)")
+	check_eq(int(gs.knowledge), 6, "knowledge 2+4")
 
 	# mode khong phai SCHEDULE
 	gs.mode = load("res://scripts/autoload/game_state.gd").GameStateMode.REPAIR
@@ -53,6 +62,7 @@ func run() -> void:
 	r = core.try_activity(gs, "mo_panel")
 	check_eq(r.ok, true, "mo_panel ok")
 	check_eq(gs.minute, 1020, "mo_panel consumes 0")
+	check_eq(Dictionary(r.get("gains", {})).size(), 0, "mo_panel: empty gains")
 
 	# clamp cuoi slot: 1139 + di 120 (nghi_tai_nha) khong vuot 1140
 	gs.minute = 1139
@@ -79,6 +89,10 @@ func run() -> void:
 	r = core.try_activity(gs, "su_kien_doi_thuong")
 	check_eq(r.ok, true, "holiday ok")
 	check_eq(gs.minute, 1320, "900 clamp to 1320")
+	check_eq(String(hacts[0].hook), "knowledge_rate:0.010", "holiday hook set in code (RF4)")
+	var hg: Dictionary = r.get("gains", {})
+	check_eq(int(hg.get("knowledge", -1)), 7, "holiday gains +7 (0.010 x 720 clamp 600->1320)")
+	check_eq(int(gs.knowledge), 13, "knowledge 2+4+7")
 
 	# key le sai format: khong crash + push_warning (source pin, spec 8)
 	var sl = load("res://scripts/schedule_logic.gd")
@@ -86,3 +100,15 @@ func run() -> void:
 	check_eq(bool(sl.is_holiday(gs.week, {"year": 2026, "month": 10, "day": 5})), false, "bad key not holiday")
 	var f = FileAccess.open("res://scripts/schedule_logic.gd", FileAccess.READ)
 	check(f != null and f.get_as_text().contains("push_warning"), "malformed holiday key warns")
+
+	# RF1: phut clamp cuoi slot — gain tren phut thuc
+	var gs2 = load("res://scripts/autoload/game_state.gd").new()
+	gs2.current_location = "workshop"
+	gs2.minute = 1139
+	var r2 = core.try_activity(gs2, "doc_sach_nha")
+	check_eq(r2.ok, true, "clamp: doc_sach_nha ok")
+	check_eq(int(gs2.minute), 1140, "clamp: minute 1140")
+	check_eq(Dictionary(r2.get("gains", {})).size(), 0, "clamp 1 phut: no int gain")
+	check_eq(int(gs2.today_activities[0].get("knowledge", 0)), 0, "clamp: khong tich int")
+	check_near(float(gs2.knowledge_remainder), 0.02, 0.001, "clamp: rem = 0.02 x 1 phut")
+	gs2.free()

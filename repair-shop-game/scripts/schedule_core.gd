@@ -14,6 +14,7 @@ static func available(gs: Node) -> Array[ActivityDef]:
 		h.label = "Sự kiện đổi thưởng"
 		h.required_location = ""
 		h.minutes = 900
+		h.hook = "knowledge_rate:0.010"
 		out.append(h)
 		return out
 	out.assign(slot.activities)
@@ -60,7 +61,12 @@ static func try_activity(gs: Node, id: String) -> Dictionary:
 	var new_m: int = mini(before + int(act.minutes), int(slot.end_minute))
 	new_m = maxi(new_m, before)
 	var consumed: int = new_m - before
+	var gains := HookRunner.apply(gs, act.hook, consumed)
 	if id != "mo_panel":
-		gs.today_activities.append({"id": String(act.id), "label": String(act.label), "minutes": consumed})
+		var entry := {"id": String(act.id), "label": String(act.label), "minutes": consumed}
+		var k := int(gains.get("knowledge", 0))
+		if k > 0:
+			entry["knowledge"] = k
+		gs.today_activities.append(entry)
 	gs.advance_to(new_m)
-	return {"ok": true, "reason": ""}
+	return {"ok": true, "reason": "", "gains": gains}

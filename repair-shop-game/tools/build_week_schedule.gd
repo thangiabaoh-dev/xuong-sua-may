@@ -6,28 +6,29 @@ const REPAIR_WD := ["workshop", "street", "gate"]
 const REPAIR_CN := ["workshop", "street"]
 const HOME := ["workshop"]
 
-func _act(id: String, label: String, loc: String, minutes: int) -> ActivityDef:
+func _act(id: String, label: String, loc: String, minutes: int, hook: String = "") -> ActivityDef:
 	var a := ActivityDef.new()
 	a.id = id
 	a.label = label
 	a.required_location = loc
 	a.minutes = minutes
+	a.hook = hook
 	return a
 
 func _acts_for(kind: String, s: int, e: int) -> Array:
 	match kind:
 		"SCHOOL":
-			return [_act("di_hoc", "Đi học", "classroom", e - s)]
+			return [_act("di_hoc", "Đi học", "classroom", e - s, "knowledge_rate:0.008")]
 		"CHOICE":
-			return [_act("doc_thu_vien", "Đọc thư viện", "library", 135),
+			return [_act("doc_thu_vien", "Đọc thư viện", "library", 135, "knowledge_rate:0.030"),
 				_act("project_ca_phe", "Project ở cà phê", "cafe", 135)]
 		"REPAIR":
 			return [_act("mo_panel", "Mở panel sửa", "workshop", 0),
 				_act("nghi_tai_nha", "Nghỉ tại nhà", "workshop", 120),
-				_act("doc_sach_nha", "Đọc sách ở nhà", "workshop", 120)]
+				_act("doc_sach_nha", "Đọc sách ở nhà", "workshop", 120, "knowledge_rate:0.020")]
 		"FREE_HOME":
 			return [_act("lam_project_som", "Làm project sớm", "workshop", 120),
-				_act("doc_sach_nha", "Đọc sách ở nhà", "workshop", 120),
+				_act("doc_sach_nha", "Đọc sách ở nhà", "workshop", 120, "knowledge_rate:0.020"),
 				_act("don_kho", "Dọn dẹp", "workshop", 120),
 				_act("nghi_ngoi", "Nghỉ ngơi", "workshop", 120)]
 		"PROJECT":
@@ -35,7 +36,7 @@ func _acts_for(kind: String, s: int, e: int) -> Array:
 		"BREAK":
 			return [_act("nghi_giac", "Ngủ trưa", "workshop", 90)]
 		"HOLIDAY":
-			return [_act("su_kien_doi_thuong", "Sự kiện đổi thưởng", "workshop", 900)]
+			return [_act("su_kien_doi_thuong", "Sự kiện đổi thưởng", "workshop", 900, "knowledge_rate:0.010")]
 	return []
 
 func _slot(s: int, e: int, kind: String, locs: Array, repair := false) -> TimeSlot:
@@ -86,6 +87,23 @@ func _init() -> void:
 		[1140, 1320, "PROJECT", HOME],
 	]))
 	week.holidays = PackedStringArray(["04-30", "09-02", "2026-02-17"])
+	for d in week.days:
+		for s in d.slots:
+			for a in s.activities:
+				if String(a.hook) == "":
+					continue
+				for pair in String(a.hook).split(","):
+					var idx := pair.find(":")
+					if idx <= 0:
+						push_error("build_week_schedule: hook sai format: %s" % a.hook)
+						quit(1)
+						return
+					var key := pair.substr(0, idx).strip_edges()
+					var value := pair.substr(idx + 1).strip_edges()
+					if key != "knowledge_rate" or not value.is_valid_float() or value.to_float() < 0.0:
+						push_error("build_week_schedule: hook khong hop le: %s" % a.hook)
+						quit(1)
+						return
 	var err := ResourceSaver.save(week, "res://data/week_schedule.tres")
 	print("WROTE res://data/week_schedule.tres err=", err)
 	quit(0 if err == OK else 1)

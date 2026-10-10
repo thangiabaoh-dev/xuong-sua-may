@@ -25,4 +25,7 @@ func run() -> void:
 	check_eq(String(cn.slots[2].kind), "BREAK", "CN slot2 BREAK")
 	check_eq(cn.slots[2].activities[0].id, "nghi_giac", "CN BREAK activity (720-810)")
 	check_eq(int(cn.slots[2].activities[0].minutes), 90, "CN BREAK 90")
-	check_eq(week.days[0].slots[0].activities[0].hook, "", "hook empty cycle1")
+	check_eq(String(week.days[0].slots[0].activities[0].hook), "knowledge_rate:0.008", "di_hoc hook cycle2")
+	check_eq(String(week.days[0].slots[1].activities[0].hook), "knowledge_rate:0.030", "doc_thu_vien hook")
+	check_eq(String(week.days[1].slots[3].activities[1].hook), "knowledge_rate:0.020", "doc_sach_nha hook")
+	check_eq(String(week.days[0].slots[4].activities[0].hook), "", "lam_project hook empty (cycle3)")
