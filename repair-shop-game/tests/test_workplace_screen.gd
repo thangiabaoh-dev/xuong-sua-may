@@ -59,3 +59,50 @@ func run() -> void:
 	check(scrN != null, "setup(null) khong crash")
 	scrN.free()
 	scr2.free()
+
+	# tracker milestones (spec §2.1)
+	var wsp_script = load("res://scripts/ui/workplace_screen.gd")
+	var scr4 = packed.instantiate()
+	var gs4 = gs_script.new()
+	scr4.setup(gs4)
+	var row_may = scr4.get_node_or_null("Root/Tracker/Milestones/may_co")
+	check(row_may != null, "tracker milestone row may_co")
+	if row_may == null:
+		scr4.free()
+		return
+	check_eq(String(row_may.get_node("MName").text), "Máy cổ", "milestone label")
+	check_eq(String(row_may.get_node("MMark").text), "", "knowledge 0 -> chua unlock")
+	gs4.knowledge = 32
+	scr4.refresh()
+	check_eq(String(row_may.get_node("MPct").text), "64%", "pct 64% tai knowledge 32")
+	gs4.knowledge = 100
+	scr4.refresh()
+	check_eq(String(scr4.get_node("Root/Tracker/Milestones/may_co/MMark").text), "✓", "knowledge 100 -> ✓")
+	check_eq(scr4.get_node("Root/Tracker/Milestones").get_child_count(), 4, "4 milestone rows")
+
+	# Review Focus 3: percent math (spec §2.1 min ratio)
+	var vals := {"knowledge": 32, "uy_tin": 45, "workspace_tier": 1}
+	check(absf(wsp_script.progress_percent("knowledge >= 50", vals) - 0.64) < 0.001, "32/50 -> 64%")
+	check_near(wsp_script.progress_percent("uy_tin >= 90 and workspace_tier >= 1", vals), 0.5, 0.001, "min(45/90, 1/1) = 50%")
+	check_eq(wsp_script.progress_percent("no_pattern_here", vals), -1.0, "khong pattern -> -1")
+
+	# customers gate (spec §2.4 + Review Focus 4)
+	check_eq(scr4.get_node("Root/Tracker/Customers").get_child_count(), 3, "3 customer rows")
+	check(scr4.get_node("Root/Tracker/Customers/giao_vien").modulate.a < 1.0, "uy_tin 0 -> giao vien mo")
+	gs4.uy_tin = 60
+	scr4.refresh()
+	check(scr4.get_node("Root/Tracker/Customers/giao_vien").modulate.a >= 1.0, "uy_tin 60 -> giao vien sang")
+	check(scr4.get_node("Root/Tracker/Customers/hoai_niem").modulate.a < 1.0, "phong tin van mo (tier 0)")
+
+	# Review Focus 2: tier up while open -> unlock NGAY qua unlock_changed (spec §3.4)
+	gs4.uy_tin = 90
+	gs4.money = 9000000
+	gs4.workspace_tier = 0
+	scr4.refresh()
+	check(scr4.get_node("Root/Tracker/Customers/hoai_niem").modulate.a < 1.0, "truoc upgrade phong tin mo")
+	scr4.get_node("Root/UpgradePanel/UpgradeBtn").pressed.emit()  # tier 0 -> 1 (uy_tin 90 >= 40)
+	check_eq(gs4.workspace_tier, 1, "upgrade len tier 1")
+	check(scr4.get_node("Root/Tracker/Customers/hoai_niem").modulate.a >= 1.0, "unlock_changed -> row sang NGAY")
+	check_eq(String(scr4.get_node("Root/Tracker/Milestones/khach_phong_tin/MMark").text), "✓", "milestone ✓ ngay")
+	check_eq(scr4.get_node("Root/Tracker/Warning").visible, false, "du lieu sach -> warning an")
+	scr4.free()
