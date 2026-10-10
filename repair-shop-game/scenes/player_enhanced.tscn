@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/models/chibi.obj" id="1_chibi"]
+[ext_resource type="Script" path="res://scripts/chibi_character_controller.gd" id="2_controller"]
+[ext_resource type="Script" path="res://scripts/animation_controller.gd" id="3_anim_ctrl"]
+[ext_resource type="Script" path="res://scripts/animation_setup.gd" id="4_anim_setup"]
+[ext_resource type="Shader" path="res://assets/shaders/chibi_toon_advanced.gdshader" id="5_shader"]
+[ext_resource type="Shader" path="res://assets/shaders/chibi_outline.gdshader" id="6_outline_shader"]
+[ext_resource type="Material" path="res://assets/materials/chibi_material.tres" id="7_material"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.35
+height = 1.8
+
+[node name="Player" type="CharacterBody3D" groups=["player"]]
+script = ExtResource("2_controller")
+
+[node name="AnimationController" type="Node" parent="."]
+script = ExtResource("3_anim_ctrl")
+
+[node name="AnimationSetup" type="Node" parent="."]
+script = ExtResource("4_anim_setup")
+animation_player = NodePath("../AnimationPlayer")
+create_procedural = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_player")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+position = Vector3(0, 1.6, 0)
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_chibi")
+rotation_degrees = Vector3(-90, 180, 0)
+material_override = ExtResource("7_material")
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+position = Vector3(0, 0, 4.0)
+rotation_degrees = Vector3(0, 0, 0)

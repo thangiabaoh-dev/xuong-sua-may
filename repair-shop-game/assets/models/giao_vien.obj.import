@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/giao_vien.obj-63e661937410bf65fffb0432b3e3398
 
 [params]
 
-generate_tangents=true
+generate_tangents=false
 generate_lods=true
 generate_shadow_mesh=true
 generate_lightmap_uv2=false

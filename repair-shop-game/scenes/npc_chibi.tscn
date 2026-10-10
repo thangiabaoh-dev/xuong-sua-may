@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/models/chibi.obj" id="1_chibi"]
+[ext_resource type="Script" path="res://scripts/chibi_npc_controller.gd" id="2_npc_ctrl"]
+[ext_resource type="Script" path="res://scripts/animation_controller.gd" id="3_anim_ctrl"]
+[ext_resource type="Script" path="res://scripts/animation_setup.gd" id="4_anim_setup"]
+[ext_resource type="Material" path="res://assets/materials/chibi_material.tres" id="5_material"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_npc"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_interact"]
+radius = 2.5
+
+[node name="NPC" type="CharacterBody3D" groups=["npc"]]
+script = ExtResource("2_npc_ctrl")
+
+[node name="AnimationController" type="Node" parent="."]
+script = ExtResource("3_anim_ctrl")
+
+[node name="AnimationSetup" type="Node" parent="."]
+script = ExtResource("4_anim_setup")
+animation_player = NodePath("../AnimationPlayer")
+create_procedural = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_npc")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_chibi")
+rotation_degrees = Vector3(-90, 180, 0)
+material_override = ExtResource("5_material")
+
+[node name="InteractionArea" type="Area3D" parent="."]
+monitoring = true
+monitorable = false
+collision_layer = 0
+collision_mask = 2
+
+[node name="InteractionShape" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource("SphereShape3D_interact")

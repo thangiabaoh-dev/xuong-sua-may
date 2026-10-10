@@ -1,0 +1,208 @@
+[gd_scene load_steps=28 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/reference/cong_1.jpg" id="1_cong"]
+[ext_resource type="Texture2D" path="res://assets/reference/san_thuong.png" id="2_san"]
+[ext_resource type="Texture2D" path="res://assets/reference/banner_truong.png" id="3_banner"]
+[ext_resource type="Texture2D" path="res://assets/reference/so_do_phong_hoc.png" id="4_sodo"]
+
+[sub_resource type="StandardMaterial3D" id="mat_ground"]
+albedo_color = Color(0.55, 0.62, 0.45, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_gate"]
+albedo_color = Color(0.75, 0.7, 0.62, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="mat_bench"]
+albedo_color = Color(0.5, 0.35, 0.22, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="mat_plant"]
+albedo_color = Color(0.3, 0.5, 0.28, 1)
+roughness = 0.9
+
+[sub_resource type="BoxShape3D" id="shape_yard"]
+size = Vector3(20, 0.01, 20)
+
+[sub_resource type="BoxMesh" id="mesh_yard"]
+material = SubResource("mat_ground")
+size = Vector3(20, 0.4, 20)
+
+[sub_resource type="BoxMesh" id="mesh_pillar"]
+material = SubResource("mat_gate")
+size = Vector3(0.6, 3, 0.6)
+
+[sub_resource type="BoxMesh" id="mesh_lintel"]
+material = SubResource("mat_gate")
+size = Vector3(3.6, 0.5, 0.6)
+
+[sub_resource type="BoxMesh" id="mesh_bench"]
+material = SubResource("mat_bench")
+size = Vector3(1.8, 0.1, 0.5)
+
+[sub_resource type="BoxMesh" id="mesh_planter"]
+material = SubResource("mat_plant")
+size = Vector3(1.2, 0.6, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="mat_photo_gate"]
+albedo_texture = ExtResource("1_cong")
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_photo_yard"]
+albedo_texture = ExtResource("2_san")
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_photo_banner"]
+albedo_texture = ExtResource("3_banner")
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_photo_map"]
+albedo_texture = ExtResource("4_sodo")
+roughness = 0.9
+
+[sub_resource type="QuadMesh" id="quad_gate"]
+material = SubResource("mat_photo_gate")
+size = Vector2(4.5, 6)
+
+[sub_resource type="QuadMesh" id="quad_yard"]
+material = SubResource("mat_photo_yard")
+size = Vector2(10.67, 6)
+
+[sub_resource type="QuadMesh" id="quad_banner"]
+material = SubResource("mat_photo_banner")
+size = Vector2(3.8, 0.95)
+
+[sub_resource type="QuadMesh" id="quad_map"]
+material = SubResource("mat_photo_map")
+size = Vector2(2.4, 1.7)
+
+[sub_resource type="BoxMesh" id="mesh_boardback"]
+material = SubResource("mat_gate")
+size = Vector3(2.6, 1.9, 0.08)
+
+[sub_resource type="BoxMesh" id="mesh_post"]
+material = SubResource("mat_bench")
+size = Vector3(0.12, 1.7, 0.12)
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat_yard"]
+sky_top_color = Color(0.35, 0.55, 0.9, 1)
+sky_horizon_color = Color(0.75, 0.85, 0.95, 1)
+ground_bottom_color = Color(0.35, 0.3, 0.25, 1)
+ground_horizon_color = Color(0.65, 0.7, 0.65, 1)
+
+[sub_resource type="Sky" id="Sky_yard"]
+sky_material = SubResource("SkyMat_yard")
+
+[sub_resource type="Environment" id="Env_yard"]
+background_mode = 2
+sky = SubResource("Sky_yard")
+background_energy_multiplier = 0.6
+
+[node name="Schoolyard" type="Node3D"]
+
+[node name="Yard" type="Node3D" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Yard"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Yard/StaticBody3D"]
+position = Vector3(0, -0.005, 0)
+shape = SubResource("shape_yard")
+
+[node name="Mesh" type="MeshInstance3D" parent="Yard"]
+position = Vector3(0, -0.2, 0)
+mesh = SubResource("mesh_yard")
+
+[node name="GateL" type="Node3D" parent="."]
+position = Vector3(-1.5, 0, 9)
+
+[node name="Mesh" type="MeshInstance3D" parent="GateL"]
+position = Vector3(0, 1.5, 0)
+mesh = SubResource("mesh_pillar")
+
+[node name="GateR" type="Node3D" parent="."]
+position = Vector3(1.5, 0, 9)
+
+[node name="Mesh" type="MeshInstance3D" parent="GateR"]
+position = Vector3(0, 1.5, 0)
+mesh = SubResource("mesh_pillar")
+
+[node name="GateLintel" type="Node3D" parent="."]
+position = Vector3(0, 3.2, 9)
+
+[node name="Mesh" type="MeshInstance3D" parent="GateLintel"]
+mesh = SubResource("mesh_lintel")
+
+[node name="BenchL" type="Node3D" parent="."]
+position = Vector3(-5, 0, 2)
+
+[node name="Mesh" type="MeshInstance3D" parent="BenchL"]
+position = Vector3(0, 0.45, 0)
+mesh = SubResource("mesh_bench")
+
+[node name="BenchR" type="Node3D" parent="."]
+position = Vector3(5, 0, 2)
+
+[node name="Mesh" type="MeshInstance3D" parent="BenchR"]
+position = Vector3(0, 0.45, 0)
+mesh = SubResource("mesh_bench")
+
+[node name="PlanterL" type="Node3D" parent="."]
+position = Vector3(-5, 0, -3)
+
+[node name="Mesh" type="MeshInstance3D" parent="PlanterL"]
+position = Vector3(0, 0.3, 0)
+mesh = SubResource("mesh_planter")
+
+[node name="PlanterR" type="Node3D" parent="."]
+position = Vector3(5, 0, -3)
+
+[node name="Mesh" type="MeshInstance3D" parent="PlanterR"]
+position = Vector3(0, 0.3, 0)
+mesh = SubResource("mesh_planter")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-50, -35, 0)
+light_energy = 1.2
+
+[node name="WorldEnv" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_yard")
+
+[node name="GateFacade" type="Node3D" parent="."]
+position = Vector3(0, 0, 10.6)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="GateFacade"]
+position = Vector3(0, 3, 0)
+mesh = SubResource("quad_gate")
+
+[node name="YardBackdrop" type="Node3D" parent="."]
+position = Vector3(0, 0, -9.9)
+
+[node name="Mesh" type="MeshInstance3D" parent="YardBackdrop"]
+position = Vector3(0, 3, 0)
+mesh = SubResource("quad_yard")
+
+[node name="GateBanner" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.2, 8.66)
+rotation_degrees = Vector3(0, 180, 0)
+mesh = SubResource("quad_banner")
+
+[node name="MapBoard" type="Node3D" parent="."]
+position = Vector3(7, 0, 5)
+rotation_degrees = Vector3(0, -125.5, 0)
+
+[node name="PostL" type="MeshInstance3D" parent="MapBoard"]
+position = Vector3(-1, 0.85, -0.02)
+mesh = SubResource("mesh_post")
+
+[node name="PostR" type="MeshInstance3D" parent="MapBoard"]
+position = Vector3(1, 0.85, -0.02)
+mesh = SubResource("mesh_post")
+
+[node name="BoardBack" type="MeshInstance3D" parent="MapBoard"]
+position = Vector3(0, 1.5, 0)
+mesh = SubResource("mesh_boardback")
+
+[node name="MapPhoto" type="MeshInstance3D" parent="MapBoard"]
+position = Vector3(0, 1.5, 0.05)
+mesh = SubResource("quad_map")

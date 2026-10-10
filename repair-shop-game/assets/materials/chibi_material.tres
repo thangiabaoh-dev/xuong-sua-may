@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/chibi_toon_advanced.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameters/base_color = Color(0.96, 0.84, 0.74, 1)
+shader_parameters/shadow_color = Color(0.75, 0.62, 0.52, 1)
+shader_parameters/outline_color = Color(0.1, 0.1, 0.12, 1)
+shader_parameters/rim_color = Color(1, 0.95, 0.9, 1)
+shader_parameters/shadow_threshold = 0.5
+shader_parameters/shadow_softness = 0.15
+shader_parameters/outline_width = 0.035
+shader_parameters/rim_power = 3.0
+shader_parameters/rim_intensity = 0.4
+shader_parameters/use_vertex_colors = false
+shader_parameters/use_ramp = false

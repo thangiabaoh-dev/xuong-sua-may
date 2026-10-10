@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/ban_hoc.obj-0522efc49b88cd2806d833a3afa7475b.
 
 [params]
 
-generate_tangents=true
+generate_tangents=false
 generate_lods=true
 generate_shadow_mesh=true
 generate_lightmap_uv2=false

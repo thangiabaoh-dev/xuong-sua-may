@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/hoai_niem.obj-91aab9074e6451fbc0b1a504b5d90af
 
 [params]
 
-generate_tangents=true
+generate_tangents=false
 generate_lods=true
 generate_shadow_mesh=true
 generate_lightmap_uv2=false

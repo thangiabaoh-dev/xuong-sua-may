@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/chibi.obj-bcbdf9153ea40f637bd3e4cc1413a6fd.me
 
 [params]
 
-generate_tangents=true
+generate_tangents=false
 generate_lods=true
 generate_shadow_mesh=true
 generate_lightmap_uv2=false
