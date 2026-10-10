@@ -14,6 +14,7 @@ const WEEKDAY_LABELS := {1: "T2", 2: "T3", 3: "T4", 4: "T5", 5: "T6", 6: "T7", 7
 var game_state
 var _built := false
 var _time_label: Label
+var _summarize: CanvasLayer
 
 static func slot_label(kind: String) -> String:
 	if kind.is_empty():
@@ -35,6 +36,8 @@ func setup(gs: Node, clock: Node = null) -> void:
 		_built = true
 	if clock != null and not clock.minute_changed.is_connected(refresh_from_clock):
 		clock.minute_changed.connect(refresh_from_clock)
+	if game_state != null and not game_state.schedule_changed.is_connected(refresh):
+		game_state.schedule_changed.connect(refresh)
 	refresh()
 
 func refresh_from_clock(_old: int, _new: int) -> void:
@@ -54,6 +57,23 @@ func refresh() -> void:
 		String(WEEKDAY_LABELS.get(wd, "?")),
 		slot_label(kind),
 	]
+	_refresh_summarize()
+
+func _refresh_summarize() -> void:
+	var show: bool = int(game_state.mode) == int(game_state.GameStateMode.SUMMARIZE)
+	if show:
+		if _summarize == null:
+			var packed := load("res://scenes/ui/summarize.tscn") as PackedScene
+			if packed == null:
+				return
+			_summarize = packed.instantiate()
+			add_child(_summarize)
+			_summarize.setup(game_state)
+		else:
+			_summarize.visible = true
+			_summarize.refresh()
+	elif _summarize != null:
+		_summarize.visible = false
 
 func _build_ui() -> void:
 	var root := Control.new()
