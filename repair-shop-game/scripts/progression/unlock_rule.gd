@@ -6,3 +6,4 @@ extends Resource
 @export var target_id: StringName = &""
 @export var condition: String = ""
 @export var enabled: bool = true
+@export var label: String = ""

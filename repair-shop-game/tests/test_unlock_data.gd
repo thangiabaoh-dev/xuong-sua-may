@@ -32,3 +32,13 @@ func run() -> void:
 		check_eq(ex.parse(String(r.condition), core_script.INPUT_NAMES), OK, "parse %s" % r.id)
 		var res = ex.execute(def_inputs, ctx2, false)
 		check(res is bool, "rule %s tra bool" % r.id)
+
+	# label cua moi rule (spec §2.1: milestone hien ten rule)
+	var expected_labels := {
+		"may_co": "Máy cổ",
+		"may_phuc_tap": "Máy phức tạp",
+		"khach_giao_vien": "Khách giáo viên",
+		"khach_phong_tin": "Khách phòng tin",
+	}
+	for r in set.rules:
+		check_eq(r.get("label"), expected_labels.get(String(r.id)), "label %s" % r.id)

@@ -9,6 +9,7 @@ id = &"may_co"
 target_kind = "machine"
 target_id = &"may_co"
 condition = "knowledge >= 50"
+label = "Máy cổ"
 
 [sub_resource type="Resource" id="Resource_qwxk5"]
 script = ExtResource("1_qxo5v")
@@ -16,6 +17,7 @@ id = &"may_phuc_tap"
 target_kind = "machine"
 target_id = &"may_phuc_tap"
 condition = "knowledge >= 80"
+label = "Máy phức tạp"
 
 [sub_resource type="Resource" id="Resource_jewx8"]
 script = ExtResource("1_qxo5v")
@@ -23,6 +25,7 @@ id = &"khach_giao_vien"
 target_kind = "customer"
 target_id = &"khach_giao_vien"
 condition = "uy_tin >= 60"
+label = "Khách giáo viên"
 
 [sub_resource type="Resource" id="Resource_w8wut"]
 script = ExtResource("1_qxo5v")
@@ -30,6 +33,7 @@ id = &"khach_phong_tin"
 target_kind = "customer"
 target_id = &"khach_phong_tin"
 condition = "uy_tin >= 90 and workspace_tier >= 1"
+label = "Khách phòng tin"
 
 [resource]
 script = ExtResource("2_027ol")
