@@ -101,7 +101,9 @@ func _on_activity(id: String) -> void:
 	if bool(r.get("ok", false)):
 		var gains: Dictionary = r.get("gains", {})
 		var k: int = int(gains.get("knowledge", 0))
-		if k > 0:
+		if gains.has("project"):
+			_toast("Hoàn thành project! +%d uy_tin" % int(gains.get("uy_tin", 0)))
+		elif k > 0:
 			_toast("+%d tri thức" % k)
 	refresh()
 

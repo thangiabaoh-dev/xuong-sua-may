@@ -68,6 +68,15 @@ func run() -> void:
 	check_eq(int(gs.knowledge), 2, "gs.knowledge = 2")
 	check_eq(int(gs.minute), 1140, "consume 120 -> 1140")
 
+	# project toast: PROJECT slot tai 1140, workshop (RF: toast dung chuoi cycle 3)
+	hud.refresh()
+	box = hud.get_node("Root/ActivityBox")
+	check(box.has_node("Btn_lam_project"), "lam_project button in PROJECT")
+	box.get_node("Btn_lam_project").pressed.emit()
+	check_eq(String(hud.get_node("Root/Toast").text), "Hoàn thành project! +10 uy_tin", "project toast text")
+	check_eq(bool(hud.get_node("Root/Toast").visible), true, "project toast visible")
+	check_eq(int(gs.project_count), 1, "project_count 1 after press")
+
 	# REPAIR mode -> an panel
 	gs.mode = load("res://scripts/autoload/game_state.gd").GameStateMode.REPAIR
 	hud.refresh()
