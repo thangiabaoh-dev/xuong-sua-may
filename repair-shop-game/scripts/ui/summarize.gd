@@ -17,12 +17,17 @@ func refresh() -> void:
 	for a in game_state.today_activities:
 		lines.append("%s — %d′" % [String(a["label"]), int(a["minutes"])])
 	var know: int = 0
+	var proj_uy: int = 0
 	for a in game_state.today_activities:
 		if a.has("knowledge"):
 			know += int(a["knowledge"])
+		if a.has("project"):
+			proj_uy += int(a.get("uy_tin", 0))
 	lines.append("Tiền: %dđ" % int(game_state.money))
 	if know > 0:
 		lines.append("Tri thức nhận: +%d" % know)
+	if proj_uy > 0:
+		lines.append("Project hoàn thành: +%d uy_tin" % proj_uy)
 	var miss: int = 450 - int(game_state.school_minutes_done())
 	if miss > 0:
 		lines.append("Phạt học đường: −%d kỷ luật" % (10 * int(ceil(float(miss) / 450.0))))

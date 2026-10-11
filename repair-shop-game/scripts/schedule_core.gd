@@ -67,6 +67,11 @@ static func try_activity(gs: Node, id: String) -> Dictionary:
 		var k := int(gains.get("knowledge", 0))
 		if k > 0:
 			entry["knowledge"] = k
+		if gains.has("project"):
+			entry["project"] = String(gains["project"])
+		var ui := int(gains.get("uy_tin", 0))
+		if ui > 0:
+			entry["uy_tin"] = ui
 		gs.today_activities.append(entry)
 	gs.advance_to(new_m)
 	return {"ok": true, "reason": "", "gains": gains}

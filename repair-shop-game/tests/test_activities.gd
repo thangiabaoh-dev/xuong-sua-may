@@ -76,6 +76,12 @@ func run() -> void:
 	r = core.try_activity(gs, "lam_project")
 	check_eq(r.ok, true, "project ok")
 	check_eq(int(gs.mode), int(load("res://scripts/autoload/game_state.gd").GameStateMode.SUMMARIZE), "end_day at 1320")
+	check_eq(String(r["gains"].get("project", "")), "p_noibo", "gains project")
+	check_eq(int(r["gains"].get("uy_tin", 0)), 10, "gains uy_tin flat (clamp 10 min van +10)")
+	check_eq(int(gs.project_count), 1, "project_count 1")
+	check(gs.completed_projects.has(&"p_noibo"), "completed_projects append")
+	check_eq(String(gs.today_activities[-1].get("project", "")), "p_noibo", "entry project key")
+	check_eq(int(gs.today_activities[-1].get("uy_tin", 0)), 10, "entry uy_tin key")
 
 	# ngay le — slot runtime khong co activities, core tu sinh
 	gs.begin_new_day()
