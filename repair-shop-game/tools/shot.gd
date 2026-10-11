@@ -56,23 +56,32 @@ func _start(i: int) -> void:
 		return
 	root.add_child(packed.instantiate())
 
-	var sun := DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-55, -30, 0)
-	sun.light_energy = 0.75
-	sun.shadow_enabled = true
-	sun.shadow_bias = 0.6
-	sun.shadow_normal_bias = 6.0
-	root.add_child(sun)
-
-	var env_node := WorldEnvironment.new()
-	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.53, 0.7, 0.85)
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(1, 1, 1)
-	env.ambient_light_energy = 0.35
-	env_node.environment = env
-	root.add_child(env_node)
+	# scene có sẵn lighting thì không thêm chồng (tránh 2 WorldEnvironment/sun conflict)
+	var has_env := false
+	var has_sun := false
+	for c in root.get_children():
+		if c is WorldEnvironment:
+			has_env = true
+		if c is DirectionalLight3D:
+			has_sun = true
+	if not has_sun:
+		var sun := DirectionalLight3D.new()
+		sun.rotation_degrees = Vector3(-55, -30, 0)
+		sun.light_energy = 0.75
+		sun.shadow_enabled = true
+		sun.shadow_bias = 0.6
+		sun.shadow_normal_bias = 6.0
+		root.add_child(sun)
+	if not has_env:
+		var env_node := WorldEnvironment.new()
+		var env := Environment.new()
+		env.background_mode = Environment.BG_COLOR
+		env.background_color = Color(0.53, 0.7, 0.85)
+		env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+		env.ambient_light_color = Color(1, 1, 1)
+		env.ambient_light_energy = 0.35
+		env_node.environment = env
+		root.add_child(env_node)
 
 	var cam := Camera3D.new()
 	cam.fov = shot["fov"]
