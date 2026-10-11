@@ -42,7 +42,7 @@ func run() -> void:
 	gs.shift_used = 110
 	var rng1 := RandomNumberGenerator.new()
 	rng1.seed = 1
-	var order1 = load("res://scripts/orders/order_factory.gd").make(rng1, 0, 0)
+	var order1 = load("res://scripts/orders/order_factory.gd").make(rng1, {"knowledge": 0, "uy_tin": 0, "project_count": 0})
 	var sess1 = rs_script.new(order1, gs, rng1)
 	var hit1 = sess1._add_minutes(20)  # 110+20=130 > 120
 	check_eq(hit1, true, "budget forced timeout true")
@@ -55,7 +55,7 @@ func run() -> void:
 	gs.mode = gscript.GameStateMode.REPAIR
 	var rng2 := RandomNumberGenerator.new()
 	rng2.seed = 2
-	var order2 = load("res://scripts/orders/order_factory.gd").make(rng2, 0, 0)
+	var order2 = load("res://scripts/orders/order_factory.gd").make(rng2, {"knowledge": 0, "uy_tin": 0, "project_count": 0})
 	var sess2 = rs_script.new(order2, gs, rng2)
 	var hit2 = sess2._add_minutes(15)  # 1310 + 15 = 1325
 	check_eq(hit2, true, "timeout true")

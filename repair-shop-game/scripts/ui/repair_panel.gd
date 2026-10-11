@@ -51,12 +51,10 @@ func open_new_order() -> void:
 			_last_log = "Hết ngân sách ca hôm nay"
 			_render()
 			return
-	var knowledge := 0
-	var uy := 0
+	var ctx := {}
 	if game_state != null:
-		knowledge = int(game_state.knowledge)
-		uy = int(game_state.uy_tin)
-	var order := OrderFactory.make(rng, knowledge, uy)
+		ctx = {"knowledge": int(game_state.knowledge), "uy_tin": int(game_state.uy_tin), "project_count": int(game_state.project_count)}
+	var order := OrderFactory.make(rng, ctx)
 	if order == null:
 		session = null
 	else:
