@@ -4,6 +4,9 @@ const REQUIRED := [
 	"Floor", "Board", "Podium", "TeacherDesk", "Ceiling",
 	"DoorJambL", "DoorJambR", "DoorLintel",
 	"WallBack", "WallLeft", "WallRight", "WallFrontL", "WallFrontR",
+	"WindowL1", "WindowL2", "WindowR1", "WindowR2",
+	"Fan1", "Fan2", "Light1", "Light2", "Light3", "Light4",
+	"Sun", "WorldEnv",
 ]
 const WALL_SHAPES := {
 	"WallBack": Vector3(12, 3, 0.2),
