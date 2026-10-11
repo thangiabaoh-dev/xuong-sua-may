@@ -1,14 +1,14 @@
-[gd_scene load_steps=50 format=3]
+[gd_scene load_steps=53 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/textures/gach_trang.jpg" id="1_gach"]
 [ext_resource type="Texture2D" path="res://assets/textures/go_ban.jpg" id="2_go"]
-[ext_resource type="Texture2D" path="res://assets/reference/lop_hoc_bang.jpg" id="3_bang"]
-[ext_resource type="Texture2D" path="res://assets/reference/lop_hoc_rong.jpg" id="4_rong"]
-[ext_resource type="Texture2D" path="res://assets/reference/lop_hoc_ban.jpg" id="5_ban"]
+[ext_resource type="ArrayMesh" path="res://assets/models/giao_vien.obj" id="3_giao_vien"]
+[ext_resource type="ArrayMesh" path="res://assets/models/chibi.obj" id="4_chibi"]
+[ext_resource type="Material" path="res://assets/materials/chibi_material.tres" id="5_chibi_mat"]
 
 [sub_resource type="StandardMaterial3D" id="mat_floor"]
 albedo_texture = ExtResource("1_gach")
-uv1_scale = Vector3(30, 25, 1)
+uv1_scale = Vector3(12, 10, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_wall"]
 albedo_color = Color(0.8, 0.9, 0.78, 1)
@@ -114,13 +114,22 @@ size = Vector3(0.45, 0.45, 0.06)
 material = SubResource("mat_chair")
 size = Vector3(0.05, 0.42, 0.05)
 
+[sub_resource type="BoxShape3D" id="shape_wall_back"]
+size = Vector3(12, 3, 0.2)
+
 [sub_resource type="BoxMesh" id="mesh_wall_back"]
 material = SubResource("mat_wall")
 size = Vector3(12, 3, 0.2)
 
+[sub_resource type="BoxShape3D" id="shape_wall_side"]
+size = Vector3(0.2, 3, 10)
+
 [sub_resource type="BoxMesh" id="mesh_wall_side"]
 material = SubResource("mat_wall")
 size = Vector3(0.2, 3, 10)
+
+[sub_resource type="BoxShape3D" id="shape_wall_front"]
+size = Vector3(5, 3, 0.2)
 
 [sub_resource type="BoxMesh" id="mesh_wall_front"]
 material = SubResource("mat_wall")
@@ -162,29 +171,19 @@ size = Vector3(0.85, 0.04, 0.16)
 material = SubResource("mat_light")
 size = Vector3(0.14, 0.08, 1.8)
 
-[sub_resource type="StandardMaterial3D" id="mat_photo_bang"]
-albedo_texture = ExtResource("3_bang")
-roughness = 0.9
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat_room"]
+sky_top_color = Color(0.35, 0.55, 0.9, 1)
+sky_horizon_color = Color(0.75, 0.85, 0.95, 1)
+ground_bottom_color = Color(0.35, 0.3, 0.25, 1)
+ground_horizon_color = Color(0.65, 0.7, 0.65, 1)
 
-[sub_resource type="StandardMaterial3D" id="mat_photo_rong"]
-albedo_texture = ExtResource("4_rong")
-roughness = 0.9
+[sub_resource type="Sky" id="Sky_room"]
+sky_material = SubResource("SkyMat_room")
 
-[sub_resource type="StandardMaterial3D" id="mat_photo_ban"]
-albedo_texture = ExtResource("5_ban")
-roughness = 0.9
-
-[sub_resource type="QuadMesh" id="quad_photo_bang"]
-material = SubResource("mat_photo_bang")
-size = Vector2(1.2, 1.6)
-
-[sub_resource type="QuadMesh" id="quad_photo_rong"]
-material = SubResource("mat_photo_rong")
-size = Vector2(1.2, 1.6)
-
-[sub_resource type="QuadMesh" id="quad_photo_ban"]
-material = SubResource("mat_photo_ban")
-size = Vector2(1.2, 1.6)
+[sub_resource type="Environment" id="Env_room"]
+background_mode = 2
+sky = SubResource("Sky_room")
+background_energy_multiplier = 0.6
 
 [node name="Classroom" type="Node3D"]
 
@@ -201,7 +200,7 @@ position = Vector3(0, -0.2, 0)
 mesh = SubResource("mesh_floor")
 
 [node name="Board" type="Node3D" parent="."]
-position = Vector3(0, 1.6, -4.5)
+position = Vector3(0, 1.6, -4.8)
 
 [node name="Mesh" type="MeshInstance3D" parent="Board"]
 mesh = SubResource("mesh_board")
@@ -211,13 +210,13 @@ position = Vector3(0, 0, -0.07)
 mesh = SubResource("mesh_boardframe")
 
 [node name="Podium" type="Node3D" parent="."]
-position = Vector3(-2.2, 0.525, -3.9)
+position = Vector3(-1.2, 0.525, -4.0)
 
 [node name="Mesh" type="MeshInstance3D" parent="Podium"]
 mesh = SubResource("mesh_podium")
 
 [node name="TeacherDesk" type="Node3D" parent="."]
-position = Vector3(-3.4, 0, -3.8)
+position = Vector3(-2.6, 0, -4.0)
 
 [node name="MeshTop" type="MeshInstance3D" parent="TeacherDesk"]
 position = Vector3(0, 0.725, 0)
@@ -243,440 +242,31 @@ mesh = SubResource("mesh_desk_leg")
 position = Vector3(0.63, 0.35, 0.31)
 mesh = SubResource("mesh_desk_leg")
 
-[node name="Desk1" type="Node3D" parent="."]
-position = Vector3(-1.5, 0, -1)
+[node name="Teacher" type="MeshInstance3D" parent="TeacherDesk"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.3, 0.75, -0.5)
+mesh = ExtResource("3_giao_vien")
+material_override = ExtResource("5_chibi_mat")
 
-[node name="MeshTop" type="MeshInstance3D" parent="Desk1"]
-position = Vector3(0, 0.725, 0)
-mesh = SubResource("mesh_desk_top")
+[node name="Ceiling" type="Node3D" parent="."]
+position = Vector3(0, 3.0, 0)
 
-[node name="MeshShelf" type="MeshInstance3D" parent="Desk1"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_desk_shelf")
+[node name="DoorJambL" type="Node3D" parent="."]
+position = Vector3(-3.5, 0, 5.1)
 
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk1"]
-position = Vector3(-0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
+[node name="DoorJambR" type="Node3D" parent="."]
+position = Vector3(3.5, 0, 5.1)
 
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk1"]
-position = Vector3(0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk1"]
-position = Vector3(-0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk1"]
-position = Vector3(0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="Chair" type="Node3D" parent="Desk1"]
-position = Vector3(0, 0, 0.55)
-
-[node name="MeshSeat" type="MeshInstance3D" parent="Desk1/Chair"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_chair_seat")
-
-[node name="MeshBack" type="MeshInstance3D" parent="Desk1/Chair"]
-position = Vector3(0, 0.68, 0.2)
-mesh = SubResource("mesh_chair_back")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk1/Chair"]
-position = Vector3(-0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk1/Chair"]
-position = Vector3(0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk1/Chair"]
-position = Vector3(-0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk1/Chair"]
-position = Vector3(0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="Desk2" type="Node3D" parent="."]
-position = Vector3(1.5, 0, -1)
-
-[node name="MeshTop" type="MeshInstance3D" parent="Desk2"]
-position = Vector3(0, 0.725, 0)
-mesh = SubResource("mesh_desk_top")
-
-[node name="MeshShelf" type="MeshInstance3D" parent="Desk2"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_desk_shelf")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk2"]
-position = Vector3(-0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk2"]
-position = Vector3(0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk2"]
-position = Vector3(-0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk2"]
-position = Vector3(0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="Chair" type="Node3D" parent="Desk2"]
-position = Vector3(0, 0, 0.55)
-
-[node name="MeshSeat" type="MeshInstance3D" parent="Desk2/Chair"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_chair_seat")
-
-[node name="MeshBack" type="MeshInstance3D" parent="Desk2/Chair"]
-position = Vector3(0, 0.68, 0.2)
-mesh = SubResource("mesh_chair_back")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk2/Chair"]
-position = Vector3(-0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk2/Chair"]
-position = Vector3(0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk2/Chair"]
-position = Vector3(-0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk2/Chair"]
-position = Vector3(0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="Desk3" type="Node3D" parent="."]
-position = Vector3(-1.5, 0, 1)
-
-[node name="MeshTop" type="MeshInstance3D" parent="Desk3"]
-position = Vector3(0, 0.725, 0)
-mesh = SubResource("mesh_desk_top")
-
-[node name="MeshShelf" type="MeshInstance3D" parent="Desk3"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_desk_shelf")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk3"]
-position = Vector3(-0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk3"]
-position = Vector3(0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk3"]
-position = Vector3(-0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk3"]
-position = Vector3(0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="Chair" type="Node3D" parent="Desk3"]
-position = Vector3(0, 0, 0.55)
-
-[node name="MeshSeat" type="MeshInstance3D" parent="Desk3/Chair"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_chair_seat")
-
-[node name="MeshBack" type="MeshInstance3D" parent="Desk3/Chair"]
-position = Vector3(0, 0.68, 0.2)
-mesh = SubResource("mesh_chair_back")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk3/Chair"]
-position = Vector3(-0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk3/Chair"]
-position = Vector3(0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk3/Chair"]
-position = Vector3(-0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk3/Chair"]
-position = Vector3(0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="Desk4" type="Node3D" parent="."]
-position = Vector3(1.5, 0, 1)
-
-[node name="MeshTop" type="MeshInstance3D" parent="Desk4"]
-position = Vector3(0, 0.725, 0)
-mesh = SubResource("mesh_desk_top")
-
-[node name="MeshShelf" type="MeshInstance3D" parent="Desk4"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_desk_shelf")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk4"]
-position = Vector3(-0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk4"]
-position = Vector3(0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk4"]
-position = Vector3(-0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk4"]
-position = Vector3(0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="Chair" type="Node3D" parent="Desk4"]
-position = Vector3(0, 0, 0.55)
-
-[node name="MeshSeat" type="MeshInstance3D" parent="Desk4/Chair"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_chair_seat")
-
-[node name="MeshBack" type="MeshInstance3D" parent="Desk4/Chair"]
-position = Vector3(0, 0.68, 0.2)
-mesh = SubResource("mesh_chair_back")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk4/Chair"]
-position = Vector3(-0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk4/Chair"]
-position = Vector3(0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk4/Chair"]
-position = Vector3(-0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk4/Chair"]
-position = Vector3(0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="Desk5" type="Node3D" parent="."]
-position = Vector3(-1.5, 0, 3)
-
-[node name="MeshTop" type="MeshInstance3D" parent="Desk5"]
-position = Vector3(0, 0.725, 0)
-mesh = SubResource("mesh_desk_top")
-
-[node name="MeshShelf" type="MeshInstance3D" parent="Desk5"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_desk_shelf")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk5"]
-position = Vector3(-0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk5"]
-position = Vector3(0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk5"]
-position = Vector3(-0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk5"]
-position = Vector3(0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="Chair" type="Node3D" parent="Desk5"]
-position = Vector3(0, 0, 0.55)
-
-[node name="MeshSeat" type="MeshInstance3D" parent="Desk5/Chair"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_chair_seat")
-
-[node name="MeshBack" type="MeshInstance3D" parent="Desk5/Chair"]
-position = Vector3(0, 0.68, 0.2)
-mesh = SubResource("mesh_chair_back")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk5/Chair"]
-position = Vector3(-0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk5/Chair"]
-position = Vector3(0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk5/Chair"]
-position = Vector3(-0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk5/Chair"]
-position = Vector3(0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="Desk6" type="Node3D" parent="."]
-position = Vector3(1.5, 0, 3)
-
-[node name="MeshTop" type="MeshInstance3D" parent="Desk6"]
-position = Vector3(0, 0.725, 0)
-mesh = SubResource("mesh_desk_top")
-
-[node name="MeshShelf" type="MeshInstance3D" parent="Desk6"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_desk_shelf")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk6"]
-position = Vector3(-0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk6"]
-position = Vector3(0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk6"]
-position = Vector3(-0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk6"]
-position = Vector3(0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="Chair" type="Node3D" parent="Desk6"]
-position = Vector3(0, 0, 0.55)
-
-[node name="MeshSeat" type="MeshInstance3D" parent="Desk6/Chair"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_chair_seat")
-
-[node name="MeshBack" type="MeshInstance3D" parent="Desk6/Chair"]
-position = Vector3(0, 0.68, 0.2)
-mesh = SubResource("mesh_chair_back")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk6/Chair"]
-position = Vector3(-0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk6/Chair"]
-position = Vector3(0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk6/Chair"]
-position = Vector3(-0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk6/Chair"]
-position = Vector3(0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="Desk7" type="Node3D" parent="."]
-position = Vector3(-1.5, 0, -3)
-
-[node name="MeshTop" type="MeshInstance3D" parent="Desk7"]
-position = Vector3(0, 0.725, 0)
-mesh = SubResource("mesh_desk_top")
-
-[node name="MeshShelf" type="MeshInstance3D" parent="Desk7"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_desk_shelf")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk7"]
-position = Vector3(-0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk7"]
-position = Vector3(0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk7"]
-position = Vector3(-0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk7"]
-position = Vector3(0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="Chair" type="Node3D" parent="Desk7"]
-position = Vector3(0, 0, 0.55)
-
-[node name="MeshSeat" type="MeshInstance3D" parent="Desk7/Chair"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_chair_seat")
-
-[node name="MeshBack" type="MeshInstance3D" parent="Desk7/Chair"]
-position = Vector3(0, 0.68, 0.2)
-mesh = SubResource("mesh_chair_back")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk7/Chair"]
-position = Vector3(-0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk7/Chair"]
-position = Vector3(0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk7/Chair"]
-position = Vector3(-0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk7/Chair"]
-position = Vector3(0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="Desk8" type="Node3D" parent="."]
-position = Vector3(1.5, 0, -3)
-
-[node name="MeshTop" type="MeshInstance3D" parent="Desk8"]
-position = Vector3(0, 0.725, 0)
-mesh = SubResource("mesh_desk_top")
-
-[node name="MeshShelf" type="MeshInstance3D" parent="Desk8"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_desk_shelf")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk8"]
-position = Vector3(-0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk8"]
-position = Vector3(0.53, 0.35, -0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk8"]
-position = Vector3(-0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk8"]
-position = Vector3(0.53, 0.35, 0.24)
-mesh = SubResource("mesh_desk_leg")
-
-[node name="Chair" type="Node3D" parent="Desk8"]
-position = Vector3(0, 0, 0.55)
-
-[node name="MeshSeat" type="MeshInstance3D" parent="Desk8/Chair"]
-position = Vector3(0, 0.42, 0)
-mesh = SubResource("mesh_chair_seat")
-
-[node name="MeshBack" type="MeshInstance3D" parent="Desk8/Chair"]
-position = Vector3(0, 0.68, 0.2)
-mesh = SubResource("mesh_chair_back")
-
-[node name="MeshLegFL" type="MeshInstance3D" parent="Desk8/Chair"]
-position = Vector3(-0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegFR" type="MeshInstance3D" parent="Desk8/Chair"]
-position = Vector3(0.18, 0.21, -0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBL" type="MeshInstance3D" parent="Desk8/Chair"]
-position = Vector3(-0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
-
-[node name="MeshLegBR" type="MeshInstance3D" parent="Desk8/Chair"]
-position = Vector3(0.18, 0.21, 0.18)
-mesh = SubResource("mesh_chair_leg")
+[node name="DoorLintel" type="Node3D" parent="."]
+position = Vector3(0, 2.7, 5.1)
 
 [node name="WallBack" type="Node3D" parent="."]
 position = Vector3(0, 0, -5.1)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="WallBack"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallBack/StaticBody3D"]
+position = Vector3(0, 1.5, 0)
+shape = SubResource("shape_wall_back")
 
 [node name="Mesh" type="MeshInstance3D" parent="WallBack"]
 position = Vector3(0, 1.5, 0)
@@ -685,12 +275,24 @@ mesh = SubResource("mesh_wall_back")
 [node name="WallLeft" type="Node3D" parent="."]
 position = Vector3(-6.1, 0, 0)
 
+[node name="StaticBody3D" type="StaticBody3D" parent="WallLeft"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallLeft/StaticBody3D"]
+position = Vector3(0, 1.5, 0)
+shape = SubResource("shape_wall_side")
+
 [node name="Mesh" type="MeshInstance3D" parent="WallLeft"]
 position = Vector3(0, 1.5, 0)
 mesh = SubResource("mesh_wall_side")
 
 [node name="WallRight" type="Node3D" parent="."]
 position = Vector3(6.1, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="WallRight"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallRight/StaticBody3D"]
+position = Vector3(0, 1.5, 0)
+shape = SubResource("shape_wall_side")
 
 [node name="Mesh" type="MeshInstance3D" parent="WallRight"]
 position = Vector3(0, 1.5, 0)
@@ -699,6 +301,12 @@ mesh = SubResource("mesh_wall_side")
 [node name="WallFrontL" type="Node3D" parent="."]
 position = Vector3(-3.5, 0, 5.1)
 
+[node name="StaticBody3D" type="StaticBody3D" parent="WallFrontL"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallFrontL/StaticBody3D"]
+position = Vector3(0, 1.5, 0)
+shape = SubResource("shape_wall_front")
+
 [node name="Mesh" type="MeshInstance3D" parent="WallFrontL"]
 position = Vector3(0, 1.5, 0)
 mesh = SubResource("mesh_wall_front")
@@ -706,217 +314,12 @@ mesh = SubResource("mesh_wall_front")
 [node name="WallFrontR" type="Node3D" parent="."]
 position = Vector3(3.5, 0, 5.1)
 
+[node name="StaticBody3D" type="StaticBody3D" parent="WallFrontR"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallFrontR/StaticBody3D"]
+position = Vector3(0, 1.5, 0)
+shape = SubResource("shape_wall_front")
+
 [node name="Mesh" type="MeshInstance3D" parent="WallFrontR"]
 position = Vector3(0, 1.5, 0)
 mesh = SubResource("mesh_wall_front")
-
-[node name="WindowL1" type="Node3D" parent="."]
-position = Vector3(-6, 1.7, -2)
-
-[node name="MeshFrame" type="MeshInstance3D" parent="WindowL1"]
-mesh = SubResource("mesh_win_frame")
-
-[node name="MeshGlass" type="MeshInstance3D" parent="WindowL1"]
-position = Vector3(0.1, 0, 0)
-mesh = SubResource("mesh_win_glass")
-
-[node name="MeshBar1" type="MeshInstance3D" parent="WindowL1"]
-position = Vector3(0.13, 0, -0.6)
-mesh = SubResource("mesh_win_bar")
-
-[node name="MeshBar2" type="MeshInstance3D" parent="WindowL1"]
-position = Vector3(0.13, 0, 0.6)
-mesh = SubResource("mesh_win_bar")
-
-[node name="MeshBarH" type="MeshInstance3D" parent="WindowL1"]
-position = Vector3(0.13, 0, 0)
-mesh = SubResource("mesh_win_bar_h")
-
-[node name="CurtainA" type="MeshInstance3D" parent="WindowL1"]
-position = Vector3(0.15, -0.05, -1.15)
-mesh = SubResource("mesh_curtain")
-
-[node name="CurtainB" type="MeshInstance3D" parent="WindowL1"]
-position = Vector3(0.15, -0.05, 1.15)
-mesh = SubResource("mesh_curtain")
-
-[node name="WindowL2" type="Node3D" parent="."]
-position = Vector3(-6, 1.7, 2)
-
-[node name="MeshFrame" type="MeshInstance3D" parent="WindowL2"]
-mesh = SubResource("mesh_win_frame")
-
-[node name="MeshGlass" type="MeshInstance3D" parent="WindowL2"]
-position = Vector3(0.1, 0, 0)
-mesh = SubResource("mesh_win_glass")
-
-[node name="MeshBar1" type="MeshInstance3D" parent="WindowL2"]
-position = Vector3(0.13, 0, -0.6)
-mesh = SubResource("mesh_win_bar")
-
-[node name="MeshBar2" type="MeshInstance3D" parent="WindowL2"]
-position = Vector3(0.13, 0, 0.6)
-mesh = SubResource("mesh_win_bar")
-
-[node name="MeshBarH" type="MeshInstance3D" parent="WindowL2"]
-position = Vector3(0.13, 0, 0)
-mesh = SubResource("mesh_win_bar_h")
-
-[node name="CurtainA" type="MeshInstance3D" parent="WindowL2"]
-position = Vector3(0.15, -0.05, -1.15)
-mesh = SubResource("mesh_curtain")
-
-[node name="CurtainB" type="MeshInstance3D" parent="WindowL2"]
-position = Vector3(0.15, -0.05, 1.15)
-mesh = SubResource("mesh_curtain")
-
-[node name="WindowR1" type="Node3D" parent="."]
-position = Vector3(6, 1.7, -2)
-
-[node name="MeshFrame" type="MeshInstance3D" parent="WindowR1"]
-mesh = SubResource("mesh_win_frame")
-
-[node name="MeshGlass" type="MeshInstance3D" parent="WindowR1"]
-position = Vector3(-0.1, 0, 0)
-mesh = SubResource("mesh_win_glass")
-
-[node name="MeshBar1" type="MeshInstance3D" parent="WindowR1"]
-position = Vector3(-0.13, 0, -0.6)
-mesh = SubResource("mesh_win_bar")
-
-[node name="MeshBar2" type="MeshInstance3D" parent="WindowR1"]
-position = Vector3(-0.13, 0, 0.6)
-mesh = SubResource("mesh_win_bar")
-
-[node name="MeshBarH" type="MeshInstance3D" parent="WindowR1"]
-position = Vector3(-0.13, 0, 0)
-mesh = SubResource("mesh_win_bar_h")
-
-[node name="CurtainA" type="MeshInstance3D" parent="WindowR1"]
-position = Vector3(-0.15, -0.05, -1.15)
-mesh = SubResource("mesh_curtain")
-
-[node name="CurtainB" type="MeshInstance3D" parent="WindowR1"]
-position = Vector3(-0.15, -0.05, 1.15)
-mesh = SubResource("mesh_curtain")
-
-[node name="WindowR2" type="Node3D" parent="."]
-position = Vector3(6, 1.7, 2)
-
-[node name="MeshFrame" type="MeshInstance3D" parent="WindowR2"]
-mesh = SubResource("mesh_win_frame")
-
-[node name="MeshGlass" type="MeshInstance3D" parent="WindowR2"]
-position = Vector3(-0.1, 0, 0)
-mesh = SubResource("mesh_win_glass")
-
-[node name="MeshBar1" type="MeshInstance3D" parent="WindowR2"]
-position = Vector3(-0.13, 0, -0.6)
-mesh = SubResource("mesh_win_bar")
-
-[node name="MeshBar2" type="MeshInstance3D" parent="WindowR2"]
-position = Vector3(-0.13, 0, 0.6)
-mesh = SubResource("mesh_win_bar")
-
-[node name="MeshBarH" type="MeshInstance3D" parent="WindowR2"]
-position = Vector3(-0.13, 0, 0)
-mesh = SubResource("mesh_win_bar_h")
-
-[node name="CurtainA" type="MeshInstance3D" parent="WindowR2"]
-position = Vector3(-0.15, -0.05, -1.15)
-mesh = SubResource("mesh_curtain")
-
-[node name="CurtainB" type="MeshInstance3D" parent="WindowR2"]
-position = Vector3(-0.15, -0.05, 1.15)
-mesh = SubResource("mesh_curtain")
-
-[node name="Fan1" type="Node3D" parent="."]
-position = Vector3(-2.5, 0, 0)
-
-[node name="MeshRod" type="MeshInstance3D" parent="Fan1"]
-position = Vector3(0, 2.75, 0)
-mesh = SubResource("mesh_fan_rod")
-
-[node name="MeshHub" type="MeshInstance3D" parent="Fan1"]
-position = Vector3(0, 2.45, 0)
-mesh = SubResource("mesh_fan_hub")
-
-[node name="MeshBlade1" type="MeshInstance3D" parent="Fan1"]
-position = Vector3(0.35, 2.42, 0)
-mesh = SubResource("mesh_fan_blade")
-
-[node name="MeshBlade2" type="MeshInstance3D" parent="Fan1"]
-position = Vector3(-0.175, 2.42, -0.303)
-rotation_degrees = Vector3(0, 120, 0)
-mesh = SubResource("mesh_fan_blade")
-
-[node name="MeshBlade3" type="MeshInstance3D" parent="Fan1"]
-position = Vector3(-0.175, 2.42, 0.303)
-rotation_degrees = Vector3(0, 240, 0)
-mesh = SubResource("mesh_fan_blade")
-
-[node name="Fan2" type="Node3D" parent="."]
-position = Vector3(2.5, 0, 0)
-
-[node name="MeshRod" type="MeshInstance3D" parent="Fan2"]
-position = Vector3(0, 2.75, 0)
-mesh = SubResource("mesh_fan_rod")
-
-[node name="MeshHub" type="MeshInstance3D" parent="Fan2"]
-position = Vector3(0, 2.45, 0)
-mesh = SubResource("mesh_fan_hub")
-
-[node name="MeshBlade1" type="MeshInstance3D" parent="Fan2"]
-position = Vector3(0.35, 2.42, 0)
-mesh = SubResource("mesh_fan_blade")
-
-[node name="MeshBlade2" type="MeshInstance3D" parent="Fan2"]
-position = Vector3(-0.175, 2.42, -0.303)
-rotation_degrees = Vector3(0, 120, 0)
-mesh = SubResource("mesh_fan_blade")
-
-[node name="MeshBlade3" type="MeshInstance3D" parent="Fan2"]
-position = Vector3(-0.175, 2.42, 0.303)
-rotation_degrees = Vector3(0, 240, 0)
-mesh = SubResource("mesh_fan_blade")
-
-[node name="Light1" type="Node3D" parent="."]
-position = Vector3(-3, 0, -2)
-
-[node name="Mesh" type="MeshInstance3D" parent="Light1"]
-position = Vector3(0, 2.9, 0)
-mesh = SubResource("mesh_light")
-
-[node name="Light2" type="Node3D" parent="."]
-position = Vector3(-3, 0, 2)
-
-[node name="Mesh" type="MeshInstance3D" parent="Light2"]
-position = Vector3(0, 2.9, 0)
-mesh = SubResource("mesh_light")
-
-[node name="Light3" type="Node3D" parent="."]
-position = Vector3(3, 0, -2)
-
-[node name="Mesh" type="MeshInstance3D" parent="Light3"]
-position = Vector3(0, 2.9, 0)
-mesh = SubResource("mesh_light")
-
-[node name="Light4" type="Node3D" parent="."]
-position = Vector3(3, 0, 2)
-
-[node name="Mesh" type="MeshInstance3D" parent="Light4"]
-position = Vector3(0, 2.9, 0)
-mesh = SubResource("mesh_light")
-
-[node name="PhotoBackL" type="MeshInstance3D" parent="."]
-position = Vector3(-4, 1.7, -4.98)
-mesh = SubResource("quad_photo_bang")
-
-[node name="PhotoBackR" type="MeshInstance3D" parent="."]
-position = Vector3(4, 1.7, -4.98)
-mesh = SubResource("quad_photo_rong")
-
-[node name="PhotoFront" type="MeshInstance3D" parent="."]
-position = Vector3(3.5, 1.7, 4.98)
-rotation_degrees = Vector3(0, 180, 0)
-mesh = SubResource("quad_photo_ban")
