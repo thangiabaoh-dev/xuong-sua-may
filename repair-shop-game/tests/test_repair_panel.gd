@@ -14,6 +14,8 @@ func run() -> void:
 	rng.seed = 7
 	panel.setup(state, rng)
 	check(panel.session != null, "session created")
+	check_eq(panel._customer_name("truong_nhom"), "Trưởng nhóm", "truong_nhom display name (khong hien raw key)")
+	check_eq(panel._customer_name("giam_doc"), "Giám đốc", "giam_doc display name")
 
 	var paths := ["Root/Header/LblMoney", "Root/Header/LblClock", "Root/Header/LblUyTin",
 		"Root/Screens/ScreenOffer/BtnAccept", "Root/Screens/ScreenOffer/BtnReject",

@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 const CHECK_LABELS: Array[String] = ["Đo nguồn", "Nghe quạt", "Kiểm tra RAM", "Nhìn bo mạch"]
-const CUSTOMER_NAMES := {"ban_hoc": "Bạn học", "giao_vien": "Giáo viên", "hoai_niem": "Người hoài niệm"}
+const CUSTOMER_NAMES := {"ban_hoc": "Bạn học", "giao_vien": "Giáo viên", "hoai_niem": "Người hoài niệm", "truong_nhom": "Trưởng nhóm", "giam_doc": "Giám đốc"}
 
 var session: RepairSession
 var game_state
