@@ -35,6 +35,7 @@ id = "project_ca_phe"
 label = "Project ở cà phê"
 required_location = "cafe"
 minutes = 135
+hook = "complete_project:p_cafe,uy_tin:8"
 
 [sub_resource type="Resource" id="Resource_gedhm"]
 script = ExtResource("2_bpova")
@@ -96,6 +97,7 @@ id = "lam_project"
 label = "Làm project"
 required_location = "workshop"
 minutes = 180
+hook = "complete_project:p_noibo,uy_tin:10"
 
 [sub_resource type="Resource" id="Resource_m4cx5"]
 script = ExtResource("2_bpova")
@@ -139,6 +141,7 @@ id = "project_ca_phe"
 label = "Project ở cà phê"
 required_location = "cafe"
 minutes = 135
+hook = "complete_project:p_cafe,uy_tin:8"
 
 [sub_resource type="Resource" id="Resource_hx6du"]
 script = ExtResource("2_bpova")
@@ -170,6 +173,7 @@ id = "lam_project_som"
 label = "Làm project sớm"
 required_location = "workshop"
 minutes = 120
+hook = "complete_project:p_som,uy_tin:6"
 
 [sub_resource type="Resource" id="Resource_5835g"]
 script = ExtResource("3_8il5w")
@@ -207,6 +211,7 @@ id = "lam_project"
 label = "Làm project"
 required_location = "workshop"
 minutes = 180
+hook = "complete_project:p_noibo,uy_tin:10"
 
 [sub_resource type="Resource" id="Resource_spcdu"]
 script = ExtResource("2_bpova")
@@ -250,6 +255,7 @@ id = "project_ca_phe"
 label = "Project ở cà phê"
 required_location = "cafe"
 minutes = 135
+hook = "complete_project:p_cafe,uy_tin:8"
 
 [sub_resource type="Resource" id="Resource_cweml"]
 script = ExtResource("2_bpova")
@@ -311,6 +317,7 @@ id = "lam_project"
 label = "Làm project"
 required_location = "workshop"
 minutes = 180
+hook = "complete_project:p_noibo,uy_tin:10"
 
 [sub_resource type="Resource" id="Resource_eljg1"]
 script = ExtResource("2_bpova")
@@ -354,6 +361,7 @@ id = "project_ca_phe"
 label = "Project ở cà phê"
 required_location = "cafe"
 minutes = 135
+hook = "complete_project:p_cafe,uy_tin:8"
 
 [sub_resource type="Resource" id="Resource_sm5rp"]
 script = ExtResource("2_bpova")
@@ -415,6 +423,7 @@ id = "lam_project"
 label = "Làm project"
 required_location = "workshop"
 minutes = 180
+hook = "complete_project:p_noibo,uy_tin:10"
 
 [sub_resource type="Resource" id="Resource_sv4bn"]
 script = ExtResource("2_bpova")
@@ -458,6 +467,7 @@ id = "project_ca_phe"
 label = "Project ở cà phê"
 required_location = "cafe"
 minutes = 135
+hook = "complete_project:p_cafe,uy_tin:8"
 
 [sub_resource type="Resource" id="Resource_7aru5"]
 script = ExtResource("2_bpova")
@@ -519,6 +529,7 @@ id = "lam_project"
 label = "Làm project"
 required_location = "workshop"
 minutes = 180
+hook = "complete_project:p_noibo,uy_tin:10"
 
 [sub_resource type="Resource" id="Resource_g6rjs"]
 script = ExtResource("2_bpova")
@@ -562,6 +573,7 @@ id = "project_ca_phe"
 label = "Project ở cà phê"
 required_location = "cafe"
 minutes = 135
+hook = "complete_project:p_cafe,uy_tin:8"
 
 [sub_resource type="Resource" id="Resource_ttdgl"]
 script = ExtResource("2_bpova")
@@ -623,6 +635,7 @@ id = "lam_project"
 label = "Làm project"
 required_location = "workshop"
 minutes = 180
+hook = "complete_project:p_noibo,uy_tin:10"
 
 [sub_resource type="Resource" id="Resource_1quvq"]
 script = ExtResource("2_bpova")
@@ -642,6 +655,7 @@ id = "lam_project_som"
 label = "Làm project sớm"
 required_location = "workshop"
 minutes = 120
+hook = "complete_project:p_som,uy_tin:6"
 
 [sub_resource type="Resource" id="Resource_llvga"]
 script = ExtResource("3_8il5w")
@@ -754,6 +768,7 @@ id = "lam_project"
 label = "Làm project"
 required_location = "workshop"
 minutes = 180
+hook = "complete_project:p_noibo,uy_tin:10"
 
 [sub_resource type="Resource" id="Resource_f044s"]
 script = ExtResource("2_bpova")

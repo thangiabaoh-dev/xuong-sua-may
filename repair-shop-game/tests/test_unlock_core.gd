@@ -129,3 +129,13 @@ func run() -> void:
 	check(not cb.parse_errors().is_empty(), "non-bool result reported")
 	check_eq(cb.is_unlocked("after_good"), true, "rule sau van evaluate duoc")
 	check_eq(cb.is_unlocked("bad_int"), false, "non-bool -> locked")
+
+	# milestone theo so lan hoan thanh project (cycle 3)
+	var c10 = core_script.new()
+	c10.setup([_rule("khach_truong_nhom", "project_count >= 1")])
+	gs.project_count = 0
+	c10.refresh(gs)
+	check_eq(c10.is_unlocked("khach_truong_nhom"), false, "project_count 0 -> locked")
+	gs.project_count = 1
+	c10.refresh(gs)
+	check_eq(c10.is_unlocked("khach_truong_nhom"), true, "project_count 1 -> unlocked")

@@ -21,18 +21,18 @@ func _acts_for(kind: String, s: int, e: int) -> Array:
 			return [_act("di_hoc", "Đi học", "classroom", e - s, "knowledge_rate:0.008")]
 		"CHOICE":
 			return [_act("doc_thu_vien", "Đọc thư viện", "library", 135, "knowledge_rate:0.030"),
-				_act("project_ca_phe", "Project ở cà phê", "cafe", 135)]
+				_act("project_ca_phe", "Project ở cà phê", "cafe", 135, "complete_project:p_cafe,uy_tin:8")]
 		"REPAIR":
 			return [_act("mo_panel", "Mở panel sửa", "workshop", 0),
 				_act("nghi_tai_nha", "Nghỉ tại nhà", "workshop", 120),
 				_act("doc_sach_nha", "Đọc sách ở nhà", "workshop", 120, "knowledge_rate:0.020")]
 		"FREE_HOME":
-			return [_act("lam_project_som", "Làm project sớm", "workshop", 120),
+			return [_act("lam_project_som", "Làm project sớm", "workshop", 120, "complete_project:p_som,uy_tin:6"),
 				_act("doc_sach_nha", "Đọc sách ở nhà", "workshop", 120, "knowledge_rate:0.020"),
 				_act("don_kho", "Dọn dẹp", "workshop", 120),
 				_act("nghi_ngoi", "Nghỉ ngơi", "workshop", 120)]
 		"PROJECT":
-			return [_act("lam_project", "Làm project", "workshop", 180)]
+			return [_act("lam_project", "Làm project", "workshop", 180, "complete_project:p_noibo,uy_tin:10")]
 		"BREAK":
 			return [_act("nghi_giac", "Ngủ trưa", "workshop", 90)]
 		"HOLIDAY":
@@ -100,7 +100,15 @@ func _init() -> void:
 						return
 					var key := pair.substr(0, idx).strip_edges()
 					var value := pair.substr(idx + 1).strip_edges()
-					if key != "knowledge_rate" or not value.is_valid_float() or value.to_float() < 0.0:
+					var ok := false
+					match key:
+						"knowledge_rate":
+							ok = value.is_valid_float() and value.to_float() >= 0.0
+						"complete_project":
+							ok = RegEx.create_from_string("^[a-z0-9_]+$").search(value) != null
+						"uy_tin":
+							ok = value.is_valid_int() and int(value) >= 0
+					if not ok:
 						push_error("build_week_schedule: hook khong hop le: %s" % a.hook)
 						quit(1)
 						return

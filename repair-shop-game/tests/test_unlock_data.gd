@@ -5,11 +5,11 @@ func run() -> void:
 	check(set != null, "unlock_rules.tres loads")
 	if set == null:
 		return
-	check(set.rules.size() == 4, "4 rules")
+	check(set.rules.size() == 6, "6 rules")
 	var ids: Array = []
 	for r in set.rules:
 		ids.append(String(r.id))
-	for want in ["may_co", "may_phuc_tap", "khach_giao_vien", "khach_phong_tin"]:
+	for want in ["may_co", "may_phuc_tap", "khach_giao_vien", "khach_phong_tin", "khach_truong_nhom", "khach_giam_doc"]:
 		check(ids.has(want), "has rule %s" % want)
 
 	var core_script = load("res://scripts/progression/unlock_core.gd")
@@ -26,7 +26,7 @@ func run() -> void:
 
 	# spec §6: moi rule trong .tres execute tra bool tren ctx mac dinh
 	var ctx2 = load("res://scripts/progression/unlock_context.gd").new()
-	var def_inputs: Array = [50000, 0, 0, 100, 0]
+	var def_inputs: Array = [50000, 0, 0, 100, 0, 0]
 	for r in set.rules:
 		var ex := Expression.new()
 		check_eq(ex.parse(String(r.condition), core_script.INPUT_NAMES), OK, "parse %s" % r.id)
@@ -39,6 +39,8 @@ func run() -> void:
 		"may_phuc_tap": "Máy phức tạp",
 		"khach_giao_vien": "Khách giáo viên",
 		"khach_phong_tin": "Khách phòng tin",
+		"khach_truong_nhom": "Trưởng nhóm",
+		"khach_giam_doc": "Giám đốc",
 	}
 	for r in set.rules:
 		check_eq(r.get("label"), expected_labels.get(String(r.id)), "label %s" % r.id)
@@ -47,7 +49,9 @@ func run() -> void:
 	check_eq(load("res://data/customers/ban_hoc.tres").get("unlock_rule"), &"", "ban_hoc khong gate")
 	check_eq(load("res://data/customers/giao_vien.tres").get("unlock_rule"), &"khach_giao_vien", "giao_vien map rule")
 	check_eq(load("res://data/customers/hoai_niem.tres").get("unlock_rule"), &"khach_phong_tin", "hoai_niem map rule")
-	for f in ["ban_hoc", "giao_vien", "hoai_niem"]:
+	check_eq(load("res://data/customers/truong_nhom.tres").get("unlock_rule"), &"khach_truong_nhom", "truong_nhom map rule")
+	check_eq(load("res://data/customers/giam_doc.tres").get("unlock_rule"), &"khach_giam_doc", "giam_doc map rule")
+	for f in ["ban_hoc", "giao_vien", "hoai_niem", "truong_nhom", "giam_doc"]:
 		var ur = load("res://data/customers/%s.tres" % f).get("unlock_rule")
 		if ur != null and String(ur) != "":
 			check(ids.has(String(ur)), "%s unlock_rule khop rule id" % f)

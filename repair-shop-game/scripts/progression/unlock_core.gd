@@ -3,7 +3,7 @@ extends RefCounted
 
 signal unlock_changed(id: StringName)
 
-const INPUT_NAMES := ["money", "knowledge", "uy_tin", "ky_luat", "workspace_tier"]
+const INPUT_NAMES := ["money", "knowledge", "uy_tin", "ky_luat", "workspace_tier", "project_count"]
 
 var _parsed: Dictionary = {}
 var _errors: Array[String] = []

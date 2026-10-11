@@ -78,7 +78,7 @@ func run() -> void:
 	gs4.knowledge = 100
 	scr4.refresh()
 	check_eq(String(scr4.get_node("Root/Tracker/Milestones/may_co/MMark").text), "✓", "knowledge 100 -> ✓")
-	check_eq(scr4.get_node("Root/Tracker/Milestones").get_child_count(), 4, "4 milestone rows")
+	check_eq(scr4.get_node("Root/Tracker/Milestones").get_child_count(), 6, "6 milestone rows")
 
 	# Review Focus 3: percent math (spec §2.1 min ratio)
 	var vals := {"knowledge": 32, "uy_tin": 45, "workspace_tier": 1}
@@ -87,7 +87,7 @@ func run() -> void:
 	check_eq(wsp_script.progress_percent("no_pattern_here", vals), -1.0, "khong pattern -> -1")
 
 	# customers gate (spec §2.4 + Review Focus 4)
-	check_eq(scr4.get_node("Root/Tracker/Customers").get_child_count(), 3, "3 customer rows")
+	check_eq(scr4.get_node("Root/Tracker/Customers").get_child_count(), 5, "5 customer rows")
 	check(scr4.get_node("Root/Tracker/Customers/giao_vien").modulate.a < 1.0, "uy_tin 0 -> giao vien mo")
 	gs4.uy_tin = 60
 	scr4.refresh()

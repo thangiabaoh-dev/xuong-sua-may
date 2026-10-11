@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CustomerDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/customer_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+key = "giam_doc"
+display_name = "Giám đốc"
+reactions = {"than": "Hoàn hảo. Hợp đồng dài hạn là của anh.", "trung_tinh": "Được rồi, tiếp tục.", "kho": "Chậm một nhịp là tôi hủy toàn bộ."}
+effects = {
+"than": { "tip_percent": 20 },
+"trung_tinh": { "tip_percent": 5 },
+"kho": { "lost_order": true },
+}
+risk_warning = "Giám đốc khó tính — sai một đơn là mất hợp đồng dài hạn."
+unlock_rule = &"khach_giam_doc"

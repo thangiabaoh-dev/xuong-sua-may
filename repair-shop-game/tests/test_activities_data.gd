@@ -28,4 +28,6 @@ func run() -> void:
 	check_eq(String(week.days[0].slots[0].activities[0].hook), "knowledge_rate:0.008", "di_hoc hook cycle2")
 	check_eq(String(week.days[0].slots[1].activities[0].hook), "knowledge_rate:0.030", "doc_thu_vien hook")
 	check_eq(String(week.days[1].slots[3].activities[1].hook), "knowledge_rate:0.020", "doc_sach_nha hook")
-	check_eq(String(week.days[0].slots[4].activities[0].hook), "", "lam_project hook empty (cycle3)")
+	check_eq(String(week.days[0].slots[4].activities[0].hook), "complete_project:p_noibo,uy_tin:10", "lam_project hook cycle3")
+	check_eq(String(week.days[1].slots[3].activities[0].hook), "complete_project:p_som,uy_tin:6", "lam_project_som hook")
+	check_eq(String(week.days[0].slots[1].activities[1].hook), "complete_project:p_cafe,uy_tin:8", "project_ca_phe hook")

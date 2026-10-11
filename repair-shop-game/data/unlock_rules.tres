@@ -35,6 +35,22 @@ target_id = &"khach_phong_tin"
 condition = "uy_tin >= 90 and workspace_tier >= 1"
 label = "Khách phòng tin"
 
+[sub_resource type="Resource" id="Resource_ksqu8"]
+script = ExtResource("1_qxo5v")
+id = &"khach_truong_nhom"
+target_kind = "customer"
+target_id = &"khach_truong_nhom"
+condition = "project_count >= 1"
+label = "Trưởng nhóm"
+
+[sub_resource type="Resource" id="Resource_q81cc"]
+script = ExtResource("1_qxo5v")
+id = &"khach_giam_doc"
+target_kind = "customer"
+target_id = &"khach_giam_doc"
+condition = "project_count >= 3"
+label = "Giám đốc"
+
 [resource]
 script = ExtResource("2_027ol")
-rules = Array[ExtResource("1_qxo5v")]([SubResource("Resource_8atkr"), SubResource("Resource_qwxk5"), SubResource("Resource_jewx8"), SubResource("Resource_w8wut")])
+rules = Array[ExtResource("1_qxo5v")]([SubResource("Resource_8atkr"), SubResource("Resource_qwxk5"), SubResource("Resource_jewx8"), SubResource("Resource_w8wut"), SubResource("Resource_ksqu8"), SubResource("Resource_q81cc")])

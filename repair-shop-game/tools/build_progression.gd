@@ -17,6 +17,8 @@ func _init() -> void:
 		_rule("may_phuc_tap", "machine", "knowledge >= 80", "Máy phức tạp"),
 		_rule("khach_giao_vien", "customer", "uy_tin >= 60", "Khách giáo viên"),
 		_rule("khach_phong_tin", "customer", "uy_tin >= 90 and workspace_tier >= 1", "Khách phòng tin"),
+		_rule("khach_truong_nhom", "customer", "project_count >= 1", "Trưởng nhóm"),
+		_rule("khach_giam_doc", "customer", "project_count >= 3", "Giám đốc"),
 	]
 	var err := ResourceSaver.save(set, "res://data/unlock_rules.tres")
 	print("unlock_rules.tres save err=", err)
